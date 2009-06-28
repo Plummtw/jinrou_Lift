@@ -1,0 +1,88 @@
+<lift:surround with="default" at="content">
+  <lift:GameController.view>
+  <head>
+    <entry:reload_tag />
+    <entry:css_style />
+    <entry:js_force_reload />
+    <entry:js_up_force_reload />
+    <entry:js_realtimeoutput />
+    <entry:js_onload_string  />
+  </head>
+  <body>
+    <a name="#game_top"/>
+    <table>
+     <tr>
+      <table border="0" cellspacing="0" cellpadding="0" width="100%">
+       <tr>
+        <td>
+          <entry:game_title />
+        </td>
+        <td align="right">
+          <entry:game_option />
+          <entry:sound_object />
+        </td>
+       </tr>
+      </table>
+      <entry:game_info />
+      <table border="0" cellpadding="0" cellspacing="0">
+       <tr>
+        <td width="1000">
+         <table border="0" cellspacing="0" cellpadding="0">
+          <entry:login_form />
+          <form id="realtime_form" name="realtime_form">
+          <tr>
+           <td >第 <entry:day_no/> 日　天氣:<entry:weather/>　(生存者<entry:live_player />人)　
+           <input class="left_real_time" type="text" id="realtime_output" name="realtime_output" size="50" readonly="readonly"/></td>
+          </tr>
+          <tr><td><span style="background-color:#CC3300;color:snow;"><entry:alert_message/></span></td></tr>
+          </form>
+         </table>
+        </td>
+        <!-- <td width=150 align=right></td> -->
+       </tr>
+      </table>
+     </tr>
+     
+     <tr>
+       <td><lift:msgs/></td>
+     </tr>
+     
+     <tr>
+      <table width="770" border="0" cellpadding="0" cellspacing="0">
+       <tr>
+        <td>
+          <entry:user_table/>
+        </td>
+       </tr>
+      </table>
+     </tr>
+     <tr>
+       <entry:role_intro/>
+     </tr>
+     <tr>
+       <entry:vote_tag_d/>
+     </tr>
+     <tr>
+       <entry:messages/>
+     </tr>
+     <tr>
+       <entry:last_words_tag/>
+     </tr>
+     <tr>
+       <entry:dead_tag/>
+     </tr>
+     <tr>
+       <entry:vote_tag_n/>
+     </tr>
+     <tr>
+       <entry:self_last_words/>
+     </tr>
+     <tr>
+       <entry:user_table_down/>
+     </tr>
+     <tr>
+     </tr>
+    </table>
+  </body>
+  </lift:GameController.view>
+</lift:surround>

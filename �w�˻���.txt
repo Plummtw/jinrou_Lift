@@ -1,0 +1,64 @@
+1. 確認作業系統 編碼 UTF-8
+   確認作業系統 時區 GMT+8
+   
+2. 安裝 MySQL
+   建立 MySQL Database Schema jinrou (編碼:UTF-8)
+     CREATE DATABASE jinrou CHARACTER SET = utf8
+   建立 MySQL User jinrou，密碼 jinrou0000
+     CREATE USER jinrou IDENTIFIED BY 'jinrou0000'
+   並給予 Schema jinrou 的所有權限
+     GRANT all ON jinrou.* TO jinrou;
+   
+3. 網路上抓 MySQL 的 Java Connecter，由於太大所以不包含
+     http://dev.mysql.com/downloads/connector/j/5.0.html 
+   放至 src\main\webapp\WEB-INF\lib 下，
+   我目前是用 mysql-connector-java-5.1.7-bin.jar
+   
+   另，程式中的資料庫連線設定位於
+     src\main\webapp\WEB-INF\classes\props
+   ( 如果資料庫 使用者 名稱 或 密碼 要改的話，這個也要改 )
+   
+   資料庫最大連線數的設定在
+   src\main\scala\bootstrap\liftweb\Boot.scala
+   下方
+   private val maxPoolSize = 75
+
+4. 確認有安裝 Java 1.5 以上，以及安裝 Maven 2.0 以上
+
+   另，src\main\webapp\WEB-INF\lib 下 需要
+   jetty-util 及 commons-codec，
+   
+   我是用 jetty-util-6.1.16.jar commons-codec-1.3.jar
+
+5. mvn clean 先清除所有建置的部份
+   test.bat  可以檢查程式及網頁及 HTML 是否有錯
+   jetty.bat 可以於本地端啟動 jetty 測試用
+   ( 以上 bat 皆為 mvn 指令，可直接看其內容 )
+
+6. 先啟動一次 jetty.bat，正常系統會將 資料庫全部建好，建好之後關掉 jetty
+   ( 按 CTRL-C 中斷 )
+   中斷之後請匯入 user_icon 圖像，可參考 load_usericon.sql 的語法
+   需要匯入三組
+     icon_group = 0 為替身君專用圖像，一定要第一個匯入，使其 id = 1
+     icon_group = 1 為 村民登錄一 使用圖像
+     icon_group = 2 為 村民登錄二 使用圖像
+     ( 請建兩組 )
+
+7. src\main\webapp\WEB-INF\classes\logback.xml 為 程式 log 設定檔
+   可依需求修改
+
+   接下來可使用 jetty.bat 本地端測試，或是放到 Server 上
+   指令 mvn package 會產生 war 檔 於 target 目錄下
+   請改名 war 檔為 jinrou.war 或其他較短名稱，再放至 Server 上
+   
+8. 請 INSERT 四筆到 AdminManage 下
+   INSERT INTO jinrou.adminmanage('param_name','param_value') values('room_start','2')
+   INSERT INTO jinrou.adminmanage('param_name','param_value') values('room_end','22')
+   INSERT INTO jinrou.adminmanage('param_name','param_value') values('room_count','3')
+   INSERT INTO jinrou.adminmanage('param_name','param_value') values('admin_ip','127.0.0.1')
+   
+   如本例是開放 02:00(凌晨)到 22:00(晚上十點) 允許開村，如要 24 小時開放請設 0 到 24
+   room_count 是設最大村數目前是寫 3
+
+   admin_ip 是管理者用的 ip 以 ; 分隔
+

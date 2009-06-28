@@ -1,0 +1,54 @@
+<lift:surround with="default" at="content">
+  <lift:OldlogController.view>
+  <head>
+  </head>
+  <body>
+    <a name="#game_top"/>
+    <table>
+     <tr>
+      <table border="0" cellspacing="0" cellpadding="0" width="100%">
+       <tr>
+        <td>
+          <entry:game_title />
+        </td>
+       </tr>
+      </table>
+      <entry:gameend_info />
+      <table border="0" cellpadding="0" cellspacing="0">
+       <tr>
+        <td width="1000">
+         <table border="0" cellspacing="0" cellpadding="0">
+          <form name="realtime_form">
+          <tr>
+           <td >遊戲結束 (生存者<entry:live_player />人)　</td>
+          </tr>
+          </form>
+         </table>
+        </td>
+        <!-- <td width=150 align=right></td> -->
+       </tr>
+      </table>
+     </tr>
+     
+     <tr>
+       <td><lift:msgs/></td>
+     </tr>
+     
+     <tr>
+      <table width="770" border="0" cellpadding="0" cellspacing="0">
+       <tr>
+        <td>
+          <entry:user_table/>
+        </td>
+       </tr>
+      </table>
+     </tr>
+     <tr>
+       <entry:old_logs/>
+     </tr>
+     <tr>
+     </tr>
+    </table>
+  </body>
+  </lift:OldlogController.view>
+</lift:surround>

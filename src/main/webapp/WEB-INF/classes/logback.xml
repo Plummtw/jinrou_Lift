@@ -1,0 +1,66 @@
+<configuration>
+
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>Jinrou.log</File>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <FileNamePattern>Jinrou.%d{yyyy-MM-dd}.log</FileNamePattern>
+      <!-- keep 30 days worth of history -->
+      <MaxHistory>30</MaxHistory>
+    </rollingPolicy>
+
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</Pattern>
+    </layout>
+  </appender>
+  
+  <appender name="FILE_WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>WARN</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+  
+    <File>JinrouWarn.log</File>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <FileNamePattern>JinrouWarn.%d{yyyy-MM-dd}.log</FileNamePattern>
+      <!-- keep 30 days worth of history -->
+      <MaxHistory>30</MaxHistory>
+    </rollingPolicy>
+
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</Pattern>
+    </layout>
+  </appender>
+  
+  <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>ERROR</level>
+    </filter>
+  
+    <File>JinrouError.log</File>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <FileNamePattern>JinrouError.%d{yyyy-MM-dd}.log</FileNamePattern>
+      <!-- keep 30 days worth of history -->
+      <MaxHistory>30</MaxHistory>
+    </rollingPolicy>
+
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</Pattern>
+    </layout>
+  </appender>
+
+  <appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+    </layout>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="FILE" />
+    <appender-ref ref="FILE_WARN" />
+    <appender-ref ref="FILE_ERROR" />
+    <appender-ref ref="STDOUT" />
+  </root>
+  
+</configuration>

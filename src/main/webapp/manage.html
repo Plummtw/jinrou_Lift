@@ -1,0 +1,67 @@
+
+<lift:surround with="default" at="content">
+  <head>
+    <script type="text/javascript">
+   $(document).ready(function() {
+     $('#abandon').click(function() { 
+      return confirm('確定要廢村？');
+     });
+   })
+    </script>
+  </head>
+  <h3>管理頁面</h3>
+  
+  <lift:AdminController.admin form="POST">
+  <table>
+    <tr>
+      <td>建村開始時間</td>
+      <td><entry:room_start/></td>
+    </tr>
+    <tr>
+      <td>建村結束時間</td>
+      <td><entry:room_end/></td>
+    </tr>
+    <tr>
+      <td>最大村數</td>
+      <td><entry:room_count/></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><entry:submit/></td>
+    </tr>
+  </table>
+  </lift:AdminController.admin>
+  
+  <br/><br/>
+  
+  <lift:AdminController.room_admin form="POST">
+  <entry:user_table/>
+  <table>
+    <tr>
+      <td>村莊號碼</td>
+      <td><entry:room_no/></td>
+      <td><entry:view/></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><entry:message /></td>
+      <td><entry:send_message /></td>
+      <td><entry:font_type /></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td><entry:send_private_message /></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><br/><br/><br/></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td><entry:abandon/></td>
+    </tr>
+  </table>
+  </lift:AdminController.room_admin>
+</lift:surround>

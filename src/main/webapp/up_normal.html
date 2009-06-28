@@ -1,0 +1,108 @@
+<lift:surround with="up" at="content">
+  <lift:UpController.say_form>
+  <lift:surround with="head" at="content">
+    <entry:css_style />
+    <entry:js_reload_game />
+    <script type="text/javascript">
+// <![CDATA[    
+      function submit_action(action) {
+        //self.document.send.say.value = "";
+        //self.document.send.command.value = action;
+        //self.document.send.submit.click();
+        //alert("a")
+        $("#say").val("");
+        $("#command").val(action);
+        $("#submit").click();
+      }
+      function autoclear() {
+        //if (self.document.send) {
+        //  self.document.send.say.value = "";
+        //  self.document.send.say.focus();
+        //  self.document.send.font_type.options[2].selected = true;
+        //}
+        $("#say").val("");
+        $("#say").focus();
+        $("#font_type").selectedIndex = 2 ;
+      }
+      function setfocus(){
+        //self.document.send.say.focus();
+        $("#say").focus();
+      }
+      $(document).ready(function(){
+        reloadgame();
+        setfocus();
+      });
+// ]]>      
+    </script>
+  </lift:surround>
+  <body>
+    <entry:reload_form />
+    <entry:reload_middle_form />
+    <form name="send" method="POST" action="up_normal.html" onSubmit="setfocus();">    
+      <a name="game_top"></a>
+      <table border="0" cellpadding="0" cellspacing="0">
+       <tr>
+        <td><textarea name="say" id="say" rows="3" cols="70" wrap="soft" style="font-size:12pt;"></textarea></td>
+        <td valign="bottom">
+         <table cellpadding="0" cellspacing="0" border="0">
+          <tr>
+           <td>
+            <entry:room_no_hidden_field />
+            <entry:day_no_hidden_field />
+            <input type="hidden" id="command" name="command" value="" />
+            <entry:vote_time_hidden_field />
+            <input type="submit" id="submit" value="送出發言" style="border-color:silver;border-width:px;border-style:solid;width=100px;" />
+           </td>
+          </tr>
+          <tr>
+           <td>
+            <select name="font_type" style="width:100px;">
+             <option value="20">強力發言</option>
+             <option value="16">稍強發言</option>
+             <option value="12" selected="selected">一般發言</option>
+             <option value="8">小聲發言</option>
+             <entry:say_option />
+             <option value="L">撰寫遺書</option>
+            </select>
+           </td>
+          </tr>
+          <tr>
+           <td>
+             <entry:say_checkbox />
+           </td>
+          </tr>
+          <tr>
+           <td>
+            <entry:action_bar />
+            <a href="main.html" target="_top" style="font-size:6pt">TOP</a>
+           </td>
+          </tr>
+          <tr>
+           <td>
+            <lift:msgs/>
+           </td>
+          </tr>
+         </table>
+        </td>
+       </tr>
+      </table>
+    </form>
+  </body>
+  </lift:UpController.say_form>
+  <script type="text/javascript">
+// <![CDATA[    
+    document.getElementById("say").onkeydown = function (moz_ev) {
+	  var ev = null;
+	  if (window.event){
+  		ev = window.event;
+   	}
+   	else  {
+		  ev = moz_ev;
+	  }
+	  if (ev != null && ev.ctrlKey && ev.keyCode == 13) {
+		  document.getElementById("submit").click();
+	  }
+  }
+// ]]>      
+  </script>
+</lift:surround>

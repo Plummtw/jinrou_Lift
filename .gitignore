@@ -1,0 +1,12 @@
+
+
+surefire-reports
+*.jar
+*.war
+*.timestamp
+*.log
+*.class
+jinrou-1.0-SNAPSHOT
+user_icons
+maven-archiver
+work

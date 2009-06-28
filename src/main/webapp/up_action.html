@@ -1,0 +1,37 @@
+<lift:surround with="up" at="content">
+  <lift:UpController.action_form>
+  <lift:surround with="head" at="content">
+    <entry:css_style />
+    <entry:js_set_radio />
+    <style type="text/css">
+    .votelist1{border-top: black 1px dotted;border-left: black 1px dotted;border-bottom: black 1px dotted;} 
+    .votelist2{font-size:10pt;border-top: black 1px dotted;border-bottom: black 1px dotted;border-right: black 1px dotted;}
+    </style>
+  </lift:surround>
+  <body onLoad="setRadio();">
+    <a name="#game_top" />
+    <div align="center">
+      <form id="action" name="action" action="up_normal.html" method="POST" >
+      <entry:room_no_hidden_field />
+      <entry:day_no_hidden_field />
+      <entry:command_hidden_field />
+      <entry:vote_time_hidden_field />
+      <table border="0" cellpadding="0" cellspacing="2">
+       <tr>
+        <td colspan="10">
+         <entry:action_table />
+        </td>
+       </tr>
+      </table>
+      <table border="0">
+       <tr>
+        <td valign="top" width="600" style="font-size:8pt;"></td>
+        <td width="1000" align="right"><table border="0"><td align="right" valign="middle"><a href="up_normal.html" style="font-size:14pt;">←上一頁&amp;重新整理</a></td></table></td>
+        <td align="right"><entry:submit /></td>
+       </tr>
+      </table>
+      </form>
+    </div>
+  </body>
+  </lift:UpController.action_form>
+</lift:surround>

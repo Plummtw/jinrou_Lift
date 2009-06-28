@@ -1,0 +1,106 @@
+<lift:surround with="default" at="content">
+  <lift:UserEntryController.add form="POST">
+    <div align="left"><a href="main.html">←返回</a></div>
+    <div align="center">
+      <table border="0" width="600px" style="border-width:1px;border-color:black;border-style:solid;background-image:url();" cellpadding="0" cellspacing="0">
+       <tr>
+        <td align="center">
+         <table>
+          <td><img src="images/user_regist_title.gif"/></td>
+         </table>
+        </td>
+       </tr>
+
+       <tr>
+        <td align="center" style="background-color:#CC6600;border-top: silver 2px dotted;border-bottom: silver 2px dotted;">
+         <table border="0">
+          <tr>
+           <td valign="middle" style="color:snow;"><strong><div align="right"><entry:room_name/> 村</div></strong></td>
+           <td valign="middle"><img src="images/user_regist_top.gif"/></td>
+          </tr>
+         </table>
+        </td>
+       </tr>
+
+       <tr>
+        <td align="right">
+         <table border="0">
+          <tr>
+           <td style="font-size:8pt;">
+            ～ <entry:room_comment/> ～ [ <entry:room_id/> 號地]
+           </td>
+          </tr>
+         </table>
+        </td>
+       </tr>
+
+       <tr>
+        <td align="center">
+         <table>
+          <tr>
+           <td align="center"><img src="images/user_regist_uname.gif"/></td>
+           <td><entry:uname /></td>
+           <td><span style="font-size:8pt;">平時不顯示，作為重新登入用的「帳號名稱」</span></td>
+          </tr>
+
+          <tr>
+           <td align="center">Trip</td>
+           <td><entry:trip /></td>
+           <td><span style="font-size:8pt;">( 先借用小企鵝的 Trip 一下)</span></td>
+          </tr>
+
+          <tr>
+           <td align="center"><img src="images/user_regist_handle_name.gif"/></td>
+           <td><entry:handle_name /></td>
+           <td><span style="font-size:8pt;">在村中所表示的「暱稱」</span></td>
+          </tr>
+
+          <tr>
+           <td align="center"><img src="images/user_regist_password.gif"/></td>
+           <td><entry:password /></td>
+           <td><span style="font-size:8pt;">重新登入所使用的密碼</span></td>
+          </tr>
+
+          <tr>
+           <td align="center"><img src="images/user_regist_sex.gif"/></td>
+           <td>
+            <img src="images/user_regist_sex_male.gif"/><entry:male />
+            <img src="images/user_regist_sex_female.gif"/><entry:female />
+           </td>
+           <td><span style="font-size:8pt;">沒有什麼用途</span></td>
+          </tr>
+          
+          <entry:wish_role />
+
+          <tr>
+           <td colspan="3" align="right">
+            <entry:submit />
+           </td>
+          </tr>
+         </table>
+        </td>
+       </tr>
+       
+       <tr>
+        <td><lift:msgs/></td>
+       </tr>
+       
+       <tr>
+        <td>
+         <fieldset style="border-color:black;border-width:1px;border-style:dotted;">
+         <legend><strong style="font-size:20px;font-weight:bold;"><img src="images/user_regist_icon.gif"/></strong></legend>
+           <entry:user_icon />
+         </fieldset>
+        </td>
+       </tr>
+
+       <tr>
+        <td>
+         <br/>
+        </td>
+       </tr>
+      </table>
+    </div>
+  </lift:UserEntryController.add>
+</lift:surround>
+
