@@ -224,7 +224,7 @@ object VoteHelper {
       val vote_actionee = votes.filter(_.actioner_id.is == vote.actionee_id.is)(0)
     
       if ((actioner != null) && (vote.actioner_id.is == vote.actionee_id.is))  { // 自投時固定 1 票
-        vote_actionee.vote_number(vote_actionee.vote_number.is + 2)
+        //vote_actionee.vote_number(vote_actionee.vote_number.is + 2) // 自投時改成 0 票
         vote_actionee.vote_flags(VoteFlagEnum.AUTO.toString + vote.vote_flags.is)
       }
       else if ((room_day.weather.is != WeatherEnum.CLOUDY.toString) && (actioner != null) && (actioner.subrole.is == SubroleEnum.AUTHORITY.toString))
@@ -261,7 +261,7 @@ object VoteHelper {
 
           if ((curser.live.is) && (vote_cursed.vote_flags.is.indexOf(VoteFlagEnum.CURSED.toString) == -1)) {
             vote_cursed.vote_flags(vote_cursed.vote_flags.is + VoteFlagEnum.CURSED.toString)
-            vote_cursed.vote_number(vote_cursed.vote_number.is + 5)
+            vote_cursed.vote_number(vote_cursed.vote_number.is + 6)
           }
         }
       }
@@ -367,9 +367,11 @@ object VoteHelper {
       if (!vote_reveal) ""
       else {
         val result = 
-          (if ((user!=null) && (user.subrole.is == SubroleEnum.AUTHORITY.toString) &&
-               (vote_flags.indexOf(VoteFlagEnum.AUTO.toString) == -1) &&
-               (room_day.weather.is != WeatherEnum.CLOUDY.toString)) 2 else 1) +
+          (if (vote_flags.indexOf(VoteFlagEnum.AUTO.toString) == -1) 0
+           else if (user==null) 1
+           else if ((user.subrole.is == SubroleEnum.AUTHORITY.toString) &&
+               (room_day.weather.is != WeatherEnum.CLOUDY.toString)) 2
+           else 1) +
           (if (vote_flags.indexOf(VoteFlagEnum.SHOUTED.toString) != -1) 1 else 0)
 
         result.toString

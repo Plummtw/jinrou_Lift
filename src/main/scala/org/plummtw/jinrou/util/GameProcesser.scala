@@ -419,6 +419,9 @@ object GameProcesser {
         (room.room_flags.is.indexOf(RoomFlagEnum.PONTIFF_OPTION3.toString) != -1 )) {
       user_entrys.filter(x=>(x.role.is == RoleEnum.PONTIFF.toString)).foreach(_.user_flags(UserEntryFlagEnum.PONTIFF_AURA.toString))
     }
+
+    // 背德初期票數
+    user_entrys.filter(x=>(x.role.is == RoleEnum.BETRAYER.toString)).foreach(_.action_point(1))
   }
 
   def process_start_game(room:Room, user_entrys:List[UserEntry]) = {
@@ -732,6 +735,7 @@ object GameProcesser {
     fox_votes.foreach { vote =>
       val target = user_entrys.filter(_.id.is == vote.actionee_id.is)(0)
       target.role(RoleEnum.BETRAYER.toString)
+      target.action_point(1)
       target.save
     }
 
