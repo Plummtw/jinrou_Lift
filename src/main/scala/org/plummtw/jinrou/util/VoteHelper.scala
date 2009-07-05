@@ -367,7 +367,7 @@ object VoteHelper {
       if (!vote_reveal) ""
       else {
         val result = 
-          (if (vote_flags.indexOf(VoteFlagEnum.AUTO.toString) == -1) 0
+          (if (vote_flags.indexOf(VoteFlagEnum.AUTO.toString) != -1) 0
            else if (user==null) 1
            else if ((user.subrole.is == SubroleEnum.AUTHORITY.toString) &&
                (room_day.weather.is != WeatherEnum.CLOUDY.toString)) 2

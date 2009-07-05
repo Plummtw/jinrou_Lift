@@ -467,7 +467,8 @@ object ActionDemonCurse2 extends ActionData(MTypeEnum.VOTE_DEMON_CURSE2, "詛咒
 object ActionDemonVortex extends ActionData(MTypeEnum.VOTE_DEMON_VORTEX, "斗轉星移", "demon_vortex", true) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
     return ((room.room_flags.is.indexOf(RoomFlagEnum.DEMON_OPTION3.toString) != -1) &&
-            (user.user_flags.is.indexOf(UserEntryFlagEnum.VORTEX_USED.toString) == -1))
+            (user.user_flags.is.indexOf(UserEntryFlagEnum.VORTEX_USED.toString) == -1) &&
+            (user.role.is.length == 1))
   }
 }
 
