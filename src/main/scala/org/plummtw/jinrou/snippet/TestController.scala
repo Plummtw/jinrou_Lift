@@ -86,7 +86,7 @@ class TestController {
     // 加入替身君
     val dummy_boy = UserEntry.create.uname("dummy_boy").handle_name("替身君").sex("M").user_icon_id(1)
                     .password("dummy_boy").last_words("替身君的遺言測試").role(RoleEnum.NONE.toString)
-                    .user_flags(UserEntryFlagEnum.VOTED.toString)
+                    .user_flags(UserEntryFlagEnum.VOTED.toString).subrole("")
                     .ip_address(S.request.map{x=>JinrouUtil.getIpAddress(x)}.openOr(""))
                       
     dummy_boy.validate match { 
@@ -112,7 +112,7 @@ class TestController {
                     .uname(i_str).handle_name(i_str).sex("M").user_icon_id(2)
                     .password(JinrouUtil.generateSHA1("aaaaaa").substring(0,20))
                     .last_words("").role(RoleEnum.NONE.toString)
-                    .user_flags(voted)
+                    .user_flags(voted).subrole("")
                     .ip_address(S.request.map{x=>JinrouUtil.getIpAddress(x)}.openOr(""))
                       
       player.validate match { 
@@ -140,7 +140,7 @@ class TestController {
     // 加入替身君
     val dummy_boy = UserEntry.create.uname("dummy_boy").handle_name("替身君").sex("M").user_icon_id(1)
                     .password("dummy_boy").last_words("替身君的遺言測試").role(RoleEnum.NONE.toString)
-                    .user_flags(UserEntryFlagEnum.VOTED.toString)
+                    .user_flags(UserEntryFlagEnum.VOTED.toString).subrole("")
                     .ip_address(S.request.map{x=>JinrouUtil.getIpAddress(x)}.openOr(""))
                       
     dummy_boy.validate match { 
@@ -166,7 +166,7 @@ class TestController {
                     .uname(i_str).handle_name(i_str).sex("M").user_icon_id(2)
                     .password(JinrouUtil.generateSHA1("aaaaaa").substring(0,20))
                     .last_words("").role(RoleEnum.NONE.toString)
-                    .user_flags(voted)
+                    .user_flags(voted).subrole("")
                     .ip_address(S.request.map{x=>JinrouUtil.getIpAddress(x)}.openOr(""))
                       
       player.validate match { 

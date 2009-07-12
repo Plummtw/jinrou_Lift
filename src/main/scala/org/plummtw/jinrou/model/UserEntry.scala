@@ -70,7 +70,9 @@ class UserEntry extends LongKeyedMapper[UserEntry] with IdPK {
   }
   
   object role          extends MappedString(this,3)
-  object subrole       extends MappedString(this,1)
+  object subrole       extends MappedString(this,1) {
+    override def defaultValue = ""
+  }
   
   object action_point  extends MappedInt(this) {
     override def defaultValue = 0

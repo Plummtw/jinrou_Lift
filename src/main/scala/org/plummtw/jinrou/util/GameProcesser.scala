@@ -791,6 +791,13 @@ object GameProcesser {
         actioner.subrole(SubroleEnum.FOXBELIEVER.toString)
         actioner.action_point(0)
         actioner.save
+        
+        val target_role_str = target.role.is.substring(0,1)
+        val target_role_enum =  RoleEnum.get_role(target_role_str)
+
+        val talk_sentence = "＜＜背德變化成功＞＞ (" + target_role_enum.toString + ")"
+        val talk = Talk.create.mtype(MTypeEnum.MESSAGE_FOX.toString).message(talk_sentence).font_type("12")
+        talks_for_save = talks_for_save ::: List(talk)
       }
     }
 

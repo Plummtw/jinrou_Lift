@@ -377,6 +377,14 @@ object MessageHelper {
             simple_message_tag(talk.message.is)
           else
             NodeSeq.Empty
+      case MTypeEnum.MESSAGE_FOX      =>
+          if (((user != null) && (!user.test_memoryloss(room, room_day, user_entrys)) && (!(user.test_fake(room_day)))
+             && (((user.role.is.substring(0,1) == RoleEnum.FOX.toString) || (user.role.is.substring(0,1) == RoleEnum.BETRAYER.toString) || (user.role.is.substring(0,1) == RoleEnum.GODFAT.toString) ||
+                 (user.subrole.is == SubroleEnum.FOXBELIEVER.toString))
+             && (user.subrole.is != SubroleEnum.WOLFBELIEVER.toString))) || (heaven_mode))
+            simple_message_tag(talk.message.is)
+          else
+            NodeSeq.Empty
       
       case MTypeEnum.VOTE_KICK             => simple_message_tag(generated_message,true,"#AAAA33","snow")
       case MTypeEnum.VOTE_HANG             => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 投票處死",heaven_mode || ((user != null) && (!user.live.is)),"#AAAA33","snow")

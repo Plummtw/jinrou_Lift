@@ -95,7 +95,7 @@ class RoomController {
       
       // 加入替身君
       val dummy_boy = UserEntry.create.uname("dummy_boy").handle_name(dummy_handle_name.replace('　',' ').trim()).sex("M").user_icon_id(1)
-      .password("dummy_boy").last_words(last_words).role(RoleEnum.NONE.toString)
+      .password("dummy_boy").last_words(last_words).role(RoleEnum.NONE.toString).subrole("")
                       .user_flags(UserEntryFlagEnum.VOTED.toString)
                       .ip_address(S.request.map{x=>JinrouUtil.getIpAddress(x)}.openOr(""))
                       

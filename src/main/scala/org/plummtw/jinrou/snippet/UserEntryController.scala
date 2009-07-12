@@ -137,7 +137,7 @@ class UserEntryController {
                                 .trip(trip_value)
                                 .password(JinrouUtil.generateSHA1(password.trim()).substring(0,20))
                                 .room_id(room_id).user_icon_id(user_icon_id)
-                                .role(S.param("role").getOrElse("0")).last_words("")
+                                .role(S.param("role").getOrElse("0")).subrole("").last_words("")
                                 .ip_address(S.request.map{x=>JinrouUtil.getIpAddress(x)}.openOr(""))
                       
       

@@ -34,6 +34,7 @@ object MTypeEnum extends Enumeration {
   val MESSAGE_REVOTE   = Value("S7")
   val MESSAGE_NIGHT    = Value("S8")
   val MESSAGE_EVIL     = Value("S9")
+  val MESSAGE_FOX       = Value("SF")
   
   val BITED_FOX      = Value("BF")
   val BITED_DEMON    = Value("BD")
