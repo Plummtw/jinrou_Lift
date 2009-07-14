@@ -53,12 +53,14 @@ object RoomFlagEnum extends Enumeration {
   val VILLAGER_DETECT  = Value("V1")
   val GEMINI_DAYTALK    = Value("G1")
   val HUNTER_OPTION1    = Value("H1")
+  val HUNTER_OPTION2     = Value("H2")
   val CLERIC_OPTION1    = Value("C1")
   val CLERIC_OPTION2    = Value("C2")
   val HERBALIST_MIX        = Value("L1")
   val SCHOLAR_OPTION1    = Value("O1")
   val SCHOLAR_OPTION2    = Value("O2")
   val SCHOLAR_OPTION3    = Value("O3")
+  val SCHOLAR_OPTION4    = Value("O4")
   val WOLFCUB_OPTION1  = Value("X1")
   val MADMAN_KNOWLEDGE = Value("M1")
   val MADMAN_SUICIDE   = Value("M2")
@@ -134,13 +136,15 @@ object RoomFlagEnum extends Enumeration {
     // Role Adjustment
     VILLAGER_DETECT  -> "<村>",
     GEMINI_DAYTALK   -> "<共>",
-    HUNTER_OPTION1   -> "<獵>",
+    HUNTER_OPTION1   -> "<獵1>",
+    HUNTER_OPTION2   -> "<獵2>",
     CLERIC_OPTION1   -> "<牧1>",
     CLERIC_OPTION2   -> "<牧2>",
     HERBALIST_MIX    -> "<藥>",
     SCHOLAR_OPTION1  -> "<學1>",
     SCHOLAR_OPTION2  -> "<學2>",
     SCHOLAR_OPTION3  -> "<學3>",
+    SCHOLAR_OPTION4  -> "<學4>",
     WOLFCUB_OPTION1  -> "<幼>",
     MADMAN_KNOWLEDGE -> "<狂1>",
     MADMAN_SUICIDE   -> "<狂2>",

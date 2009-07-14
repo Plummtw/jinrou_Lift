@@ -373,7 +373,11 @@ class GameController {
         false
       else if (user_entry == null)
         true
-      else if (vote_godfat_blind.filter(_.actionee_id.is == user_entry.id.is).length == 0)
+      else if (((user_entry.test_memoryloss(room, room_day, user_entrys)) && (!(user_entry.test_fake(room_day)))
+             && (((user_entry.role.is.substring(0,1) == RoleEnum.FOX.toString) || (user_entry.role.is.substring(0,1) == RoleEnum.BETRAYER.toString) || (user_entry.role.is.substring(0,1) == RoleEnum.GODFAT.toString) ||
+                 (user_entry.subrole.is == SubroleEnum.FOXBELIEVER.toString))
+             && (user_entry.subrole.is != SubroleEnum.WOLFBELIEVER.toString))) || (heaven_mode))
+      //if (vote_godfat_blind.filter(_.actionee_id.is == user_entry.id.is).length == 0)
         false
       else
         true

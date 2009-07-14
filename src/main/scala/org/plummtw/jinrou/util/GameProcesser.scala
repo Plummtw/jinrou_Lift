@@ -857,14 +857,23 @@ object GameProcesser {
 
       actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.GODFAT_SPECIAL_USED.toString)
       actioner.save
+
+      val talk_sentence = "＜＜哥德法使用七彩噴射＞＞"
+      val talk = Talk.create.mtype(MTypeEnum.MESSAGE_FOX.toString).message(talk_sentence).font_type("12")
+      talks_for_save = talks_for_save ::: List(talk)
     }
 
-    val godfat_blind_votes = votes.filter(_.mtype.is == MTypeEnum.VOTE_GODFAT_BLIND.toString)
+    val godfat_blind_votes = votes.filter(x=>(x.mtype.is == MTypeEnum.VOTE_GODFAT_BLIND.toString) ||
+                                             (x.mtype.is == MTypeEnum.VOTE_GODFAT_BLIND2.toString))
     godfat_blind_votes.foreach { vote =>
       val actioner = user_entrys.filter(_.id.is == vote.actioner_id.is)(0)
 
       actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.GODFAT_BLIND_USED.toString)
       actioner.save
+
+      val talk_sentence = "＜＜哥德法使用眩光＞＞"
+      val talk = Talk.create.mtype(MTypeEnum.MESSAGE_FOX.toString).message(talk_sentence).font_type("12")
+      talks_for_save = talks_for_save ::: List(talk)
     }
 
     val godfat_exchange_votes = votes.filter(_.mtype.is == MTypeEnum.VOTE_GODFAT_EXCHANGE.toString)

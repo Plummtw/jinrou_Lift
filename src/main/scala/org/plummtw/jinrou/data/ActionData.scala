@@ -56,6 +56,13 @@ object ActionGuard extends ActionData(MTypeEnum.VOTE_HUNTER, "護衛", "guard", 
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
     return (room_day.day_no.is != 1)
   }
+
+  override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
+    if (room.room_flags.is.indexOf(RoomFlagEnum.HUNTER_OPTION2.toString) != -1)
+      user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.live.is))
+    else
+      user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.id.is != user.id.is) && (x.live.is))
+  }
 }
 
 object ActionAugHunterAugure extends ActionData(MTypeEnum.VOTE_AUGURER, "占卜", "aughunter_augure", true) {
@@ -402,6 +409,13 @@ object ActionGodfatBlind extends ActionData(MTypeEnum.VOTE_GODFAT_BLIND, "眩光
       result.filter(x=>x.user_flags.is.indexOf(UserEntryFlagEnum.PONTIFF_AURA.toString) == -1)
     else
       result
+  }
+}
+
+object ActionGodfatBlind2 extends ActionData(MTypeEnum.VOTE_GODFAT_BLIND2, "眩光！", "godfat_blind2", false) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
+    return  ((user.user_flags.is.indexOf(UserEntryFlagEnum.GODFAT_SPECIAL2.toString) != -1) &&
+             (user.user_flags.is.indexOf(UserEntryFlagEnum.GODFAT_BLIND_USED.toString) == -1))
   }
 }
 

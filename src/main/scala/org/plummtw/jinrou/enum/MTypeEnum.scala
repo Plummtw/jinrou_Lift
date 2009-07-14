@@ -113,6 +113,7 @@ object MTypeEnum extends Enumeration {
   val VOTE_GODFAT_DEATHGAZE  = Value("VTD")
   val VOTE_GODFAT_COLORSPRAY = Value("VTC")
   val VOTE_GODFAT_BLIND       = Value("VTB")
+  val VOTE_GODFAT_BLIND2       = Value("VTL")
   val VOTE_GODFAT_EXCHANGE    = Value("VTE")
   
   val VOTE_DEMON_CHAOS = Value("VDV")

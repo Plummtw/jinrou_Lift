@@ -482,7 +482,11 @@ object RoleScholar     extends RoleData(RoleEnum.SCHOLAR,     "學者",   "#3CB3
   def scholar_examine(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry], system_message0: SystemMessage) = {
     // 個案調查
     val actionee   = user_entrys.filter(_.id.is == system_message0.actionee_id.is)(0)
-    val subrole_data = SubroleEnum.get_subrole(actionee.subrole.is).toString
+    val subrole_data =
+      if (room.room_flags.is.indexOf(RoomFlagEnum.SCHOLAR_OPTION4.toString) == -1)
+        SubroleEnum.get_subrole(actionee.subrole.is).subrole_name
+      else
+        SubroleEnum.get_subrole(actionee.subrole.is).toString
     val is_religion =
      if (actionee.current_role == RoleEnum.PONTIFF) {
        if (room.room_flags.is.indexOf(RoomFlagEnum.SCHOLAR_OPTION1.toString) != -1)
@@ -843,7 +847,7 @@ object RoleBetrayer    extends RoleData(RoleEnum.BETRAYER,    "背德",   "#DD00
   }
 }
 
-object RoleGodfat      extends RoleData(RoleEnum.GODFAT,      "哥德法", "#BB00AA", RoomVictoryEnum.FOX_WIN, List(ActionGodfatSpecial1, ActionGodfatSpecial2, ActionGodfatSpecial3, ActionGodfatDeathGaze, ActionGodfatColorSpray, ActionGodfatBlind, ActionGodfatExchange, ActionNoAction)) {
+object RoleGodfat      extends RoleData(RoleEnum.GODFAT,      "哥德法", "#BB00AA", RoomVictoryEnum.FOX_WIN, List(ActionGodfatSpecial1, ActionGodfatSpecial2, ActionGodfatSpecial3, ActionGodfatDeathGaze, ActionGodfatColorSpray, ActionGodfatBlind2, ActionGodfatExchange, ActionNoAction)) {
   //override def role_intro = <span>[角色]<br/>　　您所扮演的角色是哥德法。您不知道妖狐是誰，但是占卜師或狂巫占卜到您，就會被逆咒殺。</span>
   override def role_intro = <img src="images/role_godfat.gif"/>
 

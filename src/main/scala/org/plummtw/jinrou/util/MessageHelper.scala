@@ -428,6 +428,7 @@ object MessageHelper {
       case MTypeEnum.VOTE_GODFAT_DEATHGAZE  => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用絕望視線",heaven_mode,"#BB00AA","snow")
       case MTypeEnum.VOTE_GODFAT_COLORSPRAY  => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用七彩噴射",heaven_mode,"#BB00AA","snow")
       case MTypeEnum.VOTE_GODFAT_BLIND      => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用眩光",heaven_mode,"#BB00AA","snow")
+      case MTypeEnum.VOTE_GODFAT_BLIND2    => simple_message_tag(user_entry.handle_name.is + " 使用眩光",heaven_mode,"#BB00AA","snow")
       case MTypeEnum.VOTE_GODFAT_EXCHANGE  => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用秘術換身",heaven_mode,"#BB00AA","snow")
 
 
@@ -494,15 +495,17 @@ object MessageHelper {
       }
     }
     if (blind_mode) {
-      val user_entry_id =
+      val user_entry_id : Long =
         if (user_entry == null)
           0
         else
           (user_entry.id.is)
 
-      talks = talks.filter(x=> ((x.mtype.is != MTypeEnum.TALK_DAY.toString) && (x.mtype.is != MTypeEnum.TALK_DAY_FOG.toString)) ||
-                                (x.actioner_id.is == user_entry_id) ||
-                                (x.id.is % 2 == 0))
+      if (user_entry_id == 0) 
+        talks = List()
+      else
+        talks = talks.filter(x=> ((x.mtype.is != MTypeEnum.TALK_DAY.toString) && (x.mtype.is != MTypeEnum.TALK_DAY_FOG.toString)) ||
+                                  (user_entry_id % 2 == x.actioner_id.is % 2))
     }
     
     Seq(<table border="0" cellpadding="0" cellspacing="0" style="font-family:新細明體;"> {
