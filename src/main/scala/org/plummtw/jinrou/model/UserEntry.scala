@@ -264,6 +264,13 @@ class UserEntry extends LongKeyedMapper[UserEntry] with IdPK {
     return ((subrole.is == SubroleEnum.FAKEAUGURER.toString) &&
             (room_day.day_no.is <= 7))
   }
+
+  def test_foxside(room : Room, room_day : RoomDay, user_entrys : List[UserEntry]) : Boolean = {
+    return ((!test_memoryloss(room, room_day, user_entrys)) && (!(test_fake(room_day)))
+             && (((role.is.substring(0,1) == RoleEnum.FOX.toString) || (role.is.substring(0,1) == RoleEnum.BETRAYER.toString) || (role.is.substring(0,1) == RoleEnum.GODFAT.toString) ||
+                 (subrole.is == SubroleEnum.FOXBELIEVER.toString))
+             && (subrole.is != SubroleEnum.WOLFBELIEVER.toString))) 
+  }
 }
 
 object UserEntry extends UserEntry with LongKeyedMetaMapper[UserEntry] {

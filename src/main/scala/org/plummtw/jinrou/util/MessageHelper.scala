@@ -378,10 +378,7 @@ object MessageHelper {
           else
             NodeSeq.Empty
       case MTypeEnum.MESSAGE_FOX      =>
-          if (((user != null) && (!user.test_memoryloss(room, room_day, user_entrys)) && (!(user.test_fake(room_day)))
-             && (((user.role.is.substring(0,1) == RoleEnum.FOX.toString) || (user.role.is.substring(0,1) == RoleEnum.BETRAYER.toString) || (user.role.is.substring(0,1) == RoleEnum.GODFAT.toString) ||
-                 (user.subrole.is == SubroleEnum.FOXBELIEVER.toString))
-             && (user.subrole.is != SubroleEnum.WOLFBELIEVER.toString))) || (heaven_mode))
+          if ((user != null) && (user.test_foxside(room, room_day, user_entrys)) || (heaven_mode))
             simple_message_tag(talk.message.is)
           else
             NodeSeq.Empty

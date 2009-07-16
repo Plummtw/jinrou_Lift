@@ -119,7 +119,7 @@ object VoteHelper {
   }
   */  
   
-  def check_vote_hang(room_day: RoomDay, user_entrys: List[UserEntry], vote_list: List[Vote]) : UserEntry = {
+  def check_vote_hang(room: Room, room_day: RoomDay, user_entrys: List[UserEntry], vote_list: List[Vote]) : UserEntry = {
     //val votes = Vote.findAll(By(Vote.roomday_id, room_day.id.is), By(Vote.vote_time, room_day.vote_time.is),
     //                         By(Vote.mtype, MTypeEnum.VOTE_HANG.toString))
 
@@ -281,7 +281,7 @@ object VoteHelper {
 
           if ((actioner.live.is) && (vote_colorspray.vote_flags.is.indexOf(VoteFlagEnum.COLORSPRAY.toString) == -1)) {
             vote_colorspray.vote_flags(vote_colorspray.vote_flags.is + VoteFlagEnum.COLORSPRAY.toString)
-            vote_colorspray.vote_number(vote_colorspray.vote_number.is + 2 + (RoleGodfat.combo(user_entrys) * 3))
+            vote_colorspray.vote_number(vote_colorspray.vote_number.is + 2 + (RoleGodfat.combo(room, room_day, user_entrys) * 3))
           }
         }
       }

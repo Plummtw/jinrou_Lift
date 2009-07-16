@@ -367,16 +367,13 @@ class GameController {
     //  ()=>MessageHelper.messages_normal(room, room_day, user_entry, heaven_mode, user_entrys))
     val vote_godfat_blind = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is),
 //                                                  By(SystemMessage.actionee_id, user_entry.id.is),
-                                                  By(SystemMessage.mtype, MTypeEnum.VOTE_BETRAYER_DISGUISE.toString))
+                                                  By(SystemMessage.mtype, MTypeEnum.VOTE_GODFAT_BLIND2.toString))
     val is_blinded =
       if (vote_godfat_blind.length == 0)
         false
       else if (user_entry == null)
         true
-      else if (((user_entry.test_memoryloss(room, room_day, user_entrys)) && (!(user_entry.test_fake(room_day)))
-             && (((user_entry.role.is.substring(0,1) == RoleEnum.FOX.toString) || (user_entry.role.is.substring(0,1) == RoleEnum.BETRAYER.toString) || (user_entry.role.is.substring(0,1) == RoleEnum.GODFAT.toString) ||
-                 (user_entry.subrole.is == SubroleEnum.FOXBELIEVER.toString))
-             && (user_entry.subrole.is != SubroleEnum.WOLFBELIEVER.toString))) || (heaven_mode))
+      else if ((user_entry.test_foxside(room, room_day, user_entrys)) || (heaven_mode))
       //if (vote_godfat_blind.filter(_.actionee_id.is == user_entry.id.is).length == 0)
         false
       else

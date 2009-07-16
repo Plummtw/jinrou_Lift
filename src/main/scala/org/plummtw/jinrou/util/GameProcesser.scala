@@ -1695,7 +1695,7 @@ object GameProcesser {
   def process_phase(room:Room, room_day:RoomDay, user_entrys:List[UserEntry], vote_list:List[Vote]) = {
     if (room_day.day_no.is % 2 == 0) {
       // 白天的話，要判斷是否要重新投票
-      val voted_player = VoteHelper.check_vote_hang(room_day, user_entrys, vote_list)
+      val voted_player = VoteHelper.check_vote_hang(room, room_day, user_entrys, vote_list)
 
       if (voted_player == null) {
         // 平手重投

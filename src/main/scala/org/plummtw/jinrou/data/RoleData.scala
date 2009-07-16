@@ -483,7 +483,7 @@ object RoleScholar     extends RoleData(RoleEnum.SCHOLAR,     "學者",   "#3CB3
     // 個案調查
     val actionee   = user_entrys.filter(_.id.is == system_message0.actionee_id.is)(0)
     val subrole_data =
-      if (room.room_flags.is.indexOf(RoomFlagEnum.SCHOLAR_OPTION4.toString) == -1)
+      if (room.room_flags.is.indexOf(RoomFlagEnum.SCHOLAR_OPTION4.toString) != -1)
         SubroleEnum.get_subrole(actionee.subrole.is).subrole_name
       else
         SubroleEnum.get_subrole(actionee.subrole.is).toString
@@ -851,8 +851,8 @@ object RoleGodfat      extends RoleData(RoleEnum.GODFAT,      "哥德法", "#BB0
   //override def role_intro = <span>[角色]<br/>　　您所扮演的角色是哥德法。您不知道妖狐是誰，但是占卜師或狂巫占卜到您，就會被逆咒殺。</span>
   override def role_intro = <img src="images/role_godfat.gif"/>
 
-  def combo(user_entrys: List[UserEntry]) = {
-    val lives = user_entrys.map(_.live.is == false)
+  def combo(room : Room, room_day : RoomDay, user_entrys: List[UserEntry]) = {
+    val lives = user_entrys.map(x=>((x.live.is == false) || x.test_foxside(room, room_day, user_entrys)))
     //lives.foreach(x=> println(x.toString))
 
     val combo =
@@ -879,7 +879,7 @@ object RoleGodfat      extends RoleData(RoleEnum.GODFAT,      "哥德法", "#BB0
       val lives = user_entrys.map(_.live.is == false)
       //lives.foreach(x=> println(x.toString))
 
-      val max_combo = combo(user_entrys)
+      val max_combo = combo(room, room_day, user_entrys)
       val combo_str = max_combo.toString + "/4"
 
       val user_index = user_entrys.indexOf(user)
