@@ -497,8 +497,8 @@ object GameProcesser {
         val actionee = actionee_list(0)
 
         if ((actionee.current_role == RoleEnum.GODFAT) &&
-            ((actionee.user_flags.is.indexOf(UserEntryFlagEnum.GODFAT_SPECIAL1.toString) != -1) ||
-             (actionee.user_flags.is.indexOf(UserEntryFlagEnum.GODFAT_SPECIAL3.toString) != -1)) &&
+//            ((actionee.user_flags.is.indexOf(UserEntryFlagEnum.GODFAT_SPECIAL1.toString) != -1) ||
+//             (actionee.user_flags.is.indexOf(UserEntryFlagEnum.GODFAT_SPECIAL3.toString) != -1)) &&
             (actioner.user_flags.is.indexOf(UserEntryFlagEnum.GODFAT_TARGETED.toString) == -1)) {
           actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.GODFAT_TARGETED.toString)
           actioner.save

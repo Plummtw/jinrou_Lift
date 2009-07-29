@@ -286,6 +286,8 @@ object RoleNecromancer extends RoleData(RoleEnum.NECROMANCER, "靈能者", "#009
           <font color="red">{handle_name}</font>
         else if (role_str == RoleEnum.DEMON.toString) 
           <font color="#666666">{handle_name}</font>
+        else if ((role_str == RoleEnum.FOX.toString) && (room.room_flags.is.indexOf(RoomFlagEnum.NECROMANCER_OPTION1.toString) != -1))
+          <font color="#CC0099">{handle_name}</font>
         else 
           <span>{handle_name}</span>
        
@@ -294,6 +296,8 @@ object RoleNecromancer extends RoleData(RoleEnum.NECROMANCER, "靈能者", "#009
           <img src="images/role_result_wolf.gif"/> 
         else if (role_str == RoleEnum.DEMON.toString) 
           <span>是惡魔</span> 
+        else if ((role_str == RoleEnum.FOX.toString) && (room.room_flags.is.indexOf(RoomFlagEnum.NECROMANCER_OPTION1.toString) != -1))
+          <span>是妖狐</span>
         else
           <img src="images/role_result_human.gif"/>
           
@@ -852,7 +856,8 @@ object RoleGodfat      extends RoleData(RoleEnum.GODFAT,      "哥德法", "#BB0
   override def role_intro = <img src="images/role_godfat.gif"/>
 
   def combo(room : Room, room_day : RoomDay, user_entrys: List[UserEntry]) = {
-    val lives = user_entrys.map(x=>((x.live.is == false) || x.test_foxside(room, room_day, user_entrys)))
+    val lives = user_entrys.map(x=>((x.live.is == false) || x.test_foxside(room, room_day, user_entrys) ||
+                                    (x.user_flags.is.indexOf(UserEntryFlagEnum.GODFAT_TARGETED.toString)!= -1 )))
     //lives.foreach(x=> println(x.toString))
 
     val combo =

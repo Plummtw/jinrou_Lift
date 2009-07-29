@@ -51,7 +51,9 @@ object RoomFlagEnum extends Enumeration {
   
   // Role Adjustment
   val VILLAGER_DETECT  = Value("V1")
+  val NECROMANCER_OPTION1 = Value("N1")
   val GEMINI_DAYTALK    = Value("G1")
+  val GEMINI_BALANCE    = Value("G2")
   val HUNTER_OPTION1    = Value("H1")
   val HUNTER_OPTION2     = Value("H2")
   val CLERIC_OPTION1    = Value("C1")
@@ -135,7 +137,9 @@ object RoomFlagEnum extends Enumeration {
   
     // Role Adjustment
     VILLAGER_DETECT  -> "<村>",
-    GEMINI_DAYTALK   -> "<共>",
+    NECROMANCER_OPTION1 -> "<靈>",
+    GEMINI_DAYTALK   -> "<共1>",
+    GEMINI_BALANCE   -> "<共2>",
     HUNTER_OPTION1   -> "<獵1>",
     HUNTER_OPTION2   -> "<獵2>",
     CLERIC_OPTION1   -> "<牧1>",

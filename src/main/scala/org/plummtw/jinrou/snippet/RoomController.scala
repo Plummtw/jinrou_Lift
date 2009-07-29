@@ -203,9 +203,11 @@ class RoomController {
 
       // Role Adjustment
       "villager_detect"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.VILLAGER_DETECT), "id"->"villager_detect"),
-      "gemini_daytalk"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.GEMINI_DAYTALK), "id"->"gemini_daytalk"),
+      "necromancer_option1"-> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.NECROMANCER_OPTION1), "id"->"necromancer_option1"),
       "hunter_option1"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.HUNTER_OPTION1), "id"->"hunter_option1"),
       "hunter_option2"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.HUNTER_OPTION2), "id"->"hunter_option2"),
+      "gemini_daytalk"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.GEMINI_DAYTALK), "id"->"gemini_daytalk"),
+      "gemini_balance"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.GEMINI_BALANCE), "id"->"gemini_balance"),
       "cleric_option1"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.CLERIC_OPTION1), "id"->"cleric_option1"),
       "cleric_option2"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.CLERIC_OPTION2), "id"->"cleric_option2"),
       "herbalist_mix"     -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.HERBALIST_MIX), "id"->"herbalist_mix"),

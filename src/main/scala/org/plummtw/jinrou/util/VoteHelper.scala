@@ -332,9 +332,35 @@ object VoteHelper {
       }
     }
 
+    // 處理共有平衡
+    val votes_sorted0 = votes.sort(_.vote_number.is > _.vote_number.is)
+
+    val geminis = user_entrys.filter(x=> (x.current_role == RoleEnum.GEMINI) && (x.live.is)).map(_.id.is)
+    if ((geminis.length > 1) && (room.room_flags.is.indexOf(RoomFlagEnum.GEMINI_BALANCE.toString) != -1)  &&
+        (votes_sorted0(0).vote_number.is != votes_sorted0(1).vote_number.is) &&
+        (geminis.contains(votes_sorted0(0).actioner_id.is))) {
+      var geminis_votes = 0
+      votes.foreach { vote =>
+        if (geminis.contains(vote.actioner_id.is))
+          geminis_votes += vote.vote_number.is
+      }
+
+      val geminis_votes_each = geminis_votes / geminis.length
+      votes.foreach { vote =>
+        if (geminis.contains(vote.actioner_id.is))
+          if (geminis_votes >= geminis_votes_each * 2) {
+            vote.vote_number(geminis_votes_each)
+            geminis_votes = geminis_votes - geminis_votes_each
+          } else {
+            vote.vote_number(geminis_votes)
+            geminis_votes = 0
+          }
+      }
+    }
+
     // 儲存
     votes.foreach { vote => vote.save }
-    
+
     val votes_sorted = votes.sort(_.vote_number.is > _.vote_number.is)
     
     if ( votes_sorted(0).vote_number.is != votes_sorted(1).vote_number.is) {
