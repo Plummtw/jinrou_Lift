@@ -301,14 +301,17 @@ object RoleNecromancer extends RoleData(RoleEnum.NECROMANCER, "靈能者", "#009
         else
           <img src="images/role_result_human.gif"/>
           
-      def  necromancer_tag(message : SystemMessage) = {
+      def  necromancer_tag(message : SystemMessage) : NodeSeq = {
+        if (message.actioner_id.is == 0)
+          return NodeSeq.Empty
+
         val actioner = UserEntry.findAll(By(UserEntry.id, message.actioner_id.is))(0)
         val role_string = if (actioner.role.is.substring(0,1) == RoleEnum.WOLFCUB.toString) RoleEnum.WEREWOLF.toString
                           else actioner.role.is.substring(0,1)
 
-        <tr><td><img src="images/role_necromancer_result.gif"/></td>
+        Seq(<tr><td><img src="images/role_necromancer_result.gif"/></td>
          <td>{color_tag(actioner.handle_name.is, role_string)}</td>
-         <td>{result_tag(role_string)}</td></tr>
+         <td>{result_tag(role_string)}</td></tr>)
       }
       
       if   (system_messages.length == 0)
