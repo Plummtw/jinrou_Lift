@@ -10,6 +10,8 @@ object UserEntryFlagEnum extends Enumeration {
   val VORTEX_USED  = Value("C")
   val AUGURED      = Value("Q")
 
+  val SHOUTED      = Value("S")
+
   val RELIGION    = Value("R")
   val NORELIGION  = Value("N")
   val VOTED       = Value("V")

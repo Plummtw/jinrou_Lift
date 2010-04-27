@@ -1279,6 +1279,8 @@ object GameProcesser {
     sorceror_shouts.foreach { sorceror_shout =>
       val actioner = user_entrys.filter(_.id.is == sorceror_shout.actioner_id.is)(0)
       if (actioner.live.is) {
+        if (room.room_flags.is.indexOf(RoomFlagEnum.SORCEROR_SHOUT1.toString) != -1)
+          actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.SHOUTED.toString)
         actioner.action_point(Math.max(0, actioner.action_point.is-5))
         actioner.save
       }

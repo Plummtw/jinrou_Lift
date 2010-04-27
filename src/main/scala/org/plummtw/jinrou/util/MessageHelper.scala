@@ -23,12 +23,18 @@ object MessageHelper {
 
     if (((user != null) && (!user.test_memoryloss(room, room_day, user_entrys)) && ((user.current_role == RoleEnum.WEREWOLF) || (user.current_role == RoleEnum.WOLFCUB) ||
             (user.current_role == RoleEnum.MADMAN) || (user.current_role == RoleEnum.SORCEROR)))
-        || (heaven_mode))
-      Seq(<tr><td width="200" align="left" valign="middle" style="border-bottom: silver 1px dashed;"><font color={user_icon.color.is}>◆</font>{user_entry.handle_name.is}<small>的密言術</small></td>
-          <td><span style="margin:1px;" align="left"></span></td>
-          <td width="1000" valign="middle" style="border-bottom: silver 1px dashed;">
-          <span style={style_str}> {Unparsed(talk.message.is)} </span></td></tr>)
-    else
+        || (heaven_mode)) {
+      if ((room.room_flags.is.indexOf(RoomFlagEnum.SORCEROR_WHISPER1.toString) != -1) && (!heaven_mode))
+        Seq(<tr><td width="200" align="left" valign="middle" style="border-bottom: silver 1px dashed;"></td>
+            <td><span style="margin:1px;" align="left"></span></td>
+            <td width="1000" valign="middle" style="border-bottom: silver 1px dashed;">
+            <span style={style_str}> {Unparsed(talk.message.is)} </span></td></tr>)
+      else
+        Seq(<tr><td width="200" align="left" valign="middle" style="border-bottom: silver 1px dashed;"><font color={user_icon.color.is}>◆</font>{user_entry.handle_name.is}<small>的密言術</small></td>
+            <td><span style="margin:1px;" align="left"></span></td>
+            <td width="1000" valign="middle" style="border-bottom: silver 1px dashed;">
+            <span style={style_str}> {Unparsed(talk.message.is)} </span></td></tr>)
+    } else
       Seq(<tr><td width="200" align="left" valign="middle" style="border-bottom: silver 1px dashed;">　</td>
           <td><span style="margin:1px;" align="left"></span></td>
           <td width="1000" valign="middle" style="border-bottom: silver 1px dashed;">

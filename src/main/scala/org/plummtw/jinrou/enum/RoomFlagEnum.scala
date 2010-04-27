@@ -68,6 +68,8 @@ object RoomFlagEnum extends Enumeration {
   val MADMAN_SUICIDE   = Value("M2")
   val MADMAN_STUN      = Value("M3")
   val SORCEROR_BELIEVE = Value("U1")
+  val SORCEROR_WHISPER1 = Value("U2")
+  val SORCEROR_SHOUT1    = Value("U3")
   val RUNNER_OPTION1   = Value("R1")
   val RUNNER_OPTION2   = Value("R2")
   val RUNNER_OPTION3   = Value("R3")
@@ -154,6 +156,8 @@ object RoomFlagEnum extends Enumeration {
     MADMAN_SUICIDE   -> "<狂2>",
     MADMAN_STUN      -> "<狂3>",
     SORCEROR_BELIEVE -> "<巫1>",
+    SORCEROR_WHISPER1 -> "<巫2>",
+    SORCEROR_SHOUT1   -> "<巫3>",
     RUNNER_OPTION1   -> "<逃1>",
     RUNNER_OPTION2   -> "<逃2>",
     RUNNER_OPTION3   -> "<逃3>",

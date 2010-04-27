@@ -273,7 +273,7 @@ object ActionSorcerorConjure extends ActionData(MTypeEnum.VOTE_SORCEROR_CONJURE,
 
 object ActionSorcerorShout extends ActionData(MTypeEnum.VOTE_SORCEROR_SHOUT, "鼓舞術！", "sorceror_shout", false) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
-    return (user.action_point.is >= 5)
+    return ((user.action_point.is >= 5) && (user.user_flags.is.indexOf(UserEntryFlagEnum.SHOUTED.toString) == -1))
   }
 }
 

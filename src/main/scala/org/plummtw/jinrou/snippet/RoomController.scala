@@ -223,6 +223,8 @@ class RoomController {
       "madman_suicide"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MADMAN_SUICIDE),  "id"->"madman_suicide"),
       "madman_stun"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MADMAN_STUN),     "id"->"madman_stun"),
       "sorceror_believe"  -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SORCEROR_BELIEVE), "id"->"sorceror_believe"),
+      "sorceror_whisper1" -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SORCEROR_WHISPER1), "id"->"sorceror_whisper1"),
+      "sorceror_shout1"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SORCEROR_SHOUT1), "id"->"sorceror_shout1"),
       "fox_option1"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.FOX_OPTION1),      "id"->"fox_option1"),
       "fox_option2"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.FOX_OPTION2),      "id"->"fox_option2"),
       "betrayer_option1"  -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.BETRAYER_OPTION1), "id"->"betrayer_option1"),
