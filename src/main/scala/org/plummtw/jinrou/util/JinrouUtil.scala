@@ -36,9 +36,15 @@ object JinrouUtil {
   }
   
   def getIpAddress(request: net.liftweb.http.Req) : String = {
+
+    val ip_from_header = request.headers.find{_._1 == "X-Forwarded-For"}
+
+    val ip = ip_from_header match {
+      case Some(a) => a._2
+      case x       => "unknown"
+      }
     /*
-    var ip = request.getHeader( "x-forwarded-for" )
-    if ((ip == null) || (ip.length() == 0) || ("unknown".equalsIgnoreCase(ip)))   {
+    {
       ip = request.getHeader( "Proxy-Client-IP" )
     } 
     if ((ip == null) || (ip.length() == 0) || ("unknown".equalsIgnoreCase(ip)))   {
@@ -48,8 +54,8 @@ object JinrouUtil {
       ip = request.getRemoteAddr()
     }
     */
-    var ip = request.remoteAddr
-    return ip 
+      
+    return ( if (ip == "unknown") request.remoteAddr else ip )
   }
   
   def generateSHA1(string: String) : String = {

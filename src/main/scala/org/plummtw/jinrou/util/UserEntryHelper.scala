@@ -64,7 +64,7 @@ object UserEntryHelper {
             else NodeSeq.Empty}
 
           {id_icon}({ if (user_entry.live.is) "生存中" else "死亡" })
-          { if (reveal) {if (user_entry.user_flags.is.indexOf(UserEntryFlagEnum.RELIGION.toString) != -1 ) Seq(<font color="#EEAA55">教</font>) else NodeSeq.Empty} else NodeSeq.Empty }
+          { if (reveal) {if (user_entry.has_flag(UserEntryFlagEnum.RELIGION) ) Seq(<font color="#EEAA55">教</font>) else NodeSeq.Empty} else NodeSeq.Empty }
          </td>
          
     return result  
@@ -100,7 +100,7 @@ object UserEntryHelper {
 
           {Seq(<input type="checkbox" id={"id" + user_entry.user_no.is} name={"id" + user_entry.user_no.is} />)}
           {id_icon}({ if (user_entry.live.is) "生存中" else "死亡" })
-          {if (user_entry.user_flags.is.indexOf(UserEntryFlagEnum.RELIGION.toString) != -1 ) Seq(<font color="#EEAA55">教</font>) else NodeSeq.Empty}
+          {if (user_entry.has_flag(UserEntryFlagEnum.RELIGION) ) Seq(<font color="#EEAA55">教</font>) else NodeSeq.Empty}
          </td>
 
     return result

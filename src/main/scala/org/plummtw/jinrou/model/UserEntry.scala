@@ -139,14 +139,14 @@ class UserEntry extends LongKeyedMapper[UserEntry] with IdPK {
       if (room_day.day_no.is == 1) { // 第一天晚上
         role_actable = List(RoleEnum.AUGURER, RoleEnum.INHERITER, 
                             RoleEnum.SHIFTER, RoleEnum.WEREWOLF)
-        if (room.room_flags.is.indexOf(RoomFlagEnum.FOX_OPTION.toString) != -1)
+        if (room.has_flag(RoomFlagEnum.FOX_OPTION))
           role_actable ::= RoleEnum.FOX // 妖狐自選背德
       } else {
         role_actable = List(RoleEnum.AUGURER, RoleEnum.CLERIC, 
                             RoleEnum.HUNTER,
                             RoleEnum.INHERITER, RoleEnum.RUNNER,
                             RoleEnum.SHIFTER, RoleEnum.WEREWOLF)
-        if ((room.room_flags.is.indexOf(RoomFlagEnum.VILLAGER_DETECT.toString) != -1) &&
+          if ((room.has_flag(RoomFlagEnum.VILLAGER_DETECT)) &&
             (room_day.day_no.is == 7)) // 村民推理
           role_actable ::= RoleEnum.VILLAGER
       }
@@ -238,9 +238,9 @@ class UserEntry extends LongKeyedMapper[UserEntry] with IdPK {
          (room_day.day_no.is <= 15)) ||
         ((this.subrole.is.indexOf(SubroleEnum.ALPHAWOLF.toString) != -1 ) &&
          (room_day.day_no.is <= 11)) ||
-        (this.user_flags.is.indexOf(UserEntryFlagEnum.STUNNED_1.toString) != -1 ) ||
-        (this.user_flags.is.indexOf(UserEntryFlagEnum.STUNNED_2.toString) != -1 ) ||
-        (this.user_flags.is.indexOf(UserEntryFlagEnum.STUNNED_3.toString) != -1 )) {
+        (this.has_flag(UserEntryFlagEnum.STUNNED_1) ) ||
+        (this.has_flag(UserEntryFlagEnum.STUNNED_2) ) ||
+        (this.has_flag(UserEntryFlagEnum.STUNNED_3) )) {
 
       // 這邊加入特殊處理，非失憶者的人狼全滅時，失憶者是狼的話會提早清醒
       if ((this.current_role == RoleEnum.WEREWOLF) &&
@@ -249,9 +249,9 @@ class UserEntry extends LongKeyedMapper[UserEntry] with IdPK {
                                  (x.subrole.is.indexOf(SubroleEnum.MEMORYLOSS6.toString) == -1) &&
                                  (x.subrole.is.indexOf(SubroleEnum.MEMORYLOSS8.toString) == -1) &&
                                  (x.subrole.is.indexOf(SubroleEnum.ALPHAWOLF.toString) == -1) &&
-                                 (x.user_flags.is.indexOf(UserEntryFlagEnum.STUNNED_1.toString) == -1 ) &&
-                                 (x.user_flags.is.indexOf(UserEntryFlagEnum.STUNNED_2.toString) == -1 ) &&
-                                 (x.user_flags.is.indexOf(UserEntryFlagEnum.STUNNED_3.toString) == -1 ) &&
+                                 (x.hasnt_flag(UserEntryFlagEnum.STUNNED_1) ) &&
+                                 (x.hasnt_flag(UserEntryFlagEnum.STUNNED_2) ) &&
+                                 (x.hasnt_flag(UserEntryFlagEnum.STUNNED_3) ) &&
                                  (x.live.is)).length == 0))
         false
       else
@@ -270,6 +270,14 @@ class UserEntry extends LongKeyedMapper[UserEntry] with IdPK {
              && (((role.is.substring(0,1) == RoleEnum.FOX.toString) || (role.is.substring(0,1) == RoleEnum.BETRAYER.toString) || (role.is.substring(0,1) == RoleEnum.GODFAT.toString) ||
                  (subrole.is == SubroleEnum.FOXBELIEVER.toString))
              && (subrole.is != SubroleEnum.WOLFBELIEVER.toString))) 
+  }
+
+  def has_flag(flag : UserEntryFlagEnum.UserEntryFlagEnum) : Boolean = {
+    return (user_flags.is.indexOf(flag.toString) != -1)
+  }
+
+  def hasnt_flag(flag : UserEntryFlagEnum.UserEntryFlagEnum) : Boolean = {
+    return (user_flags.is.indexOf(flag.toString) == -1)
   }
 }
 

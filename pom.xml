@@ -116,7 +116,13 @@
         <artifactId>maven-jetty-plugin</artifactId>
         <configuration>
           <contextPath>/</contextPath>
-          <scanIntervalSeconds>5</scanIntervalSeconds>
+          <scanIntervalSeconds>0</scanIntervalSeconds>
+          <connectors>
+            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+              <host>localhost</host>
+              <port>8080</port>
+            </connector>
+          </connectors>
         </configuration>
       </plugin>
       <plugin>

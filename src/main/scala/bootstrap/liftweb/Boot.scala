@@ -23,6 +23,10 @@ class Boot {
 
     // where to search snippet
     LiftRules.addToPackages("org.plummtw.jinrou")
+    LiftRules.autoIncludeAjax = session => false
+
+    //LiftRules.redirectAjaxOnSessionLoss = false
+
     //Schemifier.schemify(true, Log.infoF _, User)
     Schemifier.schemify(true, Log.infoF _, AdminManage, Room, RoomDay, SystemMessage, Talk, UserEntry, UserIcon, Vote)
 
@@ -76,18 +80,24 @@ object DBVendor extends ConnectionManager {
 
   private def createOne: Box[Connection] = try {
     val driverName: String = Props.get("db.driver") openOr
-    "org.apache.derby.jdbc.EmbeddedDriver"
+      "org.apache.derby.jdbc.EmbeddedDriver"
+    println(driverName)
 
     val dbUrl: String = Props.get("db.url") openOr
-    "jdbc:derby:lift_example;create=true"
+      "jdbc:derby:lift_example;create=true"
+    println(dbUrl)  
 
     Class.forName(driverName)
 
     val dm = (Props.get("db.user"), Props.get("db.password")) match {
       case (Full(user), Full(pwd)) =>
+        println(user)
+        println(pwd)
         DriverManager.getConnection(dbUrl, user, pwd)
 
-      case _ => DriverManager.getConnection(dbUrl)
+      case _ =>
+        println("No User Password") 
+        DriverManager.getConnection(dbUrl)
     }
 
     Full(dm)
@@ -109,13 +119,17 @@ object DBVendor extends ConnectionManager {
           x.setAutoCommit(false)
           Full(x)
         } catch {
-          case e => try {
+          case e => 
+            e.printStackTrace
+            try {
             pool = xs
             poolSize = poolSize - 1
             x.close
             newConnection(name)
           } catch {
-            case e => newConnection(name)
+            case e => 
+              e.printStackTrace
+              newConnection(name)
           }
         }
       }

@@ -134,7 +134,7 @@ class GameEndController {
     val user_victory  = if (user_entry == null)
                           ""
                         else if (((live_pontiff.length != 0) &&
-                                 (user_entry.user_flags.is.indexOf(UserEntryFlagEnum.RELIGION.toString) != -1)) ||
+                                 (user_entry.has_flag(UserEntryFlagEnum.RELIGION))) ||
                                  (user_entry.subrole.is == SubroleEnum.SUBPONTIFF.toString))
                           RoomVictoryEnum.PONTIFF_WIN.toString
                         else if ((user_entry.current_role == RoleEnum.FOX) ||
@@ -145,6 +145,8 @@ class GameEndController {
                           RoomVictoryEnum.WEREWOLF_WIN.toString
                         else if (user_entry.subrole.is == SubroleEnum.FOXBELIEVER.toString)
                           RoomVictoryEnum.FOX_WIN.toString
+                        else if (user_entry.has_flag(UserEntryFlagEnum.BECAME_MOB))
+                          RoomVictoryEnum.MOB_WIN.toString
                         else
                           RoleEnum.get_role(user_entry.current_role).role_side.toString
 
@@ -158,6 +160,7 @@ class GameEndController {
             case RoomVictoryEnum.FOX_WIN2     => <td valign="middle" align="center" width="100%" style="background-color:#CC0099;color:snow;font-weight:bold;">[妖狐勝利] 人狼和村民都被騙了</td>
             case RoomVictoryEnum.DEMON_WIN    => <td valign="middle" align="center" width="100%" style="background-color:#666666;color:snow;font-weight:bold;">[惡魔勝利] 儀式完成、村莊毀滅了</td>
             case RoomVictoryEnum.PONTIFF_WIN  => <td valign="middle" align="center" width="100%" style="background-color:#EEAA55;color:snow;font-weight:bold;">[教主勝利] 村莊納入教派管轄</td>
+            case RoomVictoryEnum.MOB_WIN      => <td valign="middle" align="center" width="100%" style="background-color:#AAAAAA;color:snow;font-weight:bold;">[暴民勝利] 村民拿暴民沒輒</td>
             case RoomVictoryEnum.ABANDONED    => <td valign="middle" align="center" width="100%" style="background-color:snow;color:black;font-weight:bold;">這個村莊已經廢棄</td>
             case RoomVictoryEnum.DRAW         => <td valign="middle" align="center" width="100%" style="background-color:snow;color:black;font-weight:bold;">投票十次相同平手</td>
             case xs                           => <td valign="middle" align="center" width="100%" style="background-color:snow;color:black;font-weight:bold;">遊戲狀況不明</td>

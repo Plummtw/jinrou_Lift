@@ -268,7 +268,7 @@ class UserEntryController {
     var redirect_page = "" 
     if (user_entry != null) {
       val dead_mode   = ((!(user_entry.live.is)) && (room.status.is != RoomStatusEnum.ENDED.toString))
-      val heaven_mode = ((!(user_entry.live.is)) && (room.room_flags.is.indexOf(RoomFlagEnum.DEATH_LOOK.toString) != -1))
+      val heaven_mode = ((!(user_entry.live.is)) && (room.has_flag(RoomFlagEnum.DEATH_LOOK)))
 
       // 一登入之後先設初期的 Session 內容        
       S.setSessionAttribute("dead_mode",   dead_mode.toString)

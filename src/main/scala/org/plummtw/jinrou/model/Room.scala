@@ -95,7 +95,10 @@ class Room extends LongKeyedMapper[Room] with IdPK {
     }
     return result.toString()
   }
-  
+
+  def has_flag(flag : RoomFlagEnum.RoomFlagEnum) : Boolean = {
+    return (room_flags.is.indexOf(flag.toString) != -1)
+  }
 }
 
 object Room extends Room with LongKeyedMetaMapper[Room] {

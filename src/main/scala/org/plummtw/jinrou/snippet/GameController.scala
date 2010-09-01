@@ -336,9 +336,9 @@ class GameController {
                        (user_entry != null) && (!user_entry.live.is)
     val heaven_mode  = (room.status.is == RoomStatusEnum.ENDED.toString) ||
                      ((room.status.is == RoomStatusEnum.PLAYING.toString) && 
-                      (room.room_flags.is.indexOf(RoomFlagEnum.TEST_MODE.toString) != -1)) ||
+                      (room.has_flag(RoomFlagEnum.TEST_MODE))) ||
                      ((user_entry != null) && (!user_entry.live.is) && 
-                      (room.room_flags.is.indexOf(RoomFlagEnum.DEATH_LOOK.toString) != -1))
+                      (room.has_flag(RoomFlagEnum.DEATH_LOOK)))
     //println("heaven_mode " + heaven_mode.toString)
 
     // 更新 Cache 機制未完成
@@ -406,21 +406,21 @@ class GameController {
                               ((user_entry.current_role == RoleEnum.PONTIFF)  &&
                                (!user_entry.test_memoryloss(room, room_day, user_entrys)) ||
                               ((live_pontiff.length != 0) &&
-                               (user_entry.user_flags.is.indexOf(UserEntryFlagEnum.RELIGION.toString) != -1) &&
-                               (room_day.day_no.is > 11) && (room.room_flags.is.indexOf(RoomFlagEnum.PONTIFF_OPTION1.toString) != -1)))
+                               (user_entry.has_flag(UserEntryFlagEnum.RELIGION)) &&
+                               (room_day.day_no.is > 11) && (room.has_flag(RoomFlagEnum.PONTIFF_OPTION1))))
 
         if (is_pontiff_view) {
           val users_religion = user_entrys.filter(x=>(x.id.is != user_entry.id.is) &&
                                                     ((x.current_role == RoleEnum.PONTIFF) ||
-                                                     (x.user_flags.is.indexOf(UserEntryFlagEnum.RELIGION.toString) != -1)))
+                                                     (x.has_flag(UserEntryFlagEnum.RELIGION))))
           val religion_str = users_religion.map(_.handle_name.is).mkString("", "　","")
 
           result = result ++ Seq(<table cellSpacing="0" cellPadding="0" border="1"><tbody>
             <tr><td>和你同一教派的成員有：</td><td>{religion_str}</td></tr></tbody></table>)
         } else if ((live_pontiff.length != 0) &&
-            ((user_entry.user_flags.is.indexOf(UserEntryFlagEnum.RELIGION.toString) != -1))){
+            ((user_entry.has_flag(UserEntryFlagEnum.RELIGION)))){
           val users_religion = user_entrys.filter(x=>((x.current_role == RoleEnum.PONTIFF) ||
-                                                     (x.user_flags.is.indexOf(UserEntryFlagEnum.RELIGION.toString) != -1)))
+                                                     (x.has_flag(UserEntryFlagEnum.RELIGION))))
           val live_users_religion = users_religion.filter(_.live.is)
 
           result = result ++ Seq(<table cellSpacing="0" cellPadding="0" border="1"><tbody>

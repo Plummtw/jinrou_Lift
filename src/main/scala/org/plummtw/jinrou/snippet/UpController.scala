@@ -141,7 +141,7 @@ class UpController {
             else if ((say_gemini == "on") && (user_entry.current_role == RoleEnum.GEMINI) &&
                      (!user_entry.test_memoryloss(room, room_day, user_entrys)) &&
                      (!user_entry.test_fake(room_day)) &&
-                     (room.room_flags.is.indexOf(RoomFlagEnum.GEMINI_DAYTALK.toString) != -1))
+                     (room.has_flag(RoomFlagEnum.GEMINI_DAYTALK)))
               MTypeEnum.TALK_GEMINI_DAY.toString
             else if ((say_betrayer == "on") && (vote_betrayer_disguise.length != 0)
                      && (vote_betrayer_disguise.map(_.actioner_id.is).contains(user_entry.id.is)))
@@ -186,6 +186,12 @@ class UpController {
         //println("Creating Talk")
         val talk = Talk.create.roomday_id(room_day.id.is).actioner_id(user_entry.id.is)
                    .font_type(font_type).message(say_data).mtype(mtype)
+        if (user_entry.has_flag(UserEntryFlagEnum.BECAME_MOB)) {
+          val random_int = new Random().nextInt(10)
+          if (random_int == 0)
+            talk.font_type(20)
+        }
+
         if (talk.mtype.is == MTypeEnum.TALK_DISGUISED.toString) {
            val actionee = vote_betrayer_disguise.filter(_.actioner_id.is == user_entry.id.is)(0)
            talk.actionee_id(actionee.actionee_id.is)
@@ -371,7 +377,13 @@ class UpController {
                          .mtype(action.action_enum.toString)
 
               if (action.targetable) {
-                talk.actionee_id(command_target.id.is)
+                // 暴民投票為亂數
+                if (user_entry.has_flag(UserEntryFlagEnum.BECAME_MOB) && (action == ActionVote)) {
+                  val live_users   = user_entrys.filter(x=>(x != user_entry) && (x.live.is))
+                  val random_user = live_users((new Random()).nextInt(live_users.length))
+                  talk.actionee_id(random_user.id.is)
+                } else
+                  talk.actionee_id(command_target.id.is)
               } else
                 talk.actionee_id(Empty)
 
@@ -415,7 +427,7 @@ class UpController {
                                   (user_entry.live.is)) {
                                 if ((user_entry.current_role == RoleEnum.GEMINI) && (!user_entry.test_memoryloss(room, room_day, user_entrys)) &&
                                     (!user_entry.test_fake(room_day)) &&
-                                    (room.room_flags.is.indexOf(RoomFlagEnum.GEMINI_DAYTALK.toString) != -1))
+                                    (room.has_flag(RoomFlagEnum.GEMINI_DAYTALK)))
                                   Seq(<input type="checkbox" id="say_gemini" name="say_gemini"/>, <span>共生頻道</span>, <br/>)
                                 else if ((vote_betrayer_disguise.length != 0) &&
                                          (vote_betrayer_disguise.map(_.actioner_id.is).contains(user_entry.id.is)))

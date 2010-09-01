@@ -3,7 +3,7 @@
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <File>Jinrou.log</File>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <FileNamePattern>Jinrou.%d{yyyy-MM-dd}.log</FileNamePattern>
+      <FileNamePattern>log/Jinrou.%d{yyyy-MM-dd}.log</FileNamePattern>
       <!-- keep 30 days worth of history -->
       <MaxHistory>30</MaxHistory>
     </rollingPolicy>
@@ -22,7 +22,7 @@
   
     <File>JinrouWarn.log</File>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <FileNamePattern>JinrouWarn.%d{yyyy-MM-dd}.log</FileNamePattern>
+      <FileNamePattern>log/JinrouWarn.%d{yyyy-MM-dd}.log</FileNamePattern>
       <!-- keep 30 days worth of history -->
       <MaxHistory>30</MaxHistory>
     </rollingPolicy>
@@ -39,7 +39,7 @@
   
     <File>JinrouError.log</File>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <FileNamePattern>JinrouError.%d{yyyy-MM-dd}.log</FileNamePattern>
+      <FileNamePattern>log/JinrouError.%d{yyyy-MM-dd}.log</FileNamePattern>
       <!-- keep 30 days worth of history -->
       <MaxHistory>30</MaxHistory>
     </rollingPolicy>

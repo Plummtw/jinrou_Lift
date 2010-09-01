@@ -22,7 +22,7 @@ object UserEntryFlagEnum extends Enumeration {
   val ANALYZED      = Value("Z")
   val REPORTED      = Value("O")
 
-  val BARRIER_USED     = Value("M")
+  val BECAME_MOB    = Value("M")
   val WATER_ELEM_USED  = Value("W")
 
   val PONTIFF_STUNNED   = Value("J")

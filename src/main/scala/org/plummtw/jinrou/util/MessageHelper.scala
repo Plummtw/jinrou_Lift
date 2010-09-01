@@ -24,7 +24,7 @@ object MessageHelper {
     if (((user != null) && (!user.test_memoryloss(room, room_day, user_entrys)) && ((user.current_role == RoleEnum.WEREWOLF) || (user.current_role == RoleEnum.WOLFCUB) ||
             (user.current_role == RoleEnum.MADMAN) || (user.current_role == RoleEnum.SORCEROR)))
         || (heaven_mode)) {
-      if ((room.room_flags.is.indexOf(RoomFlagEnum.SORCEROR_WHISPER1.toString) != -1) && (!heaven_mode))
+      if ((room.has_flag(RoomFlagEnum.SORCEROR_WHISPER1)) && (!heaven_mode))
         Seq(<tr><td width="200" align="left" valign="middle" style="border-bottom: silver 1px dashed;"></td>
             <td><span style="margin:1px;" align="left"></span></td>
             <td width="1000" valign="middle" style="border-bottom: silver 1px dashed;">
@@ -235,7 +235,7 @@ object MessageHelper {
           <td><span style="margin:1px;" align="left"></span></td>
           <td width="1000" valign="middle" style="border-bottom: silver 1px dashed;background-color:#000030">
           <span style={style_str+"#DDAA77"}> {Unparsed(talk.message.is)} </span></td></tr>)
-        else if (room.room_flags.is.indexOf(RoomFlagEnum.GEMINI_TALK.toString) != -1)
+        else if (room.has_flag(RoomFlagEnum.GEMINI_TALK))
           Seq(<tr><td width="200" align="left" valign="middle" style="border-bottom: silver 1px dashed;font-size:8pt;color:#DDAA77;background-color:#000030">
           共有者的聲音 </td><td><span style="margin:1px;" align="left"></span></td>
           <td width="1000" valign="middle" style="border-bottom: silver 1px dashed;background-color:#000030">
@@ -391,6 +391,8 @@ object MessageHelper {
       
       case MTypeEnum.VOTE_KICK             => simple_message_tag(generated_message,true,"#AAAA33","snow")
       case MTypeEnum.VOTE_HANG             => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 投票處死",heaven_mode || ((user != null) && (!user.live.is)),"#AAAA33","snow")
+
+      case MTypeEnum.VOTE_BECOMEMOB        => simple_message_tag(user_entry.handle_name.is + " 進入暴民模式",heaven_mode,"#AAAAAA","snow")
       case MTypeEnum.VOTE_VILLAGER         => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 進行推理",heaven_mode,"#AAAA33","black")
       case MTypeEnum.VOTE_AUGURER          => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 占卜",heaven_mode,"#9933FF","snow")
       case MTypeEnum.VOTE_HUNTER           => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 進行護衛",heaven_mode,"#3399FF","snow")

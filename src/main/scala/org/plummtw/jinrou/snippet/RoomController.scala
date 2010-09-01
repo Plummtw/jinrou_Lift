@@ -137,8 +137,11 @@ class RoomController {
         }
                           
         room.save()
-        dummy_boy.room_id(room.id.is)
-        dummy_boy.save()
+
+        if (!room.has_flag(RoomFlagEnum.NO_DUMMY)) {
+          dummy_boy.room_id(room.id.is)
+          dummy_boy.save()
+        }
         game_hall.room_id(room.id.is)
         game_hall.save()
       }
@@ -159,6 +162,7 @@ class RoomController {
       // 這邊有點笨，算了，等我有空再來改
       "test_mode"         -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.TEST_MODE),     "id"->"test_mode"),
       "wish_role"         -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.WISH_ROLE),     "id"->"wish_role"),
+      "no_dummy"          -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.NO_DUMMY),      "id"->"no_dummy"),
       "dummy_reveal"      -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.DUMMY_REVEAL),  "id"->"dummy_reveal"),
       "vote_reveal"       -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.VOTE_REVEAL),  "id"->"vote_reveal"),
       //"vote_reveal"       -> SHtml.hidden(() => option_list = option_list ::: List(RoomFlagEnum.VOTE_REVEAL)),

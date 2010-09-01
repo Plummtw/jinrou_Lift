@@ -87,9 +87,9 @@ class HeavenController {
 
     val heaven_mode  = (room.status.is == RoomStatusEnum.ENDED.toString) ||
                      ((room.status.is == RoomStatusEnum.PLAYING.toString) &&
-                      (room.room_flags.is.indexOf(RoomFlagEnum.TEST_MODE.toString) != -1)) ||
+                      (room.has_flag(RoomFlagEnum.TEST_MODE))) ||
                      ((user_entry != null) && (!user_entry.live.is) &&
-                      (room.room_flags.is.indexOf(RoomFlagEnum.DEATH_LOOK.toString) != -1))
+                      (room.has_flag(RoomFlagEnum.DEATH_LOOK)))
 
     val old_logs = 
       if (!heaven_mode)

@@ -6,6 +6,7 @@ object RoomFlagEnum extends Enumeration {
   // Game Option
   val TEST_MODE    = Value("TM")
   val WISH_ROLE    = Value("WR")
+  val NO_DUMMY     = Value("ND")
   val DUMMY_REVEAL = Value("DR")
   val VOTE_REVEAL  = Value("VR")
   val DEATH_LOOK   = Value("DL")
@@ -94,6 +95,7 @@ object RoomFlagEnum extends Enumeration {
   val FLAGNAME_MAP   = Map(
     TEST_MODE    -> "(測)",
     WISH_ROLE    -> "(希)",
+    NO_DUMMY     -> "(無替)",
     DUMMY_REVEAL -> "(替)",
     VOTE_REVEAL  -> "(票)",
     DEATH_LOOK   -> "(靈)",

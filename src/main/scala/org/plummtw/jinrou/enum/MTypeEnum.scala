@@ -63,7 +63,9 @@ object MTypeEnum extends Enumeration {
 
   val VOTE             = Value("V")  
   val VOTE_STARTGAME   = Value("V_")
-  
+
+  val VOTE_BECOMEMOB  = Value("VBM")
+
   val VOTE_HANG        = Value("VV")
   val VOTE_KICK        = Value("VK")
   

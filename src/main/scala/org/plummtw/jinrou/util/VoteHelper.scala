@@ -140,7 +140,7 @@ object VoteHelper {
       if (pontiff_actioner.live.is && pontiff_actionee.live.is && (room_day.weather.is != WeatherEnum.SNOWY.toString))
         pontiff_affecters = user_entrys.filter(x=>(x.subrole.is == SubroleEnum.SUBPONTIFF.toString) ||
                                                   (x.current_role == RoleEnum.PONTIFF)  ||
-                                                  (x.user_flags.is.indexOf(UserEntryFlagEnum.RELIGION.toString) != -1)).map(_.id.is)
+                                                  (x.has_flag(UserEntryFlagEnum.RELIGION))).map(_.id.is)
     }
 
 
@@ -176,7 +176,7 @@ object VoteHelper {
     }
 
     // 投給大魔導的轉給水元素
-    if ((archmage != null) && (archmage.user_flags.is.indexOf(UserEntryFlagEnum.WATER_ELEM_USED.toString) == -1)) {
+    if ((archmage != null) && archmage.hasnt_flag(UserEntryFlagEnum.WATER_ELEM_USED)) {
       val vote_water_elem = Vote.create.roomday_id(room_day.id.is).actioner_id(0)
                             .actionee_id(vote_archmage.actionee_id.is).vote_time(room_day.vote_time.is)
                             .mtype(MTypeEnum.VOTE_HANG.toString)
@@ -336,7 +336,7 @@ object VoteHelper {
     val votes_sorted0 = votes.sort(_.vote_number.is > _.vote_number.is)
 
     val geminis = user_entrys.filter(x=> (x.current_role == RoleEnum.GEMINI) && (x.live.is)).map(_.id.is)
-    if ((geminis.length > 1) && (room.room_flags.is.indexOf(RoomFlagEnum.GEMINI_BALANCE.toString) != -1)  &&
+    if ((geminis.length > 1) && (room.has_flag(RoomFlagEnum.GEMINI_BALANCE))  &&
         (votes_sorted0(0).vote_number.is != votes_sorted0(1).vote_number.is) &&
         (geminis.contains(votes_sorted0(0).actioner_id.is))) {
       var geminis_votes = 0
@@ -432,7 +432,7 @@ object VoteHelper {
          <td> {vote_flags_str(vote)}</td>
         </tr>
     }
-    val vote_reveal = (room.room_flags.is.indexOf(RoomFlagEnum.VOTE_REVEAL.toString) != -1)
+    val vote_reveal = (room.has_flag(RoomFlagEnum.VOTE_REVEAL))
 
     if (votes.length == 0)
       return <span></span>
