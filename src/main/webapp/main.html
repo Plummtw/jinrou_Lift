@@ -116,7 +116,7 @@
         <fieldset>
          <legend><strong>伺服器公告</strong></legend>
          <div style="line-height:135%;margin:20px 20px 30px;">
-          <strong>目前版本 Build0901
+          <strong>目前版本 Build0905
           <br/>※本程式使用 Lift 架構重寫。如果發現程式問題、不合理之處，或是有任何建議，請寄電子郵件給我。
           <br/>程式＆主機＆管理員：<a href="mailto:sailormoontw@hotmail.com"><font color="#FF7700">鸚鵡(parrot)</font></a> <font color="#BB0077">哥德法(godfat)</font>
           <br/>構想提供：PTT kerl、PTT lime2001
@@ -243,7 +243,21 @@
             <small>(每天晚上可以得知隔一天的天氣變化)</small>
            </td>
           </tr>
-          
+
+          <tr>
+           <td><label><strong>　暴民模式：</strong></label></td>
+           <td><entry:mob_mode />
+            <small>(大部分村民側於六夜可轉為暴民，只有村側暴民視為暴民側)</small>
+           </td>
+          </tr>
+
+          <tr>
+           <td><label><strong>　暴民模式１：</strong></label></td>
+           <td><entry:mob_mode1 />
+            <small>(若有多人選擇暴民模式時，最多只會有二名暴民)</small>
+           </td>
+          </tr>
+
           
           <tr><td>　</td></tr>
           
@@ -603,6 +617,13 @@
            <small>(妖狐可如幼狼般，知道人狼襲擊的對象，但不知是誰咬的)</small>
            </td>
           </tr>
+
+          <tr>
+           <td><label><strong>　妖狐結界：</strong></label></td>
+           <td><entry:fox_option3 />
+           <small>(妖狐可以施展結界1次)</small>
+           </td>
+          </tr>
           
           <tr>
            <td><label><strong>　背德偽裝能力：</strong></label></td>
@@ -695,7 +716,14 @@
             <small>(繼承者繼承成功時，系統顯示繼承的職業給所有人知道，但不指明誰是繼承者)</small>
            </td>
           </tr>
-          
+
+          <tr>
+           <td><label><strong>　繼承者中立模式：</strong></label></td>
+           <td><entry:inheriter_neutral />
+            <small>(繼承者繼承前為中立，自己生存即勝利，不計入村人數，且不顯示繼承成功訊息)</small>
+           </td>
+          </tr>
+
           <tr>
            <td><label><strong>　模仿師自暴職業：</strong></label></td>
            <td><entry:shifter_reveal />

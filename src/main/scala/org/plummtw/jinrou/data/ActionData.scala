@@ -46,7 +46,7 @@ object ActionVote extends ActionData(MTypeEnum.VOTE_HANG, "投票", "vote", true
 
 object ActionBecomeMob extends ActionData(MTypeEnum.VOTE_BECOMEMOB, "暴民模式！", "becomemob", false)  {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
-    return (room_day.day_no.is == 11)
+    return ((room.has_flag(RoomFlagEnum.MOB_MODE)) && (user_entrys.length>=22) && (room_day.day_no.is == 11))
   }
 }
 
@@ -303,6 +303,13 @@ object ActionFox extends ActionData(MTypeEnum.VOTE_FOX, "指定背德", "fox_cho
   }
 }
 
+object ActionFox2 extends ActionData(MTypeEnum.VOTE_FOX2, "結界！", "fox_barrier", false) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
+    return ((room.has_flag(RoomFlagEnum.FOX_OPTION3)) &&
+            (user.hasnt_flag(UserEntryFlagEnum.FOX_SPECIAL)))
+  }
+}
+
 object ActionBetrayerDisguise extends ActionData(MTypeEnum.VOTE_BETRAYER_DISGUISE, "偽裝", "betrayer_disguise", true) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
     if (room.room_flags.is.indexOf(RoomFlagEnum.BETRAYER_OPTION1.toString) == -1)
@@ -441,7 +448,7 @@ object ActionGodfatExchange extends ActionData(MTypeEnum.VOTE_GODFAT_EXCHANGE, "
 object ActionDemonChaos extends ActionData(MTypeEnum.VOTE_DEMON_CHAOS, "混沌", "demon_chaos", true) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
     return ((user.hasnt_flag(UserEntryFlagEnum.BITED)) &&
-            (room_day.day_no.is != 1))
+            ((room.has_flag(RoomFlagEnum.NO_DUMMY)) || (room_day.day_no.is != 1)))
     //        (room_day.day_no.is %4 == 3))
   }
 }

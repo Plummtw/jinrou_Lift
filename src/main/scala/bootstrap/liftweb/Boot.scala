@@ -8,6 +8,7 @@ import Helpers._
 import _root_.net.liftweb.mapper.{DB, ConnectionManager, Schemifier, DefaultConnectionIdentifier, ConnectionIdentifier}
 import _root_.java.sql.{Connection, DriverManager}
 import _root_.org.plummtw.jinrou.model._
+import _root_.org.plummtw.jinrou.view.IdenticonView
 import _root_.javax.servlet.http.{HttpServletRequest}
 
 /**
@@ -51,6 +52,11 @@ class Boot {
     S.addAround(DB.buildLoanWrapper)
     
     //DB.addLogFunc((query, len) => Log.info("The query: "+query+" took "+len+" milliseconds"))
+    LiftRules.dispatch.append {
+      case Req("identicon" :: identicon_str :: Nil, _, _) =>
+        () => IdenticonView.render(identicon_str)
+    }
+
 
     LiftRules.exceptionHandler.prepend {
       case (_, _, exception) => {

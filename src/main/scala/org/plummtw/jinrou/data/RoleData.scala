@@ -771,7 +771,7 @@ object RoleSorceror    extends RoleData(RoleEnum.SORCEROR,    "狂巫",   "#CC00
   }
 }
 
-object RoleFox         extends RoleData(RoleEnum.FOX,         "妖狐",   "#CC0099", RoomVictoryEnum.FOX_WIN, List(ActionFox)) {
+object RoleFox         extends RoleData(RoleEnum.FOX,         "妖狐",   "#CC0099", RoomVictoryEnum.FOX_WIN, List(ActionFox, ActionFox2, ActionNoAction)) {
   override def role_intro = <img src="images/role_fox.gif"/>
   
   override def role_ability(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) = {
@@ -836,7 +836,7 @@ object RoleBetrayer    extends RoleData(RoleEnum.BETRAYER,    "背德",   "#DD00
             
       //if ((actionee.role.is.substring(0,1) == RoleEnum.FOX.toString) && (system_message_hunter.length == 0))
       //  fox_tag = <tr><td colspan="2">昨天晚上 你的主人 似乎被襲擊了 </td></tr>
-      if (actionee.role.is.substring(0,1) == RoleEnum.FOX.toString) {
+      if ((user.subrole.is != SubroleEnum.WOLFBELIEVER.toString) && (actionee.role.is.substring(0,1) == RoleEnum.FOX.toString)) {
         if (system_message(0).message.is == VoteFlagEnum.POWER.toString)
           fox_tag = <table cellSpacing="0" cellPadding="0" border="1"><tbody>
             <tr><td colspan="2">昨天晚上 你的主人 似乎被咬死了</td></tr></tbody></table>

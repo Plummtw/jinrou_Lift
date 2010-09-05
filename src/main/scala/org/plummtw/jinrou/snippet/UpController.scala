@@ -188,8 +188,9 @@ class UpController {
                    .font_type(font_type).message(say_data).mtype(mtype)
         if (user_entry.has_flag(UserEntryFlagEnum.BECAME_MOB)) {
           val random_int = new Random().nextInt(10)
-          if (random_int == 0)
+          if (random_int == 0) {
             talk.font_type(20)
+          }
         }
 
         if (talk.mtype.is == MTypeEnum.TALK_DISGUISED.toString) {
@@ -363,7 +364,13 @@ class UpController {
                          .vote_time(vote_time).mtype(action.action_enum.toString.toUpperCase)
 
               if (action.targetable) {
-                vote.actionee_id(command_target.id.is)
+                // 暴民投票為亂數
+                if (user_entry.has_flag(UserEntryFlagEnum.BECAME_MOB) && (action == ActionVote)) {
+                  val live_users   = user_entrys.filter(x=>(x != user_entry) && (x.live.is))
+                  val random_user = live_users((new Random()).nextInt(live_users.length))
+                  vote.actionee_id(random_user.id.is)
+                } else
+                  vote.actionee_id(command_target.id.is)
               } else
                 vote.actionee_id(Empty)
 
@@ -377,13 +384,7 @@ class UpController {
                          .mtype(action.action_enum.toString)
 
               if (action.targetable) {
-                // 暴民投票為亂數
-                if (user_entry.has_flag(UserEntryFlagEnum.BECAME_MOB) && (action == ActionVote)) {
-                  val live_users   = user_entrys.filter(x=>(x != user_entry) && (x.live.is))
-                  val random_user = live_users((new Random()).nextInt(live_users.length))
-                  talk.actionee_id(random_user.id.is)
-                } else
-                  talk.actionee_id(command_target.id.is)
+                talk.actionee_id(command_target.id.is)
               } else
                 talk.actionee_id(Empty)
 

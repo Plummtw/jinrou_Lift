@@ -171,6 +171,8 @@ class RoomController {
       //"gemini_talk"       -> SHtml.hidden(() => option_list = option_list ::: List(RoomFlagEnum.GEMINI_TALK)),
       "auto_vote"         -> SHtml.checkbox(true,  if (_) option_list = option_list ::: List(RoomFlagEnum.AUTO_VOTE),     "id"->"auto_vote"),
       "weather"           -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.WEATHER),       "id"->"weather"),
+      "mob_mode"          -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MOB_MODE),      "id"->"mob_mode"),
+      "mob_mode1"         -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MOB_MODE1),     "id"->"mob_mode1"),
       
       "role_cleric"       -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_CLERIC),   "id"->"role_cleric"),
       "role_herbalist"    -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_HERBALIST),"id"->"role_herbalist"),
@@ -231,6 +233,7 @@ class RoomController {
       "sorceror_shout1"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SORCEROR_SHOUT1), "id"->"sorceror_shout1"),
       "fox_option1"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.FOX_OPTION1),      "id"->"fox_option1"),
       "fox_option2"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.FOX_OPTION2),      "id"->"fox_option2"),
+      "fox_option3"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.FOX_OPTION3),      "id"->"fox_option3"),
       "betrayer_option1"  -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.BETRAYER_OPTION1), "id"->"betrayer_option1"),
       "betrayer_option2"  -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.BETRAYER_OPTION2), "id"->"betrayer_option2"),
       "betrayer_option3"  -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.BETRAYER_OPTION3), "id"->"betrayer_option3"),
@@ -244,6 +247,7 @@ class RoomController {
       "pontiff_option2"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.PONTIFF_OPTION2), "id"->"pontiff_option2"),
       "pontiff_option3"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.PONTIFF_OPTION3), "id"->"pontiff_option3"),
       "inheriter_reveal"  -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.INHERITER_REVEAL), "id"->"inheriter_reveal"),
+      "inheriter_neutral" -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.INHERITER_NEUTRAL), "id"->"inheriter_neutral"),
       "shifter_reveal"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SHIFTER_REVEAL), "id"->"shifter_reveal"),
       "shifter_lover"     -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SHIFTER_LOVER), "id"->"shifter_lover"),
 

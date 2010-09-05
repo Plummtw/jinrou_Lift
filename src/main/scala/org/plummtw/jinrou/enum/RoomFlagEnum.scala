@@ -13,6 +13,8 @@ object RoomFlagEnum extends Enumeration {
   val GEMINI_TALK  = Value("GT")
   val AUTO_VOTE    = Value("AV")
   val WEATHER       = Value("WE")
+  val MOB_MODE      = Value("MM")
+  val MOB_MODE1     = Value("MN")
   
   // Optional Role
 
@@ -76,6 +78,7 @@ object RoomFlagEnum extends Enumeration {
   val RUNNER_OPTION3   = Value("R3")
   val FOX_OPTION1       = Value("F1")
   val FOX_OPTION2       = Value("F2")
+  val FOX_OPTION3       = Value("F3")
   val BETRAYER_OPTION1  = Value("B1")
   val BETRAYER_OPTION2   = Value("B2")
   val BETRAYER_OPTION3   = Value("B3")
@@ -89,6 +92,7 @@ object RoomFlagEnum extends Enumeration {
   val PONTIFF_OPTION2    = Value("J2")
   val PONTIFF_OPTION3    = Value("J3")
   val INHERITER_REVEAL = Value("I1")
+  val INHERITER_NEUTRAL = Value("I2")
   val SHIFTER_REVEAL   = Value("S1")
   val SHIFTER_LOVER    = Value("S2")
   
@@ -102,6 +106,8 @@ object RoomFlagEnum extends Enumeration {
     GEMINI_TALK  -> "(共)",
     AUTO_VOTE    -> "(自投)",
     WEATHER      -> "(天候)",
+    MOB_MODE     -> "(暴)",
+    MOB_MODE1    -> "(暴1)",
   
     // Optional Role
 
@@ -165,6 +171,7 @@ object RoomFlagEnum extends Enumeration {
     RUNNER_OPTION3   -> "<逃3>",
     FOX_OPTION1      -> "<狐1>",
     FOX_OPTION2      -> "<狐2>",
+    FOX_OPTION3      -> "<狐3>",
     BETRAYER_OPTION1 -> "<背1>",
     BETRAYER_OPTION2 -> "<背2>",
     BETRAYER_OPTION3 -> "<背3>",
@@ -177,7 +184,8 @@ object RoomFlagEnum extends Enumeration {
     PONTIFF_OPTION1  -> "<教1>",
     PONTIFF_OPTION2  -> "<教2>",
     PONTIFF_OPTION3  -> "<教3>",
-    INHERITER_REVEAL -> "<繼>",
+    INHERITER_REVEAL -> "<繼1>",
+    INHERITER_NEUTRAL -> "<繼2>",
     SHIFTER_REVEAL   -> "<模1>",
     SHIFTER_LOVER    -> "<模2>"
   )

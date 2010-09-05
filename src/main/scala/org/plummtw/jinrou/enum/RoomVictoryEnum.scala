@@ -12,6 +12,7 @@ object RoomVictoryEnum extends Enumeration {
   val DEMON_WIN    = Value("D")
   val PONTIFF_WIN  = Value("J")
   val MOB_WIN      = Value("M")
+  val MOB_WIN2      = Value("P")
 
   val DRAW         = Value("0")
   val ABANDONED    = Value("1")  

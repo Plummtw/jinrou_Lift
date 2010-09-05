@@ -105,6 +105,8 @@ object MTypeEnum extends Enumeration {
   val VOTE_SORCEROR_BELIEVE = Value("VSB")
 
   val VOTE_FOX         = Value("VF")
+  val VOTE_FOX2        = Value("VF2")
+
   val VOTE_BETRAYER_DISGUISE = Value("VBD")
   val VOTE_BETRAYER_CHANGE   = Value("VBC")
   val VOTE_BETRAYER_FOG   = Value("VBF")

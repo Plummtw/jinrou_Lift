@@ -44,6 +44,8 @@ object UserEntryFlagEnum extends Enumeration {
   val CARD_TOWER          = Value("q")
   val CARD_SUN            = Value("t")
 
+  val FOX_SPECIAL         = Value("f")
+
   val GODFAT_TARGETED     = Value("+")
   val GODFAT_SPECIAL1      = Value("!")
   val GODFAT_SPECIAL2      = Value("@")

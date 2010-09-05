@@ -16,6 +16,10 @@ import org.plummtw.jinrou.util._
 import org.plummtw.jinrou.data._
 
 class TestController {
+  def all_enum = RoomFlagEnum.elements.toList - RoomFlagEnum.NO_DUMMY
+
+    //delete(RoomFlagEnum.NO_DUMMY)
+  /*
   def all_enum = List(
     RoomFlagEnum.TEST_MODE,
     RoomFlagEnum.WISH_ROLE,
@@ -68,7 +72,7 @@ class TestController {
     RoomFlagEnum.BETRAYER_OPTION1,
     RoomFlagEnum.BETRAYER_OPTION2,
     RoomFlagEnum.INHERITER_REVEAL,
-    RoomFlagEnum.SHIFTER_REVEAL)
+    RoomFlagEnum.SHIFTER_REVEAL) */
 
   // 新增 25 人測試用村
   def test1 (xhtml : Group) : NodeSeq = {

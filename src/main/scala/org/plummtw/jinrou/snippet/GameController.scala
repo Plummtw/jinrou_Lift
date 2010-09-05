@@ -395,6 +395,10 @@ class GameController {
         //if (user_entry.subrole.is == SubroleEnum.AUTHORITY.toString)
           result = result ++ Seq(subrole_data.subrole_intro)
 
+        val is_mob = user_entry.has_flag(UserEntryFlagEnum.BECAME_MOB)
+        if (is_mob)
+          result = result ++ Seq(<span>＜暴民模式＞</span>)
+
         // 教徒時互相知道身分
         val live_pontiff = user_entrys.filter(x=>(x.current_role == RoleEnum.PONTIFF) && (x.live.is))
 

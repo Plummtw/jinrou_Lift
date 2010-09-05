@@ -14,6 +14,8 @@ import Helpers._
 import org.plummtw.jinrou.model._
 import org.plummtw.jinrou.enum._
 
+object TalkIdCache extends TimedCache[Long, UserEntry](30000)
+
 object MessageHelper {
   // 狂巫密言術
   def secret_talk_tag(room:Room, room_day:RoomDay, talk:Talk, user:UserEntry, heaven_mode:Boolean, user_entrys:List[UserEntry]) : NodeSeq= {
@@ -21,7 +23,8 @@ object MessageHelper {
     val user_entry = user_entrys.filter(_.id.is == talk.actioner_id.is)(0)
     val user_icon  = user_entry.get_user_icon()
 
-    if (((user != null) && (!user.test_memoryloss(room, room_day, user_entrys)) && ((user.current_role == RoleEnum.WEREWOLF) || (user.current_role == RoleEnum.WOLFCUB) ||
+    if (((user != null) && (!user.test_memoryloss(room, room_day, user_entrys)) && (user.subrole.is != SubroleEnum.FOXBELIEVER.toString) &&
+           ((user.current_role == RoleEnum.WEREWOLF) || (user.current_role == RoleEnum.WOLFCUB) ||
             (user.current_role == RoleEnum.MADMAN) || (user.current_role == RoleEnum.SORCEROR)))
         || (heaven_mode)) {
       if ((room.has_flag(RoomFlagEnum.SORCEROR_WHISPER1)) && (!heaven_mode))
@@ -297,15 +300,21 @@ object MessageHelper {
       NodeSeq.Empty  
   }
 
-  def get_user_entry(user_entry_list : List[UserEntry], user_id : Long, hash:scala.collection.mutable.Map[Long, UserEntry]) : UserEntry = {
+  def get_user_entry(user_entry_list : List[UserEntry], user_id : Long) : UserEntry = {
+    // , hash:scala.collection.mutable.Map[Long, UserEntry]
     if( user_entry_list.length == 0) {
         if (user_id != 0) {
+          /*
           if (hash != null) {
             if (!hash.contains(user_id))
               hash(user_id) = UserEntry.findAll(By(UserEntry.id, user_id))(0)
             hash(user_id)
           } else
             UserEntry.findAll(By(UserEntry.id, user_id))(0)
+          */
+          TalkIdCache.getOr(user_id) { () =>
+            UserEntry.findAll(By(UserEntry.id, user_id))(0)
+          }
         }
         else
           null
@@ -314,7 +323,7 @@ object MessageHelper {
         user_entry_list(0)
   }
 
-  def talk_tag(room:Room, room_day:RoomDay, talk: Talk, user: UserEntry, heaven_mode: Boolean, user_entrys:List[UserEntry], hash:scala.collection.mutable.Map[Long, UserEntry]): NodeSeq = {
+  def talk_tag(room:Room, room_day:RoomDay, talk: Talk, user: UserEntry, heaven_mode: Boolean, user_entrys:List[UserEntry]): NodeSeq = {
     val mtype : MTypeEnum.Value = MTypeEnum.valueOf(talk.mtype.is) getOrElse(null)
     val user_entry_list  = user_entrys.filter(_.id.is == talk.actioner_id.is)
     val user_target_list = user_entrys.filter(_.id.is == talk.actionee_id.is)
@@ -329,7 +338,7 @@ object MessageHelper {
     if ((mtype == MTypeEnum.MESSAGE_COME) || (mtype == MTypeEnum.MESSAGE_LEAVE) || (mtype == MTypeEnum.MESSAGE_KICKED)) {
       var handle_name : String = ""
       if ((talk.message.is == null) || (talk.message.is == "")) {
-        user_entry  = get_user_entry(user_entry_list, talk.actioner_id.is, hash)
+        user_entry  = get_user_entry(user_entry_list, talk.actioner_id.is)
         handle_name = user_entry.handle_name.is
       } else
         handle_name = talk.message.is
@@ -342,14 +351,16 @@ object MessageHelper {
       })
     } else if (mtype == MTypeEnum.VOTE_KICK) {
       if ((talk.message.is == null) || (talk.message.is == "")){
-        user_entry  = get_user_entry(user_entry_list, talk.actioner_id.is, hash)
-        user_target = get_user_entry(user_target_list, talk.actionee_id.is, hash)
-        generated_message = user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 投票踢出"
+        user_entry  = get_user_entry(user_entry_list, talk.actioner_id.is)
+        user_target = get_user_entry(user_target_list, talk.actionee_id.is)
+        val user_entry_handle_name = (if (user_entry != null) user_entry.handle_name.is else "")
+        val user_target_handle_name = (if (user_target != null) user_target.handle_name.is else "")
+        generated_message = user_entry_handle_name + " 對 " + user_target_handle_name + " 投票踢出"
       } else
         generated_message = talk.message.is
     } else {
-      user_entry  = get_user_entry(user_entry_list, talk.actioner_id.is, hash)
-      user_target = get_user_entry(user_target_list, talk.actionee_id.is, hash)
+      user_entry  = get_user_entry(user_entry_list, talk.actioner_id.is)
+      user_target = get_user_entry(user_target_list, talk.actionee_id.is)
     }
 
     mtype match {
@@ -423,6 +434,7 @@ object MessageHelper {
       case MTypeEnum.VOTE_SORCEROR_BELIEVE => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 施放狼信化",heaven_mode,"#CC0000","snow")
       
       case MTypeEnum.VOTE_FOX              => simple_message_tag(user_entry.handle_name.is + " 妖狐對 " + user_target.handle_name.is + " 為鎖定目標",heaven_mode,"#CC0099","snow")
+      case MTypeEnum.VOTE_FOX2             => simple_message_tag(user_entry.handle_name.is + " 妖狐施展結界",heaven_mode,"#CC0099","snow")
       case MTypeEnum.VOTE_BETRAYER_DISGUISE=> simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 進行偽裝",heaven_mode,"#DD0088","snow")
       case MTypeEnum.VOTE_BETRAYER_CHANGE  => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 進行變身",heaven_mode,"#DD0088","snow")
       case MTypeEnum.VOTE_BETRAYER_FOG     => simple_message_tag(user_entry.handle_name.is + " 施展粉紅迷霧",heaven_mode,"#DD0088","snow")
@@ -514,7 +526,7 @@ object MessageHelper {
     }
     
     Seq(<table border="0" cellpadding="0" cellspacing="0" style="font-family:新細明體;"> {
-        for (val talk <- talks) yield talk_tag(room, room_day, talk, user_entry, heaven_mode, user_entrys, hash)
+        for (val talk <- talks) yield talk_tag(room, room_day, talk, user_entry, heaven_mode, user_entrys)
       } </table>)
   }
 
@@ -557,7 +569,7 @@ object MessageHelper {
        for (val talk <- talks) yield 
          if (talk.mtype.is == MTypeEnum.TALK_END.toString) gameend_talk_tag(room, talk, user_entry, user_entrys)
          else if (talk.mtype.is == MTypeEnum.TALK_HEAVEN.toString) heaven_talk_tag(room, talk, user_entry, user_entrys)
-         else talk_tag(room, room_day, talk, user_entry, true, user_entrys,hash)
+         else talk_tag(room, room_day, talk, user_entry, true, user_entrys)
       } </table>)
   }
 }

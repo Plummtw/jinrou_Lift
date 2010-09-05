@@ -27,12 +27,58 @@ object JinrouUtil {
     else 
       List(first) ::: zipListBySize(size)(second) 
   }
-  
+
+  /*
   def  encodeHtml(string: String) : String = {
     // .replaceAll("\'","&apos;")
     string.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
           .replaceAll("\"","&quot;").
            replaceAll("\r\n","\n").replaceAll("\r","\n").replaceAll("\n","<br/>")
+  } */
+  val html_encode_hash = Map (
+    '&' -> "&amp;",
+    '<' -> "&lt;",
+    '>' -> "&gt;",
+    '"' -> "&quot;",
+    '\r' -> "<br/>",
+    '\n' -> "<br/>"
+  )
+
+  def  hasHtmlCode(string: String) : Boolean = {
+    val count          = string.length - 1
+
+    for (i <- 0 to count) {
+      val c = string.charAt(i)
+      if (html_encode_hash.isDefinedAt(c))
+        return true
+    }
+    return false
+  }
+
+  def encodeHtml(string: String) : String = {
+    // .replaceAll("\'","&apos;")
+
+    /*
+    string.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+          .replaceAll("\"","&quot;").
+           replaceAll("\r\n","\n").replaceAll("\r","\n").replaceAll("\n","<br/>")
+    */
+    val string_builder = new StringBuilder
+    val count          = string.length - 1
+
+    var is_escape_r    = false
+    for (i <- 0 to count) {
+      val c = string.charAt(i)
+      val h = html_encode_hash.get(c).getOrElse(c)
+      if (is_escape_r && (c == '\n')) {
+        is_escape_r = false
+      } else {
+        string_builder.append(h)
+        is_escape_r = ( c == '\r')
+      }
+    }
+
+    return string_builder.toString
   }
   
   def getIpAddress(request: net.liftweb.http.Req) : String = {
@@ -57,12 +103,19 @@ object JinrouUtil {
       
     return ( if (ip == "unknown") request.remoteAddr else ip )
   }
+
+  def generateSHA1_Bytes(string: String) : Array[Byte] = {
+    val sha = MessageDigest.getInstance("SHA-1")
+    sha.update(string.getBytes())
+
+    return sha.digest()
+  }
   
   def generateSHA1(string: String) : String = {
-    val sha = MessageDigest.getInstance("SHA-1");
+    val sha = MessageDigest.getInstance("SHA-1")
     sha.update(string.getBytes())
       
-    val digest = sha.digest();
+    val digest = sha.digest()
     //return new BASE64Encoder().encode(digest)
     return new String(Base64.encodeBase64(digest))
   }

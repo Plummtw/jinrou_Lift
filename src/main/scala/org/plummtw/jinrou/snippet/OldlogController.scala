@@ -37,6 +37,8 @@ class OldlogController {
       case RoomVictoryEnum.FOX_WIN2     => "狐"
       case RoomVictoryEnum.DEMON_WIN    => "惡"
       case RoomVictoryEnum.PONTIFF_WIN  => "教"
+      case RoomVictoryEnum.MOB_WIN      => "暴"
+      case RoomVictoryEnum.MOB_WIN2     => "暴"
       case RoomVictoryEnum.ABANDONED    => "棄"
       case RoomVictoryEnum.DRAW         => "和"
       case xs                           => "？"
@@ -147,7 +149,8 @@ class OldlogController {
             case RoomVictoryEnum.FOX_WIN2     => <td valign="middle" align="center" width="100%" style="background-color:#CC0099;color:snow;font-weight:bold;">[妖狐勝利] 人狼和村民都被騙了</td>
             case RoomVictoryEnum.DEMON_WIN    => <td valign="middle" align="center" width="100%" style="background-color:#666666;color:snow;font-weight:bold;">[惡魔勝利] 儀式完成、村莊毀滅了</td>
             case RoomVictoryEnum.PONTIFF_WIN  => <td valign="middle" align="center" width="100%" style="background-color:#EEAA55;color:snow;font-weight:bold;">[教主勝利] 村莊納入教派管轄</td>
-            case RoomVictoryEnum.MOB_WIN      => <td valign="middle" align="center" width="100%" style="background-color:#AAAAAA;color:snow;font-weight:bold;">[暴民勝利] 村民拿暴民沒輒</td>
+            case RoomVictoryEnum.MOB_WIN      => <td valign="middle" align="center" width="100%" style="background-color:#AAAAAA;color:snow;font-weight:bold;">[暴民勝利] 獨一無二的暴君誕生了</td>
+            case RoomVictoryEnum.MOB_WIN2     => <td valign="middle" align="center" width="100%" style="background-color:#AAAAAA;color:snow;font-weight:bold;">[暴民勝利] 村莊陷入混亂狀態</td>
             case RoomVictoryEnum.ABANDONED    => <td valign="middle" align="center" width="100%" style="background-color:snow;color:black;font-weight:bold;">這個村莊已經廢棄</td>
             case RoomVictoryEnum.DRAW         => <td valign="middle" align="center" width="100%" style="background-color:snow;color:black;font-weight:bold;">投票十次相同平手</td>
             case xs                           => <td valign="middle" align="center" width="100%" style="background-color:snow;color:black;font-weight:bold;">遊戲狀況不明</td>
