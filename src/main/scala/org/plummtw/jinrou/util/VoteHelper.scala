@@ -137,7 +137,7 @@ object VoteHelper {
       val pontiff_actionee = user_entrys.filter(_.id.is == pontiff_commands(0).actionee_id.is)(0)
 
       pontiff_target = pontiff_actionee.id.is
-      if (pontiff_actioner.live.is && pontiff_actionee.live.is && (room_day.weather.is != WeatherEnum.SNOWY.toString))
+      if (pontiff_actioner.live.is && pontiff_actionee.live.is ) // && (room_day.weather.is != WeatherEnum.SNOWY.toString)
         pontiff_affecters = user_entrys.filter(x=>(x.subrole.is == SubroleEnum.SUBPONTIFF.toString) ||
                                                   (x.current_role == RoleEnum.PONTIFF)  ||
                                                   (x.has_flag(UserEntryFlagEnum.RELIGION))).map(_.id.is)

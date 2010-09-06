@@ -98,6 +98,8 @@ class RoleData(role: RoleEnum.Value, name: String, color : String, side: RoomVic
     
     if ((actions_enabled.length == 1) && (actions_enabled(0) == ActionNoAction))
       return List()
+    else if ((actions_enabled.length == 1) && (actions_enabled(0) == ActionNoAction2))
+      return List()
     else
       return actions_enabled
   }
@@ -771,7 +773,7 @@ object RoleSorceror    extends RoleData(RoleEnum.SORCEROR,    "狂巫",   "#CC00
   }
 }
 
-object RoleFox         extends RoleData(RoleEnum.FOX,         "妖狐",   "#CC0099", RoomVictoryEnum.FOX_WIN, List(ActionFox, ActionFox2, ActionNoAction)) {
+object RoleFox         extends RoleData(RoleEnum.FOX,         "妖狐",   "#CC0099", RoomVictoryEnum.FOX_WIN, List(ActionFox, ActionFox1, ActionFox2, ActionNoAction2)) {
   override def role_intro = <img src="images/role_fox.gif"/>
   
   override def role_ability(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) = {
@@ -973,6 +975,32 @@ object RoleDemon       extends RoleData(RoleEnum.DEMON,       "惡魔",   "#6666
   }
 }
 
+object RolePenguin  extends RoleData(RoleEnum.PENGUIN,     "企鵝",   "#CCFFFF", RoomVictoryEnum.PENGUIN_WIN, List(ActionPenguinIce, ActionNoAction)) {
+  override def role_intro = <span>[角色]<br/>　　您所扮演的角色是企鵝，您必須完成企鵝儀式以冰封整個村子。(註：冰凍需時4天，必須冰凍4人且未受干擾，無法冰凍惡魔，且惡魔死亡全冰凍解除)。</span>
+  //override def role_intro = <img src="images/role_demon.gif"/>
+
+  override def role_ability(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) = {
+    val action_point_tag : NodeSeq =
+      if (user.role.is.length == 1)
+        Seq(<tr><td>已冰凍人數：</td><td>{user.action_point.is}/3</td></tr>)
+      else
+        Seq(<tr><td colspan="2">無法察覺已冰凍人數</td></tr>)
+
+    val iced = user_entrys.filter(x =>
+      (x.has_flag(UserEntryFlagEnum.ICED_1)) ||
+      (x.has_flag(UserEntryFlagEnum.ICED_2)) ||
+      (x.has_flag(UserEntryFlagEnum.ICED_3)) ||
+      (x.has_flag(UserEntryFlagEnum.ICED_4)))
+
+    val iced_tag : NodeSeq =
+      Seq(<tr><td>冰凍中人數：</td><td>{iced.length}</td></tr>)
+
+    <table cellSpacing="0" cellPadding="0" border="1"><tbody>
+      {action_point_tag}{iced_tag}
+    </tbody></table>
+  }
+}
+
 object RolePontiff     extends RoleData(RoleEnum.PONTIFF,     "教主", "#EEAA55", RoomVictoryEnum.PONTIFF_WIN, List(ActionPontiff, ActionPontiffCommand, ActionPontiffAura, ActionNoAction)) {
   //override def role_intro = <span>[角色]<br/>　　您所扮演的角色是教主。您必須拉人入教使整個村子都在教派的勢力下。</span>
   override def role_intro = <img src="images/role_pontiff.gif"/>
@@ -987,7 +1015,7 @@ object RoleInheriter   extends RoleData(RoleEnum.INHERITER,   "繼承者", "#AAA
   override def role_intro = <img src="images/role_inheriter.gif"/>
 }
 
-object RoleShifter     extends RoleData(RoleEnum.SHIFTER,     "模仿師", "#FF7700", RoomVictoryEnum.VILLAGER_WIN, List(ActionShifter)) {
+object RoleShifter     extends RoleData(RoleEnum.SHIFTER,     "模仿師", "#FF7700", RoomVictoryEnum.VILLAGER_WIN, List(ActionShifter, ActionShifterDemon)) {
   //override def role_intro = <span>[角色]<br/>　　您所扮演的角色是模仿師，您可以於首日選擇一名角色，並和它有同樣的能力。</span>
   override def role_intro = <img src="images/role_shifter.gif"/>
 }

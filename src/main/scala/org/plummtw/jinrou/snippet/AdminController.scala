@@ -140,7 +140,8 @@ class AdminController {
       val room_day_list   = RoomDay.findAll(By(RoomDay.room_id, room_id), OrderBy(RoomDay.day_no, Descending))
       val room_day        = if (room_day_list.length == 0) null else room_day_list(0)
 
-      val talk = Talk.create.roomday_id(room_day.id.is).actioner_id(user_entrys(0).id.is)
+      // 去掉 actioner_id actioner_id(user_entrys(0).id.is)
+      val talk = Talk.create.roomday_id(room_day.id.is)
                             .font_type(font_type).message(message).mtype(MTypeEnum.TALK_ADMIN.toString)
       talk.save
 
@@ -165,7 +166,8 @@ class AdminController {
       (1 to 25).foreach { index =>
         if (S.param("id" + index.toString).getOrElse("") != "") {
           val actionee = user_entrys.filter(_.user_no.is == index)(0)
-          val talk = Talk.create.roomday_id(room_day.id.is).actioner_id(user_entrys(0).id.is).actionee_id(actionee.id.is)
+          // 去掉 actioner_id actioner_id(user_entrys(0).id.is)
+          val talk = Talk.create.roomday_id(room_day.id.is).actionee_id(actionee.id.is)
                                 .font_type(font_type).message(message).mtype(MTypeEnum.TALK_ADMIN_PRIVATE.toString)
           talk.save
         }

@@ -267,7 +267,8 @@ object ActionSorcerorAugure extends ActionData(MTypeEnum.VOTE_SORCEROR_AUGURE, "
 }
 object ActionSorcerorWhisper extends ActionData(MTypeEnum.VOTE_SORCEROR_WHISPER, "密言術！", "sorceror_whisper", false) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
-    return (user.action_point.is >= 3)
+    return ((user.action_point.is >= 3) ||
+            (room.has_flag(RoomFlagEnum.SORCEROR_WHISPER1) && (user.action_point.is >= 3)))
   }
 }
 
@@ -303,10 +304,29 @@ object ActionFox extends ActionData(MTypeEnum.VOTE_FOX, "指定背德", "fox_cho
   }
 }
 
+object ActionFox1 extends ActionData(MTypeEnum.VOTE_FOX1, "指定背德且結界", "fox_betrayer_barrier", true) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
+    return ((room.has_flag(RoomFlagEnum.FOX_OPTION1)) &&
+            (room.has_flag(RoomFlagEnum.ROLE_BETRAYER)) &&
+            (user_entrys.length >= 20) &&
+            (room_day.day_no.is == 1) &&
+            (room.has_flag(RoomFlagEnum.FOX_OPTION3)) &&
+            (user.hasnt_flag(UserEntryFlagEnum.FOX_SPECIAL)))
+  }
+
+  override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
+      user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.live.is) && (x.current_role == RoleEnum.VILLAGER))
+  }
+}
+
 object ActionFox2 extends ActionData(MTypeEnum.VOTE_FOX2, "結界！", "fox_barrier", false) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
     return ((room.has_flag(RoomFlagEnum.FOX_OPTION3)) &&
-            (user.hasnt_flag(UserEntryFlagEnum.FOX_SPECIAL)))
+            (user.hasnt_flag(UserEntryFlagEnum.FOX_SPECIAL)) &&
+            !((room.has_flag(RoomFlagEnum.FOX_OPTION1)) &&
+              (room.has_flag(RoomFlagEnum.ROLE_BETRAYER)) &&
+              (user_entrys.length >= 20) &&
+              (room_day.day_no.is == 1)))
   }
 }
 
@@ -499,6 +519,9 @@ object ActionDemonVortex extends ActionData(MTypeEnum.VOTE_DEMON_VORTEX, "斗轉
   }
 }
 
+object ActionPenguinIce extends ActionData(MTypeEnum.VOTE_PENGUIN_ICE, "冰凍", "penguin_ice", true) {
+}
+
 object ActionPontiff extends ActionData(MTypeEnum.VOTE_PONTIFF, "拉人入教", "pontiff", true) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
     if ((user.role.is.length != 1) && (room_day.day_no.is % 4 == 1))
@@ -546,6 +569,12 @@ object ActionInheriter extends ActionData(MTypeEnum.VOTE_INHERITER, "繼承", "i
 
 
 object ActionShifter extends ActionData(MTypeEnum.VOTE_SHIFTER, "模仿", "shift", true) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
+    return (room_day.day_no.is == 1)
+  }
+}
+
+object ActionShifterDemon extends ActionData(MTypeEnum.VOTE_SHIFTER2, "模仿惡魔！", "shift_demon", false) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
     return (room_day.day_no.is == 1)
   }
@@ -619,3 +648,9 @@ object ActionCardSun extends ActionData(MTypeEnum.VOTE_CARD_SUN, "太陽！", "c
 }
 
 object ActionNoAction extends ActionData(MTypeEnum.VOTE_NO_ACTION, "不行動！", "no_action", false)
+
+object ActionNoAction2 extends ActionData(MTypeEnum.VOTE_NO_ACTION, "不行動！", "no_action", false) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
+    return (room_day.day_no.is != 1)
+  }
+}

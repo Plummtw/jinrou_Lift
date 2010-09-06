@@ -162,9 +162,14 @@ object MessageHelper {
       catch { case e:Exception => 0}
     val style_str = if (font_size >= 20) "font-size:" + talk.font_type.is +"pt;font-weight:bold;color:"
                     else "font-size:" + talk.font_type.is +"pt;color:"
-    val user_entry = user_entrys.filter(_.id.is == talk.actioner_id.is)(0)
-    val user_icon  = user_entry.get_user_icon()  
     val mtype : MTypeEnum.Value = MTypeEnum.valueOf(talk.mtype.is) getOrElse(null)
+
+    val user_entry = (if ((mtype == MTypeEnum.TALK_ADMIN) || (mtype == MTypeEnum.TALK_ADMIN_PRIVATE))
+                        null
+                        else user_entrys.filter(_.id.is == talk.actioner_id.is)(0))
+    val user_icon  = (if ((mtype == MTypeEnum.TALK_ADMIN) || (mtype == MTypeEnum.TALK_ADMIN_PRIVATE))
+                        null
+                        else user_entry.get_user_icon())
   
     mtype match {
       case MTypeEnum.TALK_ADMIN    =>
@@ -303,24 +308,24 @@ object MessageHelper {
   def get_user_entry(user_entry_list : List[UserEntry], user_id : Long) : UserEntry = {
     // , hash:scala.collection.mutable.Map[Long, UserEntry]
     if( user_entry_list.length == 0) {
-        if (user_id != 0) {
-          /*
-          if (hash != null) {
-            if (!hash.contains(user_id))
-              hash(user_id) = UserEntry.findAll(By(UserEntry.id, user_id))(0)
-            hash(user_id)
-          } else
-            UserEntry.findAll(By(UserEntry.id, user_id))(0)
-          */
-          TalkIdCache.getOr(user_id) { () =>
-            UserEntry.findAll(By(UserEntry.id, user_id))(0)
-          }
+      if (user_id != 0) {
+        /*
+        if (hash != null) {
+          if (!hash.contains(user_id))
+            hash(user_id) = UserEntry.findAll(By(UserEntry.id, user_id))(0)
+          hash(user_id)
+        } else
+          UserEntry.findAll(By(UserEntry.id, user_id))(0)
+        */
+        TalkIdCache.getOr(user_id) { () =>
+          UserEntry.findAll(By(UserEntry.id, user_id))(0)
         }
-        else
-          null
       }
       else
-        user_entry_list(0)
+        null
+    }
+    else
+       user_entry_list(0)
   }
 
   def talk_tag(room:Room, room_day:RoomDay, talk: Talk, user: UserEntry, heaven_mode: Boolean, user_entrys:List[UserEntry]): NodeSeq = {
@@ -434,6 +439,7 @@ object MessageHelper {
       case MTypeEnum.VOTE_SORCEROR_BELIEVE => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 施放狼信化",heaven_mode,"#CC0000","snow")
       
       case MTypeEnum.VOTE_FOX              => simple_message_tag(user_entry.handle_name.is + " 妖狐對 " + user_target.handle_name.is + " 為鎖定目標",heaven_mode,"#CC0099","snow")
+      case MTypeEnum.VOTE_FOX1             => simple_message_tag(user_entry.handle_name.is + " 妖狐對 " + user_target.handle_name.is + " 為鎖定目標且施展結界",heaven_mode,"#CC0099","snow")
       case MTypeEnum.VOTE_FOX2             => simple_message_tag(user_entry.handle_name.is + " 妖狐施展結界",heaven_mode,"#CC0099","snow")
       case MTypeEnum.VOTE_BETRAYER_DISGUISE=> simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 進行偽裝",heaven_mode,"#DD0088","snow")
       case MTypeEnum.VOTE_BETRAYER_CHANGE  => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 進行變身",heaven_mode,"#DD0088","snow")
@@ -455,11 +461,15 @@ object MessageHelper {
       case MTypeEnum.VOTE_DEMON_CURSE2     => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is +" 使用詛咒術",heaven_mode,"#666666","#FF0000")
       case MTypeEnum.VOTE_DEMON_VORTEX     => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is +" 使用斗轉星移",heaven_mode,"#666666","#FF0000")
 
+      case MTypeEnum.VOTE_PENGUIN_ICE     => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is +" 冰凍",heaven_mode,"#CCFFFF","#FF0000")
+
       case MTypeEnum.VOTE_PONTIFF          => simple_message_tag(user_entry.handle_name.is + " 拉 " + user_target.handle_name.is + " 入教",heaven_mode,"#EEAA55","snow")
       case MTypeEnum.VOTE_PONTIFF_COMMAND  => simple_message_tag(user_entry.handle_name.is + " 指定 " + user_target.handle_name.is + " 為投票對象",heaven_mode,"#EEAA55","snow")
       case MTypeEnum.VOTE_PONTIFF_AURA     => simple_message_tag(user_entry.handle_name.is + " 的身邊突然圍繞起光環",heaven_mode,"#EEAA55","snow")
 
       case MTypeEnum.VOTE_SHIFTER          => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 模仿",heaven_mode,"#FF7700","snow")
+      case MTypeEnum.VOTE_SHIFTER2         => simple_message_tag(user_entry.handle_name.is + " 模仿惡魔",heaven_mode,"#FF7700","snow")
+
       case MTypeEnum.VOTE_INHERITER        => simple_message_tag(user_entry.handle_name.is + " 準備繼承 " + user_target.handle_name.is, heaven_mode,"#AAAA00","snow")
 
       case MTypeEnum.VOTE_CARD_FOOL        => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用愚者卡",heaven_mode,"#DAA520","snow")

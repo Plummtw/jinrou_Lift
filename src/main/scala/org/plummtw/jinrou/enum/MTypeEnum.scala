@@ -58,6 +58,7 @@ object MTypeEnum extends Enumeration {
   val DEATH_GODFAT    = Value("DT")
   val DEATH_WOLFCUB    = Value("DX")
   val DEATH_WOLFCUB_EATEN = Value("DXE")
+  val DEATH_PENGUIN_ICE  = Value("DKI")
   val DEATH_SUBPONTIFF = Value("DSP")
   val DEATH_LOVER        = Value("DL")
 
@@ -105,6 +106,7 @@ object MTypeEnum extends Enumeration {
   val VOTE_SORCEROR_BELIEVE = Value("VSB")
 
   val VOTE_FOX         = Value("VF")
+  val VOTE_FOX1         = Value("VF1")
   val VOTE_FOX2        = Value("VF2")
 
   val VOTE_BETRAYER_DISGUISE = Value("VBD")
@@ -125,8 +127,12 @@ object MTypeEnum extends Enumeration {
   val VOTE_DEMON_CURSE2 = Value("VDO")
   val VOTE_DEMON_DOMINATE = Value("VDD")
   val VOTE_DEMON_VORTEX = Value("VDR")
+
+  val VOTE_PENGUIN_ICE = Value("VKI")
+
   val VOTE_INHERITER   = Value("VI")
   val VOTE_SHIFTER     = Value("VS")
+  val VOTE_SHIFTER2    = Value("VS2")
 
   val VOTE_PONTIFF     = Value("VJ")
   val VOTE_PONTIFF_COMMAND = Value("VJC")
@@ -162,6 +168,7 @@ object MTypeEnum extends Enumeration {
     DEATH_GODFAT   -> "被哥德法逆咒殺",
     DEATH_WOLFCUB  -> "跟隨人狼死亡",
     DEATH_WOLFCUB_EATEN  -> "被幼狼襲擊",
+    DEATH_PENGUIN_ICE -> "被企鵝冰凍",
     DEATH_SUBPONTIFF -> "跟隨教主死亡",
     DEATH_LOVER    -> "跟隨生命連繫者死亡"
   )

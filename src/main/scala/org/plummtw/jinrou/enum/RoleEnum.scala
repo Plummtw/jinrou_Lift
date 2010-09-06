@@ -37,6 +37,9 @@ object RoleEnum extends Enumeration {
   
   // DEMON SIDE
   val DEMON       = Value("D")
+  
+  // PENGUIN SIDE
+  val PENGUIN     = Value("K")
 
   val PONTIFF     = Value("J")
   
@@ -73,6 +76,8 @@ object RoleEnum extends Enumeration {
      GODFAT      -> RoleGodfat,  
 
      DEMON       -> RoleDemon,
+     PENGUIN     -> RolePenguin,
+
      PONTIFF     -> RolePontiff,
 
      INHERITER   -> RoleInheriter,

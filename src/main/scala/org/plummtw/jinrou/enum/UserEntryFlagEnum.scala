@@ -52,6 +52,11 @@ object UserEntryFlagEnum extends Enumeration {
   val GODFAT_SPECIAL3      = Value("#")
   val GODFAT_SPECIAL_USED  = Value("G")
   val GODFAT_BLIND_USED  = Value("=")
+  
+  val ICED_1           = Value("4")
+  val ICED_2           = Value("5")
+  val ICED_3           = Value("6")
+  val ICED_4           = Value("7")
 
   val DEATH_2             = Value("8")
   val DEATH_1              = Value("9")

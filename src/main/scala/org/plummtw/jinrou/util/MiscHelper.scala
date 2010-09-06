@@ -60,6 +60,8 @@ object MiscHelper {
           ("被表決處死", "#666600")
         else if (system_message.mtype.is == MTypeEnum.DEATH_SUDDEN.toString)
           ("暴斃死亡",   "#990000")
+        else if (system_message.mtype.is == MTypeEnum.DEATH_PENGUIN_ICE.toString)
+          ("被冰凍成冰棒",   "#CCFFFF")
         else if (system_message.mtype.is == MTypeEnum.DEATH_WOLFCUB_EATEN.toString)
           ("有點慘的死狀被發現", "#990000")
         else

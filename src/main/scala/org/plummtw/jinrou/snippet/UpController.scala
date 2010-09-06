@@ -345,7 +345,7 @@ class UpController {
               S.error(<b>目標錯誤 : {command_target}</b>)
               S.redirectTo("up_error.html")
             }
-          }
+          } 
           
           GameProcessLock.get_lock(room_id).synchronized {
             // 重新取一次 Roomday

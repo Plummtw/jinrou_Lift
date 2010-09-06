@@ -10,6 +10,7 @@ object RoomVictoryEnum extends Enumeration {
   val FOX_WIN      = Value("F")
   val FOX_WIN2     = Value("G")
   val DEMON_WIN    = Value("D")
+  val PENGUIN_WIN  = Value("K")
   val PONTIFF_WIN  = Value("J")
   val MOB_WIN      = Value("M")
   val MOB_WIN2      = Value("P")

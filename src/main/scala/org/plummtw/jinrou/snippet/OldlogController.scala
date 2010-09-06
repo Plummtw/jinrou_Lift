@@ -36,6 +36,7 @@ class OldlogController {
       case RoomVictoryEnum.FOX_WIN      => "狐"
       case RoomVictoryEnum.FOX_WIN2     => "狐"
       case RoomVictoryEnum.DEMON_WIN    => "惡"
+      case RoomVictoryEnum.PENGUIN_WIN  => "企"
       case RoomVictoryEnum.PONTIFF_WIN  => "教"
       case RoomVictoryEnum.MOB_WIN      => "暴"
       case RoomVictoryEnum.MOB_WIN2     => "暴"
@@ -148,6 +149,7 @@ class OldlogController {
             case RoomVictoryEnum.FOX_WIN      => <td valign="middle" align="center" width="100%" style="background-color:#CC0099;color:snow;font-weight:bold;">[妖狐勝利] 人狼已經被殺光、已經沒有敵人了</td>
             case RoomVictoryEnum.FOX_WIN2     => <td valign="middle" align="center" width="100%" style="background-color:#CC0099;color:snow;font-weight:bold;">[妖狐勝利] 人狼和村民都被騙了</td>
             case RoomVictoryEnum.DEMON_WIN    => <td valign="middle" align="center" width="100%" style="background-color:#666666;color:snow;font-weight:bold;">[惡魔勝利] 儀式完成、村莊毀滅了</td>
+            case RoomVictoryEnum.PENGUIN_WIN  => <td valign="middle" align="center" width="100%" style="background-color:#CCFFFF;color:snow;font-weight:bold;">[企鵝勝利] 村莊進入極地氣候</td>
             case RoomVictoryEnum.PONTIFF_WIN  => <td valign="middle" align="center" width="100%" style="background-color:#EEAA55;color:snow;font-weight:bold;">[教主勝利] 村莊納入教派管轄</td>
             case RoomVictoryEnum.MOB_WIN      => <td valign="middle" align="center" width="100%" style="background-color:#AAAAAA;color:snow;font-weight:bold;">[暴民勝利] 獨一無二的暴君誕生了</td>
             case RoomVictoryEnum.MOB_WIN2     => <td valign="middle" align="center" width="100%" style="background-color:#AAAAAA;color:snow;font-weight:bold;">[暴民勝利] 村莊陷入混亂狀態</td>

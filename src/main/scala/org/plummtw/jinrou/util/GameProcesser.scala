@@ -378,15 +378,18 @@ object GameProcesser {
       val sub_noreligion = subrole_array_noreligion.removeFirst()
       user_entrys.filter(_.user_no.is == sub_noreligion)(0).subrole(SubroleEnum.NORELIGION.toString).user_flags(UserEntryFlagEnum.NORELIGION.toString)
     }
+
+    val user_dummy = user_entrys.filter(x => x.uname.is == "dummy_boy")
     
     // 如果替身君是 狼 狐 毒 惡魔 則要換掉
-    if ((user_entrys(0).role.is == RoleEnum.WEREWOLF.toString)||
-        (user_entrys(0).role.is == RoleEnum.WOLFCUB.toString)||
-        (user_entrys(0).role.is == RoleEnum.FOX.toString)||
-        (user_entrys(0).role.is == RoleEnum.POISONER.toString)||
-        (user_entrys(0).role.is == RoleEnum.DEMON.toString) ||
-        ((user_entrys(0).role.is == RoleEnum.PONTIFF.toString) &&
-         (room.has_flag(RoomFlagEnum.SUBROLE_SUBPONTIFF)))) {
+    if ((user_dummy.length == 1) &&
+        ((user_dummy(0).role.is == RoleEnum.WEREWOLF.toString)||
+         (user_dummy(0).role.is == RoleEnum.WOLFCUB.toString)||
+         (user_dummy(0).role.is == RoleEnum.FOX.toString)||
+         (user_dummy(0).role.is == RoleEnum.POISONER.toString)||
+         (user_dummy(0).role.is == RoleEnum.DEMON.toString) ||
+         ((user_dummy(0).role.is == RoleEnum.PONTIFF.toString) &&
+         (room.has_flag(RoomFlagEnum.SUBROLE_SUBPONTIFF))))) {
       val temp_user = user_entrys_ordered.filter(x => 
         (x.role.is != RoleEnum.WEREWOLF.toString) &&
         (x.role.is != RoleEnum.WOLFCUB.toString) &&
@@ -399,12 +402,12 @@ object GameProcesser {
       val temp_role = temp_user(0).role.is
       val temp_subrole = temp_user(0).subrole.is
       val temp_user_flags = temp_user(0).user_flags.is
-      temp_user(0).role(user_entrys(0).role.is)
-      temp_user(0).subrole(user_entrys(0).subrole.is)
-      temp_user(0).user_flags(user_entrys(0).user_flags.is)
-      user_entrys(0).role(temp_role)
-      user_entrys(0).subrole(temp_subrole)
-      user_entrys(0).user_flags(temp_user_flags)
+      temp_user(0).role(user_dummy(0).role.is)
+      temp_user(0).subrole(user_dummy(0).subrole.is)
+      temp_user(0).user_flags(user_dummy(0).user_flags.is)
+      user_dummy(0).role(temp_role)
+      user_dummy(0).subrole(temp_subrole)
+      user_dummy(0).user_flags(temp_user_flags)
     }
 
     // 教主選項 2
@@ -719,10 +722,18 @@ object GameProcesser {
     //room.save(flush:true)
     
     // 吊到惡魔？
-    if ((voted_player != WaterElemental) && (voted_player.current_role == RoleEnum.DEMON) &&
-        (voted_player.has_flag(UserEntryFlagEnum.BITED))) {
-      // 惡魔直接獲勝
-      return RoomVictoryEnum.DEMON_WIN
+    if ((voted_player != WaterElemental) && (voted_player.current_role == RoleEnum.DEMON)) {
+      if (voted_player.has_flag(UserEntryFlagEnum.BITED))
+        // 惡魔直接獲勝
+        return RoomVictoryEnum.DEMON_WIN
+      else {
+        // 清除凍結
+        val penguins = user_entrys.filter(_.current_role == RoleEnum.PENGUIN)
+        penguins.foreach { penguin =>
+          penguin.action_point(0)
+          penguin.save
+        }
+      }
     }
     
     return RoomVictoryEnum.NONE
@@ -734,7 +745,8 @@ object GameProcesser {
     var votes_for_save : List[Vote]      = List()
     
     // 妖狐指定背德
-    val fox_votes = votes.filter(_.mtype.is == MTypeEnum.VOTE_FOX.toString)
+    val fox_votes = votes.filter(x => (x.mtype.is == MTypeEnum.VOTE_FOX.toString) ||
+                                      (x.mtype.is == MTypeEnum.VOTE_FOX1.toString))
     fox_votes.foreach { vote =>
       val target = user_entrys.filter(_.id.is == vote.actionee_id.is)(0)
       target.role(RoleEnum.BETRAYER.toString)
@@ -753,6 +765,8 @@ object GameProcesser {
             ((target_role_str == RoleEnum.AUGURER.toString) ||
              (target_role_str == RoleEnum.HUNTER.toString)))
           RoleEnum.AUGHUNTER.toString
+        else if (target_role_str == RoleEnum.DEMON.toString)
+          RoleEnum.PENGUIN.toString
         else
           target_role_str
       if (room.has_flag(RoomFlagEnum.SHIFTER_LOVER)) {
@@ -775,9 +789,29 @@ object GameProcesser {
       val talk = Talk.create.mtype(MTypeEnum.MESSAGE_GENERAL.toString).message(talk_sentence).font_type("12")
       talks_for_save = talks_for_save ::: List(talk)
     }
+    val shifter_votes2 = votes.filter(_.mtype.is == MTypeEnum.VOTE_SHIFTER2.toString)
+    shifter_votes2.foreach { vote =>
+      val actioner = user_entrys.filter(_.id.is == vote.actioner_id.is)(0)
+      val target_role_str2 = RoleEnum.PENGUIN.toString
+
+      actioner.role(target_role_str2 + actioner.role.is)
+      actioner.save
+
+      val target_role_enum = RoleEnum.get_role(target_role_str2)
+
+      val talk_sentence =
+        if (room.has_flag(RoomFlagEnum.SHIFTER_REVEAL))
+          "＜＜模仿師模仿成功＞＞ (" + target_role_enum.toString + ")"
+        else
+          "＜＜模仿師模仿成功＞＞"
+
+      val talk = Talk.create.mtype(MTypeEnum.MESSAGE_GENERAL.toString).message(talk_sentence).font_type("12")
+      talks_for_save = talks_for_save ::: List(talk)
+    }
 
     // 妖狐結界
-    val fox_barrier_votes = votes.filter(_.mtype.is == MTypeEnum.VOTE_FOX2.toString)
+    val fox_barrier_votes = votes.filter(x => (x.mtype.is == MTypeEnum.VOTE_FOX1.toString) ||
+                                              (x.mtype.is == MTypeEnum.VOTE_FOX2.toString))
     fox_barrier_votes.foreach { vote =>
       val actioner = user_entrys.filter(_.id.is == vote.actioner_id.is)(0)
 
@@ -1170,6 +1204,18 @@ object GameProcesser {
         else if ((wolfcub_target.current_role == RoleEnum.WOLFCUB) || (wolfcub_target.current_role == RoleEnum.WEREWOLF)) {}                                           // 3. 咬到幼狼
         else if ((wolfcub_target.current_role == RoleEnum.FOX) ) {}  // 4. 咬到狐
         else if ((wolfcub_target.current_role == RoleEnum.DEMON)) {} // 5. 咬到惡魔
+
+        // 這幼狼咬水元素新加上去
+        else if ((wolfcub_target.current_role == RoleEnum.ARCHMAGE) &&
+               (wolfcub_target.hasnt_flag(UserEntryFlagEnum.WATER_ELEM_USED))) { // 6. 咬到水元素
+          wolfcub_target.user_flags( wolfcub_target.user_flags.is + UserEntryFlagEnum.WATER_ELEM_USED.toString )
+          wolfcub_target.save
+
+          val sys_mes = SystemMessage.create.roomday_id(room_day.id.is)
+                        .actioner_id(0).mtype(MTypeEnum.DEATH_EATEN.toString)
+          sys_mes.save
+        }
+
         else  {
           val herbalist_elixirs = herbalist_elixir_votes.filter(_.actionee_id.is == wolfcub_target.id.is)
           if (herbalist_elixirs.length != 0) { // 7.治療藥，只算用掉一個
@@ -1259,7 +1305,10 @@ object GameProcesser {
     sorceror_whispers.foreach { sorceror_whisper =>
       val actioner = user_entrys.filter(_.id.is == sorceror_whisper.actioner_id.is)(0)
       if (actioner.live.is) {
-        actioner.action_point(Math.max(0, actioner.action_point.is-3))
+        if (room.has_flag(RoomFlagEnum.SORCEROR_WHISPER1))
+          actioner.action_point(Math.max(0, actioner.action_point.is-2))
+        else
+          actioner.action_point(Math.max(0, actioner.action_point.is-3))
         actioner.save
       }
     }
@@ -1344,6 +1393,72 @@ object GameProcesser {
     stunned3s.foreach { stunned3 =>
        stunned3.user_flags(stunned3.user_flags.is.replace(UserEntryFlagEnum.STUNNED_3.toString,UserEntryFlagEnum.STUNNED_2.toString))
        stunned3.save
+    }
+
+    // 冰封
+    val iced1s  =  user_entrys.filter(_.has_flag(UserEntryFlagEnum.ICED_1))
+    iced1s.foreach { iced1 =>
+      val disrupts = votes.filter(_.actionee_id.is == iced1.id.is)
+
+      if ((iced1.live.is) && (disrupts.length == 0)) {
+        process_death(room_day, iced1, MTypeEnum.DEATH_PENGUIN_ICE)
+        val live_penguins = user_entrys.filter( x =>
+          (x.current_role == RoleEnum.PENGUIN)) // && (x.live.is))
+        live_penguins.foreach { live_penguin =>
+          live_penguin.action_point(live_penguin.action_point.is+1)
+          live_penguin.save
+        }
+      } else {
+        iced1.user_flags(iced1.user_flags.is.replace(UserEntryFlagEnum.ICED_1.toString, ""))
+        iced1.save
+      }
+       
+    }
+    val iced2s  =  user_entrys.filter(_.has_flag(UserEntryFlagEnum.ICED_2))
+    iced2s.foreach { iced2 =>
+      val disrupts = votes.filter(_.actionee_id.is == iced2.id.is)
+
+      if ((iced2.live.is) && (disrupts.length == 0))
+        iced2.user_flags(iced2.user_flags.is.replace(UserEntryFlagEnum.ICED_2.toString,UserEntryFlagEnum.ICED_1.toString))
+      else
+        iced2.user_flags(iced2.user_flags.is.replace(UserEntryFlagEnum.ICED_2.toString, ""))
+
+      iced2.save
+    }
+    val iced3s  =  user_entrys.filter(_.has_flag(UserEntryFlagEnum.ICED_3))
+    iced3s.foreach { iced3 =>
+      val disrupts = votes.filter(_.actionee_id.is == iced3.id.is)
+
+      if ((iced3.live.is) && (disrupts.length == 0))
+        iced3.user_flags(iced3.user_flags.is.replace(UserEntryFlagEnum.ICED_3.toString,UserEntryFlagEnum.ICED_2.toString))
+      else
+        iced3.user_flags(iced3.user_flags.is.replace(UserEntryFlagEnum.ICED_3.toString, ""))
+
+      iced3.save
+    }
+    /* val iced4s  =  user_entrys.filter(_.has_flag(UserEntryFlagEnum.ICED_4))
+    iced4s.foreach { iced4 =>
+      val disrupts = votes.filter(_.actionee_id.is == iced4.id.is)
+
+      if ((iced4.live.is) && (disrupts.length == 0))
+        iced4.user_flags(iced4.user_flags.is.replace(UserEntryFlagEnum.ICED_4.toString,UserEntryFlagEnum.ICED_3.toString))
+      else
+        iced4.user_flags(iced4.user_flags.is.replace(UserEntryFlagEnum.ICED_4.toString, ""))
+
+      iced4.save
+    } */
+    val penguin_ice_votes = votes.filter(_.mtype.is == MTypeEnum.VOTE_PENGUIN_ICE.toString)
+    penguin_ice_votes.foreach { penguin_ice_vote =>
+      val actioner = user_entrys.filter(_.id.is == penguin_ice_vote.actioner_id.is)(0)
+      val target   = user_entrys.filter(_.id.is == penguin_ice_vote.actionee_id.is)(0)
+      val disrupts = votes.filter(x => (x.actionee_id.is == target.id.is)  &&
+                                  (x.mtype.is != MTypeEnum.VOTE_PENGUIN_ICE.toString))
+
+      if ((actioner.live.is) && (target.live.is) && (disrupts.length == 0) &&
+          (target.current_role != RoleEnum.DEMON)) {
+        target.user_flags(target.user_flags.is + UserEntryFlagEnum.ICED_3.toString)
+        target.save
+      }
     }
 
     // 教主 STUN 回復
@@ -1516,10 +1631,10 @@ object GameProcesser {
           case 0 => actioner.user_flags(actioner.user_flags.is.replace(UserEntryFlagEnum.ELIXIR_USED.toString, "")).save
           case 1 => actioner.user_flags(actioner.user_flags.is.replace(UserEntryFlagEnum.POISON_USED.toString, "")).save
           case 2 => val herbalist_mix_new_vote = Vote.create.roomday_id(room_day.id.is).mtype(MTypeEnum.VOTE_BETRAYER_DISGUISE.toString).actioner_id(0).actionee_id(actioner.id.is)
-                    herbalist_mix_new_vote.save
+                    //herbalist_mix_new_vote.save
                     votes_for_save = votes_for_save ::: List(herbalist_mix_new_vote)
           case 3 => val herbalist_mix_new_vote = Vote.create.roomday_id(room_day.id.is).mtype(MTypeEnum.VOTE_BETRAYER_FOG.toString).actioner_id(0)
-                    herbalist_mix_new_vote.save
+                    //herbalist_mix_new_vote.save
                     votes_for_save = votes_for_save ::: List(herbalist_mix_new_vote)
           case 4 => actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.DEATH_2.toString).save
         }
@@ -1704,12 +1819,20 @@ object GameProcesser {
     var result : RoomVictoryEnum.Value = RoomVictoryEnum.NONE
     
     val live_user_entrys = user_entrys.filter(_.live.is)
+
+    val live_penguins = live_user_entrys.filter( x =>
+        (x.current_role == RoleEnum.PENGUIN))
+    live_penguins.foreach { live_penguin =>
+      if (live_penguin.action_point.is >= 3)
+        return RoomVictoryEnum.PENGUIN_WIN
+    }
     
     val live_human = live_user_entrys.filter( x =>
         (x.current_role != RoleEnum.WEREWOLF) &&
         (x.current_role != RoleEnum.WOLFCUB) &&
         (x.current_role != RoleEnum.FOX) &&
         (x.current_role != RoleEnum.DEMON) &&
+        (x.current_role != RoleEnum.PENGUIN) &&
         ((x.current_role != RoleEnum.INHERITER) || (!room.has_flag(RoomFlagEnum.INHERITER_NEUTRAL))))
     val live_wolf     = live_user_entrys.filter(x=>(x.current_role == RoleEnum.WEREWOLF) || (x.current_role == RoleEnum.WOLFCUB))
     val live_fox      = live_user_entrys.filter(_.current_role == RoleEnum.FOX)
