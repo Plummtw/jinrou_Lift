@@ -88,6 +88,8 @@ object RoomFlagEnum extends Enumeration {
   val DEMON_OPTION1    = Value("D1")
   val DEMON_OPTION2    = Value("D2")
   val DEMON_OPTION3    = Value("D3")
+  val PENGUIN_OPTION1    = Value("K1")
+  val PENGUIN_OPTION2    = Value("K2")
   val PONTIFF_OPTION1  = Value("J1")
   val PONTIFF_OPTION2    = Value("J2")
   val PONTIFF_OPTION3    = Value("J3")
@@ -181,6 +183,8 @@ object RoomFlagEnum extends Enumeration {
     DEMON_OPTION1    -> "<惡1>",
     DEMON_OPTION2    -> "<惡2>",
     DEMON_OPTION3    -> "<惡3>",
+    PENGUIN_OPTION1  -> "<企1>",
+    PENGUIN_OPTION2  -> "<企2>",
     PONTIFF_OPTION1  -> "<教1>",
     PONTIFF_OPTION2  -> "<教2>",
     PONTIFF_OPTION3  -> "<教3>",

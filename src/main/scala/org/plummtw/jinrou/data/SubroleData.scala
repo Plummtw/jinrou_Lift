@@ -41,7 +41,8 @@ object SubroleFakeAugurer extends SubroleData(SubroleEnum.FAKEAUGURER, "冒牌�
 
 
 object SubroleSuddenDeath extends SubroleData(SubroleEnum.SUDDENDEATH, "絕望者", "#999999") {
-  override def subrole_intro = <span>[副職]你身有隱族，於七日投票之後暴斃身亡。</span>
+  //override def subrole_intro = <span>[副職]你身有隱族，於七日投票之後暴斃身亡。</span>
+  override def subrole_intro = <img src="images/subrole_suddendeath.gif"/>
 }
 
 object SubroleAvenger extends SubroleData(SubroleEnum.AVENGER, "復仇者", "#999999") {
@@ -55,8 +56,8 @@ object SubroleWolfBeliever extends SubroleData(SubroleEnum.WOLFBELIEVER, "狼信
 }
 
 object SubroleFoxBeliever extends SubroleData(SubroleEnum.FOXBELIEVER, "狐信者", "#CC0099") {
-  override def subrole_intro = <span>[副職]你是妖狐的追隨者，妖狐的勝利是你所希望的。</span>
-  //override def subrole_intro = <img src="images/subrole_wolfbeliever.gif"/>
+  //override def subrole_intro = <span>[副職]你是妖狐的追隨者，妖狐的勝利是你所希望的。</span>
+  override def subrole_intro = <img src="images/subrole_foxbeliever.gif"/>
 
   //override def ctext = <font color={subrole_color}>[狐信者]</font>
   override def toString(): String = "無副職"
@@ -79,11 +80,13 @@ object SubroleWiseWolf extends SubroleData(SubroleEnum.WISEWOLF, "智狼", "#FF0
 }
 
 object SubroleSubpontiff extends SubroleData(SubroleEnum.SUBPONTIFF, "副教主", "#EEAA55") {
-  override def subrole_intro = <span>[副職]你是副教主，你知道教主同樣的資訊，但是教主死亡時會跟著離去，可以代替教主指揮。</span>
+  //override def subrole_intro = <span>[副職]你是副教主，你知道教主同樣的資訊，但是教主死亡時會跟著離去，可以代替教主指揮。</span>
+  override def subrole_intro = <img src="images/subrole_subpontiff.gif"/>
 }
 
 object SubroleNoreligion extends SubroleData(SubroleEnum.NORELIGION, "無神論者", "#999999") {
-  override def subrole_intro = <span>[副職]你是無神論者，你無法入教。若教主拉你入教則會暫停一回合無法拉人入教。</span>
+  //override def subrole_intro = <span>[副職]你是無神論者，你無法入教。若教主拉你入教則會暫停一回合無法拉人入教。</span>
+  override def subrole_intro = <img src="images/subrole_noreligion.gif"/>
 }
 
 

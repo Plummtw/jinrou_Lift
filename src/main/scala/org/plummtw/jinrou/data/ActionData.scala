@@ -651,6 +651,9 @@ object ActionNoAction extends ActionData(MTypeEnum.VOTE_NO_ACTION, "不行動！
 
 object ActionNoAction2 extends ActionData(MTypeEnum.VOTE_NO_ACTION, "不行動！", "no_action", false) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
-    return (room_day.day_no.is != 1)
+    return (!((room.has_flag(RoomFlagEnum.FOX_OPTION1)) &&
+              (room.has_flag(RoomFlagEnum.ROLE_BETRAYER)) &&
+              (user_entrys.length >= 20) &&
+              (room_day.day_no.is == 1)))
   }
 }

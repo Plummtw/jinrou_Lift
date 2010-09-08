@@ -976,12 +976,12 @@ object RoleDemon       extends RoleData(RoleEnum.DEMON,       "惡魔",   "#6666
 }
 
 object RolePenguin  extends RoleData(RoleEnum.PENGUIN,     "企鵝",   "#CCFFFF", RoomVictoryEnum.PENGUIN_WIN, List(ActionPenguinIce, ActionNoAction)) {
-  override def role_intro = <span>[角色]<br/>　　您所扮演的角色是企鵝，您必須完成企鵝儀式以冰封整個村子。(註：冰凍需時4天，必須冰凍4人且未受干擾，無法冰凍惡魔，且惡魔死亡全冰凍解除)。</span>
-  //override def role_intro = <img src="images/role_demon.gif"/>
+  //override def role_intro = <span>[角色]<br/>　　您所扮演的角色是企鵝，您必須完成企鵝儀式以冰封整個村子。(註：冰凍需時4天，必須冰凍4人且未受干擾，無法冰凍惡魔，且惡魔死亡全冰凍解除)。</span>
+  override def role_intro = <img src="images/role_penguin.gif"/>
 
   override def role_ability(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) = {
     val action_point_tag : NodeSeq =
-      if (user.role.is.length == 1)
+      if ((user.role.is.length > 1) && (user.role.is(1).toString == RoleEnum.INHERITER.toString))
         Seq(<tr><td>已冰凍人數：</td><td>{user.action_point.is}/3</td></tr>)
       else
         Seq(<tr><td colspan="2">無法察覺已冰凍人數</td></tr>)
@@ -1025,7 +1025,8 @@ object RoleCardMaster    extends RoleData(RoleEnum.CARDMASTER,  "卡片師", "#F
   override def ctext = <span><font color="#FF7700">[卡</font><font color="#EC9010">片</font><font color="#DAA520">師]</font></span>
   override def role_enabled = false
 
-  override def role_intro = <span>[角色]<br/>　　您所扮演的角色是卡片師，每日可以翻一張牌，根據不同的牌可以擁有不同的能力。</span>
+  //override def role_intro = <span>[角色]<br/>　　您所扮演的角色是卡片師，每日可以翻一張牌，根據不同的牌可以擁有不同的能力。</span>
+  override def role_intro = <img src="images/role_cardmaster.gif"/>
 
   override def role_ability(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) = {
     var cards = List("")

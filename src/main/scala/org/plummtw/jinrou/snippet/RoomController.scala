@@ -243,6 +243,8 @@ class RoomController {
       "demon_option1"     -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.DEMON_OPTION1),    "id"->"demon_option1"),
       "demon_option2"     -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.DEMON_OPTION2),    "id"->"demon_option2"),
       "demon_option3"     -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.DEMON_OPTION3),    "id"->"demon_option3"),
+      "penguin_option1"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.PENGUIN_OPTION1),  "id"->"penguin_option1"),
+      "penguin_option2"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.PENGUIN_OPTION2),  "id"->"penguin_option2"),
       "pontiff_option1"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.PONTIFF_OPTION1), "id"->"pontiff_option1"),
       "pontiff_option2"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.PONTIFF_OPTION2), "id"->"pontiff_option2"),
       "pontiff_option3"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.PONTIFF_OPTION3), "id"->"pontiff_option3"),

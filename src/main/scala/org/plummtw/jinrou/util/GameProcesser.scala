@@ -375,8 +375,14 @@ object GameProcesser {
         subrole_array_noreligion.add(i)
       }
       java.util.Collections.shuffle(subrole_array_noreligion)
-      val sub_noreligion = subrole_array_noreligion.removeFirst()
-      user_entrys.filter(_.user_no.is == sub_noreligion)(0).subrole(SubroleEnum.NORELIGION.toString).user_flags(UserEntryFlagEnum.NORELIGION.toString)
+      var sub_noreligion = subrole_array_noreligion.removeFirst()
+      var sub_noreligion_users = user_entrys.filter(_.user_no.is == sub_noreligion)
+      if (sub_noreligion_users.length >= 1)
+        sub_noreligion_users(0).subrole(SubroleEnum.NORELIGION.toString).user_flags(UserEntryFlagEnum.NORELIGION.toString)
+      sub_noreligion = subrole_array_noreligion.removeFirst()
+      sub_noreligion_users = user_entrys.filter(_.user_no.is == sub_noreligion)
+      if (sub_noreligion_users.length >= 1)
+        sub_noreligion_users(0).subrole(SubroleEnum.NORELIGION.toString).user_flags(UserEntryFlagEnum.NORELIGION.toString)
     }
 
     val user_dummy = user_entrys.filter(x => x.uname.is == "dummy_boy")
@@ -833,6 +839,7 @@ object GameProcesser {
           (target.current_role != RoleEnum.WOLFCUB) &&
           (target.current_role != RoleEnum.FOX) &&
           (target.current_role != RoleEnum.DEMON) &&
+          (target.current_role != RoleEnum.PENGUIN) &&
           (target.current_role != RoleEnum.PONTIFF)) {
         actioner.role(target.role.is.substring(0,1))
         actioner.subrole(SubroleEnum.FOXBELIEVER.toString)
@@ -1117,6 +1124,8 @@ object GameProcesser {
       else if (archmage_dispell_votes.filter(_.actionee_id.is == werewolf_biter.id.is).length != 0) {}          // 2. 大魔導解除法術
       else if ((werewolf_target.current_role == RoleEnum.WOLFCUB) || (werewolf_target.current_role == RoleEnum.WEREWOLF)) {}                                           // 3. 咬到幼狼
       else if ((werewolf_target.current_role == RoleEnum.FOX) && (!werewolf_power)) {}                          // 4. 咬到狐
+      else if ((werewolf_target.current_role == RoleEnum.PENGUIN) && (!werewolf_power) &&
+               (room.has_flag(RoomFlagEnum.PENGUIN_OPTION2))) {}                                                // 4.1 咬到企鵝
       else if ((werewolf_target.current_role == RoleEnum.DEMON) && (!werewolf_power)) {                         // 5. 咬到惡魔
         werewolf_target.action_point(werewolf_target.action_point.is + 3)
         if (werewolf_target.hasnt_flag(UserEntryFlagEnum.BITED)) {
@@ -1203,6 +1212,8 @@ object GameProcesser {
         else if (archmage_dispell_votes.filter(_.actionee_id.is == wolfcub_biter.id.is).length != 0) {} // 2. 大魔導解除法術
         else if ((wolfcub_target.current_role == RoleEnum.WOLFCUB) || (wolfcub_target.current_role == RoleEnum.WEREWOLF)) {}                                           // 3. 咬到幼狼
         else if ((wolfcub_target.current_role == RoleEnum.FOX) ) {}  // 4. 咬到狐
+        else if ((wolfcub_target.current_role == RoleEnum.PENGUIN) &&
+                 (room.has_flag(RoomFlagEnum.PENGUIN_OPTION2))) {}   // 4.1 咬到企鵝
         else if ((wolfcub_target.current_role == RoleEnum.DEMON)) {} // 5. 咬到惡魔
 
         // 這幼狼咬水元素新加上去
@@ -1456,7 +1467,10 @@ object GameProcesser {
 
       if ((actioner.live.is) && (target.live.is) && (disrupts.length == 0) &&
           (target.current_role != RoleEnum.DEMON)) {
-        target.user_flags(target.user_flags.is + UserEntryFlagEnum.ICED_3.toString)
+        if ((room_day.weather.is == WeatherEnum.SNOWY.toString) && (room.has_flag(RoomFlagEnum.PENGUIN_OPTION1)))
+          target.user_flags(target.user_flags.is + UserEntryFlagEnum.ICED_2.toString)
+        else
+          target.user_flags(target.user_flags.is + UserEntryFlagEnum.ICED_3.toString)
         target.save
       }
     }
@@ -1795,7 +1809,7 @@ object GameProcesser {
                    .message("< < 早晨來臨 第 " + ((new_room_day.day_no.is+2)/2).toString +" 日的早上開始 > >" + weather_string)
     talk.save
 
-    if ((new_room_day.day_no.is == 6) && (room.has_flag(RoomFlagEnum.DUMMY_REVEAL)) && (!room.has_flag(RoomFlagEnum.NO_DUMMY))) {
+    if ((new_room_day.day_no.is == 6) && (room.has_flag(RoomFlagEnum.DUMMY_REVEAL)) && (!(room.has_flag(RoomFlagEnum.NO_DUMMY)))) {
       val dummy_boy = user_entrys.filter(_.uname.is == "dummy_boy")(0)
       val talk = Talk.create.roomday_id(new_room_day.id.is).mtype(MTypeEnum.MESSAGE_EVIL.toString)
                    .message("< < 非人側的你察覺 " + dummy_boy.handle_name.is + " 的職業是 " +
@@ -1803,7 +1817,7 @@ object GameProcesser {
       talk.save
     }
 
-    if ((new_room_day.day_no.is == 12) && (room.has_flag(RoomFlagEnum.DUMMY_REVEAL)) && (!room.has_flag(RoomFlagEnum.NO_DUMMY))) {
+    if ((new_room_day.day_no.is == 12) && (room.has_flag(RoomFlagEnum.DUMMY_REVEAL)) && (!(room.has_flag(RoomFlagEnum.NO_DUMMY)))) {
       val dummy_boy = user_entrys.filter(_.uname.is == "dummy_boy")(0)
       val talk = Talk.create.roomday_id(new_room_day.id.is).mtype(MTypeEnum.MESSAGE_GENERAL.toString)
                    .message("< < 你發現 " + dummy_boy.handle_name.is + " 的職業是 " +
