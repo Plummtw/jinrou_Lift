@@ -79,7 +79,7 @@ class UserEntryController {
     //for (role_group <- JinrouUtil.zipListBySize(2)(RoleEnum.ROLE_MAP.keys.toList);role <- role_group)
     //  println (role.toString) 
 
-    val role_list = JinrouUtil.zipListBySize(2)(RoleEnum.ROLE_MAP.keys.toList)
+    val role_list = JinrouUtil.zipListBySize(2)(RoleEnum.ROLE_MAP.keys.toList -- RoleEnum.HIDDEN_ROLE_LIST)
     val role_xhtml : scala.xml.Elem = 
       if (room.room_flags.is.indexOf(RoomFlagEnum.WISH_ROLE.toString) == -1)
         <tr>{SHtml.hidden{() => role=RoleEnum.NONE.toString}}</tr>

@@ -522,6 +522,12 @@ object ActionDemonVortex extends ActionData(MTypeEnum.VOTE_DEMON_VORTEX, "斗轉
 object ActionPenguinIce extends ActionData(MTypeEnum.VOTE_PENGUIN_ICE, "冰凍", "penguin_ice", true) {
 }
 
+object ActionPenguinChill extends ActionData(MTypeEnum.VOTE_PENGUIN_CHILL, "冰凍且寒冰圍繞", "penguin_chill", true) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
+    return ((user.hasnt_flag(UserEntryFlagEnum.CHILL_USED)))
+  }
+}
+
 object ActionPontiff extends ActionData(MTypeEnum.VOTE_PONTIFF, "拉人入教", "pontiff", true) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
     if ((user.role.is.length != 1) && (room_day.day_no.is % 4 == 1))

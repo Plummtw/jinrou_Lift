@@ -85,6 +85,11 @@ object RoleEnum extends Enumeration {
      
      CARDMASTER  -> RoleCardMaster
   )
+
+  def HIDDEN_ROLE_LIST = List(
+      AUGHUNTER, ARCHMAGE,
+      PENGUIN, CARDMASTER
+  )
   
   def get_role(role : RoleEnum.Value) : RoleData = {
     val result = ROLE_MAP.get(role) 

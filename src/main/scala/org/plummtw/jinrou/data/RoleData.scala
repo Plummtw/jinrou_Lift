@@ -546,6 +546,8 @@ object RoleScholar     extends RoleData(RoleEnum.SCHOLAR,     "學者",   "#3CB3
             werewolf_result = "失敗(妖狐)"
           else if (werewolf_target.current_role == RoleEnum.DEMON)
             werewolf_result = "失敗(惡魔)"
+          else if (werewolf_target.current_role == RoleEnum.DEMON)
+            werewolf_result = "失敗(企鵝)"
           else if (werewolf_target.current_role == RoleEnum.WOLFCUB)
             werewolf_result = "失敗(幼狼)"
           else if (herbalist_elixir_votes.filter(_.actionee_id.is == werewolf_target.id.is).length != 0)
@@ -975,13 +977,13 @@ object RoleDemon       extends RoleData(RoleEnum.DEMON,       "惡魔",   "#6666
   }
 }
 
-object RolePenguin  extends RoleData(RoleEnum.PENGUIN,     "企鵝",   "#CCFFFF", RoomVictoryEnum.PENGUIN_WIN, List(ActionPenguinIce, ActionNoAction)) {
+object RolePenguin  extends RoleData(RoleEnum.PENGUIN,     "企鵝",   "#CCFFFF", RoomVictoryEnum.PENGUIN_WIN, List(ActionPenguinIce, ActionPenguinChill)) {
   //override def role_intro = <span>[角色]<br/>　　您所扮演的角色是企鵝，您必須完成企鵝儀式以冰封整個村子。(註：冰凍需時4天，必須冰凍4人且未受干擾，無法冰凍惡魔，且惡魔死亡全冰凍解除)。</span>
   override def role_intro = <img src="images/role_penguin.gif"/>
 
   override def role_ability(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) = {
     val action_point_tag : NodeSeq =
-      if ((user.role.is.length > 1) && (user.role.is(1).toString == RoleEnum.INHERITER.toString))
+      if ((user.role.is.length > 1) && (user.role.is(1).toString != RoleEnum.INHERITER.toString))
         Seq(<tr><td>已冰凍人數：</td><td>{user.action_point.is}/3</td></tr>)
       else
         Seq(<tr><td colspan="2">無法察覺已冰凍人數</td></tr>)
@@ -989,11 +991,10 @@ object RolePenguin  extends RoleData(RoleEnum.PENGUIN,     "企鵝",   "#CCFFFF"
     val iced = user_entrys.filter(x =>
       (x.has_flag(UserEntryFlagEnum.ICED_1)) ||
       (x.has_flag(UserEntryFlagEnum.ICED_2)) ||
-      (x.has_flag(UserEntryFlagEnum.ICED_3)) ||
-      (x.has_flag(UserEntryFlagEnum.ICED_4)))
+      (x.has_flag(UserEntryFlagEnum.ICED_3)))
 
     val iced_tag : NodeSeq =
-      Seq(<tr><td>冰凍中人數：</td><td>{iced.length}</td></tr>)
+      Seq(<tr><td>冰凍中名單：</td><td>{iced.map(_.handle_name.is).mkString("", "　","")}</td></tr>)
 
     <table cellSpacing="0" cellPadding="0" border="1"><tbody>
       {action_point_tag}{iced_tag}

@@ -1458,7 +1458,8 @@ object GameProcesser {
 
       iced4.save
     } */
-    val penguin_ice_votes = votes.filter(_.mtype.is == MTypeEnum.VOTE_PENGUIN_ICE.toString)
+    val penguin_ice_votes = votes.filter(x => (x.mtype.is == MTypeEnum.VOTE_PENGUIN_ICE.toString) ||
+                                              (x.mtype.is == MTypeEnum.VOTE_PENGUIN_CHILL.toString))
     penguin_ice_votes.foreach { penguin_ice_vote =>
       val actioner = user_entrys.filter(_.id.is == penguin_ice_vote.actioner_id.is)(0)
       val target   = user_entrys.filter(_.id.is == penguin_ice_vote.actionee_id.is)(0)
@@ -1473,6 +1474,28 @@ object GameProcesser {
           target.user_flags(target.user_flags.is + UserEntryFlagEnum.ICED_3.toString)
         target.save
       }
+    }
+    val penguin_chill_votes = votes.filter(_.mtype.is == MTypeEnum.VOTE_PENGUIN_CHILL.toString)
+    penguin_chill_votes.foreach { penguin_chill_vote =>
+      val actioner = user_entrys.filter(_.id.is == penguin_chill_vote.actioner_id.is)(0)
+      val chilled_votes = votes.filter(_.actionee_id.is == actioner.id.is)
+      chilled_votes.foreach { chilled_vote =>
+        val target   = user_entrys.filter(_.id.is == chilled_vote.actioner_id.is)(0)
+        val disrupts = votes.filter(x => (x.actionee_id.is == target.id.is)  &&
+                                    (x.mtype.is != MTypeEnum.VOTE_PENGUIN_ICE.toString))
+
+        if ((actioner.live.is) && (target.live.is) && (disrupts.length == 0) &&
+            (target.current_role != RoleEnum.DEMON)) {
+          if ((room_day.weather.is == WeatherEnum.SNOWY.toString) && (room.has_flag(RoomFlagEnum.PENGUIN_OPTION1)))
+            target.user_flags(target.user_flags.is + UserEntryFlagEnum.ICED_2.toString)
+          else
+            target.user_flags(target.user_flags.is + UserEntryFlagEnum.ICED_3.toString)
+          target.save
+        }
+      }
+
+      actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.CHILL_USED.toString)
+      actioner.save
     }
 
     // 教主 STUN 回復

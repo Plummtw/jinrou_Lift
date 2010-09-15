@@ -56,7 +56,7 @@ object UserEntryFlagEnum extends Enumeration {
   val ICED_1           = Value("4")
   val ICED_2           = Value("5")
   val ICED_3           = Value("6")
-  val ICED_4           = Value("7")
+  val CHILL_USED      = Value("7")
 
   val DEATH_2             = Value("8")
   val DEATH_1              = Value("9")

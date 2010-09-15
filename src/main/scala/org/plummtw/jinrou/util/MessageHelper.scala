@@ -461,7 +461,8 @@ object MessageHelper {
       case MTypeEnum.VOTE_DEMON_CURSE2     => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is +" 使用詛咒術",heaven_mode,"#666666","#FF0000")
       case MTypeEnum.VOTE_DEMON_VORTEX     => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is +" 使用斗轉星移",heaven_mode,"#666666","#FF0000")
 
-      case MTypeEnum.VOTE_PENGUIN_ICE     => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is +" 冰凍",heaven_mode,"#CCFFFF","#FF0000")
+      case MTypeEnum.VOTE_PENGUIN_ICE     => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is +" 冰凍",heaven_mode,"#CCFFFF","#0000FF")
+      case MTypeEnum.VOTE_PENGUIN_CHILL   => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is +" 冰凍且圍繞著寒冰",heaven_mode,"#CCFFFF","#0000FF")
 
       case MTypeEnum.VOTE_PONTIFF          => simple_message_tag(user_entry.handle_name.is + " 拉 " + user_target.handle_name.is + " 入教",heaven_mode,"#EEAA55","snow")
       case MTypeEnum.VOTE_PONTIFF_COMMAND  => simple_message_tag(user_entry.handle_name.is + " 指定 " + user_target.handle_name.is + " 為投票對象",heaven_mode,"#EEAA55","snow")

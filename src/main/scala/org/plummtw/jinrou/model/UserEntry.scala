@@ -14,6 +14,8 @@ import org.plummtw.jinrou.enum._
 import org.plummtw.jinrou.util._
 import org.plummtw.jinrou.data._
 
+object UserIconCache extends TimedCache[Long, List[UserIcon]](30000)
+
 class UserEntry extends LongKeyedMapper[UserEntry] with IdPK {
   def getSingleton = UserEntry // what's the "meta" object
   //def primaryKeyField = id
@@ -178,7 +180,8 @@ class UserEntry extends LongKeyedMapper[UserEntry] with IdPK {
   }
 
   def get_user_icon() : UserIcon = {
-    val user_icon_list = UserIcon.findAll(By(UserIcon.id, user_icon_id.is))
+    val user_icon_list = 
+      UserIconCache.getOr(user_icon_id.is) { () => UserIcon.findAll(By(UserIcon.id, user_icon_id.is)) }
     val user_icon : UserIcon = if (user_icon_list.length == 0) UserIcon.findAll(By(UserIcon.id, 1))(0) else user_icon_list(0)
 
     return user_icon
