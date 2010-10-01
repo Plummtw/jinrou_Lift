@@ -30,6 +30,8 @@ class ActionData(action: MTypeEnum.Value, str: String, name: String, targetable_
   override def toString(): String = "[" + tag_string + "]"
 }
 
+trait NoActionTrait
+
 object ActionKick extends ActionData(MTypeEnum.VOTE_KICK, "踢人", "kick", true) 
 object ActionStartGame extends ActionData(MTypeEnum.VOTE_STARTGAME, "開始遊戲！", "start_game", false)
 
@@ -653,9 +655,9 @@ object ActionCardSun extends ActionData(MTypeEnum.VOTE_CARD_SUN, "太陽！", "c
   }
 }
 
-object ActionNoAction extends ActionData(MTypeEnum.VOTE_NO_ACTION, "不行動！", "no_action", false)
+object ActionNoAction extends ActionData(MTypeEnum.VOTE_NO_ACTION, "不行動！", "no_action", false) with NoActionTrait
 
-object ActionNoAction2 extends ActionData(MTypeEnum.VOTE_NO_ACTION, "不行動！", "no_action", false) {
+object ActionNoAction2 extends ActionData(MTypeEnum.VOTE_NO_ACTION, "不行動！", "no_action", false) with NoActionTrait {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
     return (!((room.has_flag(RoomFlagEnum.FOX_OPTION1)) &&
               (room.has_flag(RoomFlagEnum.ROLE_BETRAYER)) &&

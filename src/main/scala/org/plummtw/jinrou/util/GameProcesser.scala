@@ -1464,7 +1464,8 @@ object GameProcesser {
       val actioner = user_entrys.filter(_.id.is == penguin_ice_vote.actioner_id.is)(0)
       val target   = user_entrys.filter(_.id.is == penguin_ice_vote.actionee_id.is)(0)
       val disrupts = votes.filter(x => (x.actionee_id.is == target.id.is)  &&
-                                  (x.mtype.is != MTypeEnum.VOTE_PENGUIN_ICE.toString))
+                                  (x.mtype.is != MTypeEnum.VOTE_PENGUIN_ICE.toString) &&
+                                  (x.mtype.is != MTypeEnum.VOTE_PENGUIN_CHILL.toString))
 
       if ((actioner.live.is) && (target.live.is) && (disrupts.length == 0) &&
           (target.current_role != RoleEnum.DEMON)) {
@@ -1482,7 +1483,8 @@ object GameProcesser {
       chilled_votes.foreach { chilled_vote =>
         val target   = user_entrys.filter(_.id.is == chilled_vote.actioner_id.is)(0)
         val disrupts = votes.filter(x => (x.actionee_id.is == target.id.is)  &&
-                                    (x.mtype.is != MTypeEnum.VOTE_PENGUIN_ICE.toString))
+                                    (x.mtype.is != MTypeEnum.VOTE_PENGUIN_ICE.toString) &&
+                                    (x.mtype.is != MTypeEnum.VOTE_PENGUIN_CHILL.toString))
 
         if ((actioner.live.is) && (target.live.is) && (disrupts.length == 0) &&
             (target.current_role != RoleEnum.DEMON)) {

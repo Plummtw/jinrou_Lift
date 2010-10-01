@@ -189,7 +189,7 @@ class AdminController {
       }
     }
 
-    val send_private_message_tag = if ((room != null) && (room.status.is != RoomStatusEnum.WAITING.toString))
+    def send_private_message_tag = if ((room != null) && (room.status.is != RoomStatusEnum.WAITING.toString))
                                   SHtml.submit("私人訊息",  send_private_message)
                                 else
                                   <span></span>

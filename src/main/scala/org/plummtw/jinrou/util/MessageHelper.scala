@@ -185,7 +185,7 @@ object MessageHelper {
           if (user_target_list.length != 0)
             user_target_list(0)
           else
-            user_entry
+            user_entrys(0)
 
         if (((user != null) && (user.id.is == talk.actionee_id.is)) || (heaven_mode))
           Seq(<tr><td width="200" align="left" valign="middle" style={"border-bottom: silver 1px dashed;"}>
@@ -395,7 +395,7 @@ object MessageHelper {
       case MTypeEnum.MESSAGE_NIGHT     => simple_message_tag("< < 日落、黑暗的夜晚來臨 > >")
       case MTypeEnum.MESSAGE_EVIL      =>
           if (((user != null) && (RoleEnum.get_role(user.role.is.substring(0,1)).role_side != RoomVictoryEnum.VILLAGER_WIN) &&
-               (!user.test_memoryloss(room, room_day, user_entrys))) || (heaven_mode))
+               (!user.test_memoryloss(room, room_day, user_entrys)) && (!user.test_fake(room_day))) || (heaven_mode))
             simple_message_tag(talk.message.is)
           else
             NodeSeq.Empty

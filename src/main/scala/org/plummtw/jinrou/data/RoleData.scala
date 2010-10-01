@@ -96,10 +96,10 @@ class RoleData(role: RoleEnum.Value, name: String, color : String, side: RoomVic
     
     val actions_enabled = actions.filter(_.enabled(room, room_day, user, user_entrys))
     
-    if ((actions_enabled.length == 1) && (actions_enabled(0) == ActionNoAction))
+    if ((actions_enabled.length == 1) && (actions_enabled(0).isInstanceOf[NoActionTrait]))
       return List()
-    else if ((actions_enabled.length == 1) && (actions_enabled(0) == ActionNoAction2))
-      return List()
+    //else if ((actions_enabled.length == 1) && (actions_enabled(0) == ActionNoAction2))
+    //  return List()
     else
       return actions_enabled
   }
@@ -977,7 +977,7 @@ object RoleDemon       extends RoleData(RoleEnum.DEMON,       "惡魔",   "#6666
   }
 }
 
-object RolePenguin  extends RoleData(RoleEnum.PENGUIN,     "企鵝",   "#CCFFFF", RoomVictoryEnum.PENGUIN_WIN, List(ActionPenguinIce, ActionPenguinChill)) {
+object RolePenguin  extends RoleData(RoleEnum.PENGUIN,     "企鵝",   "#AADDDD", RoomVictoryEnum.PENGUIN_WIN, List(ActionPenguinIce, ActionPenguinChill, ActionNoAction)) {
   //override def role_intro = <span>[角色]<br/>　　您所扮演的角色是企鵝，您必須完成企鵝儀式以冰封整個村子。(註：冰凍需時4天，必須冰凍4人且未受干擾，無法冰凍惡魔，且惡魔死亡全冰凍解除)。</span>
   override def role_intro = <img src="images/role_penguin.gif"/>
 
