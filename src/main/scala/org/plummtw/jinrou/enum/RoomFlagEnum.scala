@@ -13,6 +13,7 @@ object RoomFlagEnum extends Enumeration {
   val GEMINI_TALK  = Value("GT")
   val AUTO_VOTE    = Value("AV")
   val WEATHER       = Value("WE")
+  val WEATHER1       = Value("WF")
   val MOB_MODE      = Value("MM")
   val MOB_MODE1     = Value("MN")
   
@@ -34,6 +35,7 @@ object RoomFlagEnum extends Enumeration {
   
   val ROLE_DEMON     = Value("RD")
   val ROLE_PONTIFF   = Value("RJ")
+  val ROLE_PENGUIN   = Value("RK")
 
   val ROLE_INHERITER = Value("RI")  
   val ROLE_SHIFTER   = Value("RS")
@@ -66,6 +68,7 @@ object RoomFlagEnum extends Enumeration {
   val SCHOLAR_OPTION2    = Value("O2")
   val SCHOLAR_OPTION3    = Value("O3")
   val SCHOLAR_OPTION4    = Value("O4")
+  val ARCHMAGE_OPTION1   = Value("Z1")
   val WOLFCUB_OPTION1  = Value("X1")
   val MADMAN_KNOWLEDGE = Value("M1")
   val MADMAN_SUICIDE   = Value("M2")
@@ -79,6 +82,7 @@ object RoomFlagEnum extends Enumeration {
   val FOX_OPTION1       = Value("F1")
   val FOX_OPTION2       = Value("F2")
   val FOX_OPTION3       = Value("F3")
+  val FOX_OPTION4       = Value("F4")
   val BETRAYER_OPTION1  = Value("B1")
   val BETRAYER_OPTION2   = Value("B2")
   val BETRAYER_OPTION3   = Value("B3")
@@ -90,6 +94,7 @@ object RoomFlagEnum extends Enumeration {
   val DEMON_OPTION3    = Value("D3")
   val PENGUIN_OPTION1    = Value("K1")
   val PENGUIN_OPTION2    = Value("K2")
+  val PENGUIN_OPTION3    = Value("K3")
   val PONTIFF_OPTION1  = Value("J1")
   val PONTIFF_OPTION2    = Value("J2")
   val PONTIFF_OPTION3    = Value("J3")
@@ -97,6 +102,10 @@ object RoomFlagEnum extends Enumeration {
   val INHERITER_NEUTRAL = Value("I2")
   val SHIFTER_REVEAL   = Value("S1")
   val SHIFTER_LOVER    = Value("S2")
+  val CARDMASTER_OPTION1 = Value("Q1")
+
+  val GM_PENGUIN1        = Value("(1")
+  val GM_HERMIT1          = Value("(2")
   
   val FLAGNAME_MAP   = Map(
     TEST_MODE    -> "(測)",
@@ -108,6 +117,7 @@ object RoomFlagEnum extends Enumeration {
     GEMINI_TALK  -> "(共)",
     AUTO_VOTE    -> "(自投)",
     WEATHER      -> "(天候)",
+    WEATHER1     -> "(天候1)",
     MOB_MODE     -> "(暴)",
     MOB_MODE1    -> "(暴1)",
   
@@ -129,6 +139,7 @@ object RoomFlagEnum extends Enumeration {
   
     ROLE_DEMON     -> "[惡]",
     ROLE_PONTIFF   -> "[教]",
+    ROLE_PENGUIN   -> "[企]",
 
     ROLE_INHERITER -> "[繼]",
     ROLE_SHIFTER   -> "[模]",
@@ -161,6 +172,7 @@ object RoomFlagEnum extends Enumeration {
     SCHOLAR_OPTION2  -> "<學2>",
     SCHOLAR_OPTION3  -> "<學3>",
     SCHOLAR_OPTION4  -> "<學4>",
+    ARCHMAGE_OPTION1 -> "【GM:大】",
     WOLFCUB_OPTION1  -> "<幼>",
     MADMAN_KNOWLEDGE -> "<狂1>",
     MADMAN_SUICIDE   -> "<狂2>",
@@ -174,6 +186,7 @@ object RoomFlagEnum extends Enumeration {
     FOX_OPTION1      -> "<狐1>",
     FOX_OPTION2      -> "<狐2>",
     FOX_OPTION3      -> "<狐3>",
+    FOX_OPTION4      -> "<狐4>",
     BETRAYER_OPTION1 -> "<背1>",
     BETRAYER_OPTION2 -> "<背2>",
     BETRAYER_OPTION3 -> "<背3>",
@@ -185,13 +198,20 @@ object RoomFlagEnum extends Enumeration {
     DEMON_OPTION3    -> "<惡3>",
     PENGUIN_OPTION1  -> "<企1>",
     PENGUIN_OPTION2  -> "<企2>",
+    PENGUIN_OPTION3  -> "<企3>",
     PONTIFF_OPTION1  -> "<教1>",
     PONTIFF_OPTION2  -> "<教2>",
     PONTIFF_OPTION3  -> "<教3>",
     INHERITER_REVEAL -> "<繼1>",
     INHERITER_NEUTRAL -> "<繼2>",
     SHIFTER_REVEAL   -> "<模1>",
-    SHIFTER_LOVER    -> "<模2>"
+    SHIFTER_LOVER    -> "<模2>",
+
+    ARCHMAGE_OPTION1   -> "【GM:大】",
+    CARDMASTER_OPTION1 -> "【GM:卡】",
+
+    GM_PENGUIN1        -> "【GM:企】",
+    GM_HERMIT1         -> "【GM:隱】"
   )
   
   def flag_name(flag : RoomFlagEnum.Value) = {

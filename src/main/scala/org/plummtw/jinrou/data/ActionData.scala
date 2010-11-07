@@ -37,7 +37,8 @@ object ActionStartGame extends ActionData(MTypeEnum.VOTE_STARTGAME, "開始遊�
 
 object ActionVote extends ActionData(MTypeEnum.VOTE_HANG, "投票", "vote", true) {
   override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
-    val result = user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.id.is != user.id.is) && (x.live.is))
+    val result = user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.id.is != user.id.is) && (x.live.is) &&
+                                       (x.hasnt_flag(UserEntryFlagEnum.HIDED)))
     if ((user.has_flag(UserEntryFlagEnum.RELIGION)) ||
         (user.subrole.is == SubroleEnum.SUBPONTIFF.toString))
       result.filter(x=>x.hasnt_flag(UserEntryFlagEnum.PONTIFF_AURA))
@@ -49,6 +50,14 @@ object ActionVote extends ActionData(MTypeEnum.VOTE_HANG, "投票", "vote", true
 object ActionBecomeMob extends ActionData(MTypeEnum.VOTE_BECOMEMOB, "暴民模式！", "becomemob", false)  {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
     return ((room.has_flag(RoomFlagEnum.MOB_MODE)) && (user_entrys.length>=22) && (room_day.day_no.is == 11))
+  }
+}
+
+object ActionHide extends ActionData(MTypeEnum.VOTE_HIDE, "神隱！", "hide", false) 
+
+object ActionReverseVote extends ActionData(MTypeEnum.VOTE_REVERSEVOTE, "逆轉投票！", "reversemob", false)  {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
+      return (user.hasnt_flag(UserEntryFlagEnum.REVERSE_USED))
   }
 }
 
@@ -302,7 +311,8 @@ object ActionFox extends ActionData(MTypeEnum.VOTE_FOX, "指定背德", "fox_cho
   }
 
   override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
-      user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.live.is) && (x.current_role == RoleEnum.VILLAGER))
+      user_entrys.filter(x=> (x.live.is) && (x.current_role == RoleEnum.VILLAGER))
+      // (x.uname.is != "dummy_boy") &&
   }
 }
 
@@ -317,7 +327,8 @@ object ActionFox1 extends ActionData(MTypeEnum.VOTE_FOX1, "指定背德且結界
   }
 
   override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
-      user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.live.is) && (x.current_role == RoleEnum.VILLAGER))
+    user_entrys.filter(x=> (x.live.is) && (x.current_role == RoleEnum.VILLAGER))
+    // (x.uname.is != "dummy_boy") &&
   }
 }
 
@@ -329,6 +340,21 @@ object ActionFox2 extends ActionData(MTypeEnum.VOTE_FOX2, "結界！", "fox_barr
               (room.has_flag(RoomFlagEnum.ROLE_BETRAYER)) &&
               (user_entrys.length >= 20) &&
               (room_day.day_no.is == 1)))
+  }
+}
+
+object ActionFoxDisguise extends ActionData(MTypeEnum.VOTE_BETRAYER_DISGUISE, "偽裝", "fox_disguise", true) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
+    if (room.room_flags.is.indexOf(RoomFlagEnum.FOX_OPTION4.toString) == -1)
+      return false
+
+    if (!RoleFox.betrayer_mimic(user_entrys))
+      return false
+
+    if (room.room_flags.is.indexOf(RoomFlagEnum.CLERIC_OPTION2.toString) == -1)
+      return (user.action_point.is >= 3)
+
+    return (user.action_point.is >= 2)
   }
 }
 
@@ -526,7 +552,7 @@ object ActionPenguinIce extends ActionData(MTypeEnum.VOTE_PENGUIN_ICE, "冰凍",
 
 object ActionPenguinChill extends ActionData(MTypeEnum.VOTE_PENGUIN_CHILL, "冰凍且寒冰圍繞", "penguin_chill", true) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
-    return ((user.hasnt_flag(UserEntryFlagEnum.CHILL_USED)))
+      return (user.hasnt_flag(UserEntryFlagEnum.CHILL_USED) && (!room.has_flag(RoomFlagEnum.PENGUIN_OPTION3)))
   }
 }
 
@@ -584,7 +610,7 @@ object ActionShifter extends ActionData(MTypeEnum.VOTE_SHIFTER, "模仿", "shift
 
 object ActionShifterDemon extends ActionData(MTypeEnum.VOTE_SHIFTER2, "模仿惡魔！", "shift_demon", false) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
-    return (room_day.day_no.is == 1)
+    return (room.has_flag(RoomFlagEnum.ROLE_PENGUIN) && (room_day.day_no.is == 1))
   }
 }
 

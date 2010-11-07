@@ -9,6 +9,7 @@ object RoleEnum extends Enumeration {
   
   // VILLAGER SIDE
   val VILLAGER    = Value("V")
+  val HERMIT      = Value("Y")
   val AUGURER     = Value("A")
   val NECROMANCER = Value("N")
   val HUNTER      = Value("H")
@@ -52,6 +53,7 @@ object RoleEnum extends Enumeration {
      NONE        -> RoleNone,
   
      VILLAGER    -> RoleVillager,
+     HERMIT      -> RoleHermit,
      AUGURER     -> RoleAugurer,
      NECROMANCER -> RoleNecromancer,
      HUNTER      -> RoleHunter,
@@ -87,7 +89,7 @@ object RoleEnum extends Enumeration {
   )
 
   def HIDDEN_ROLE_LIST = List(
-      AUGHUNTER, ARCHMAGE,
+      HERMIT, AUGHUNTER, ARCHMAGE,
       PENGUIN, CARDMASTER
   )
   

@@ -110,7 +110,7 @@ object MessageHelper {
         if (talk.actioner_id.is != 0)
           UserEntry.findAll(By(UserEntry.id, talk.actioner_id.is))(0)
         else
-          null
+          AdminUserEntry //user_entrys(0)
       }
       else
         user_entry_list(0) 
@@ -166,7 +166,7 @@ object MessageHelper {
 
     val user_entry = (if ((mtype == MTypeEnum.TALK_ADMIN) || (mtype == MTypeEnum.TALK_ADMIN_PRIVATE))
                         null
-                        else user_entrys.filter(_.id.is == talk.actioner_id.is)(0))
+                        else get_user_entry(user_entrys.filter(_.id.is == talk.actioner_id.is), talk.actioner_id.is))
     val user_icon  = (if ((mtype == MTypeEnum.TALK_ADMIN) || (mtype == MTypeEnum.TALK_ADMIN_PRIVATE))
                         null
                         else user_entry.get_user_icon())
@@ -408,8 +408,12 @@ object MessageHelper {
       case MTypeEnum.VOTE_KICK             => simple_message_tag(generated_message,true,"#AAAA33","snow")
       case MTypeEnum.VOTE_HANG             => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 投票處死",heaven_mode || ((user != null) && (!user.live.is)),"#AAAA33","snow")
 
-      case MTypeEnum.VOTE_BECOMEMOB        => simple_message_tag(user_entry.handle_name.is + " 進入暴民模式",heaven_mode,"#AAAAAA","snow")
       case MTypeEnum.VOTE_VILLAGER         => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 進行推理",heaven_mode,"#AAAA33","black")
+      case MTypeEnum.VOTE_BECOMEMOB        => simple_message_tag(user_entry.handle_name.is + " 進入暴民模式",heaven_mode,"#AAAAAA","snow")
+
+      case MTypeEnum.VOTE_HIDE             => simple_message_tag(user_entry.handle_name.is + " 神隱了",heaven_mode,"#888888","snow")
+      case MTypeEnum.VOTE_REVERSEVOTE      => simple_message_tag(user_entry.handle_name.is + " 施行逆轉投票",heaven_mode,"#888888","snow")
+
       case MTypeEnum.VOTE_AUGURER          => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 占卜",heaven_mode,"#9933FF","snow")
       case MTypeEnum.VOTE_HUNTER           => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 進行護衛",heaven_mode,"#3399FF","snow")
       case MTypeEnum.VOTE_CLERIC_BLESS     => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 祝福",heaven_mode,"#CCDD00","blue")

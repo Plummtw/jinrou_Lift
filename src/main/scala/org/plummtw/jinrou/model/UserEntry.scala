@@ -84,11 +84,11 @@ class UserEntry extends LongKeyedMapper[UserEntry] with IdPK {
     override def defaultValue = true
   }
   
-  object last_words    extends MappedString(this, 250) {
+  object last_words    extends MappedString(this, 600) {
     override def validations = validPriority _ :: super.validations 
  
     def validPriority(in: String): List[FieldError] = 
-      if (in.length() > 250)  List(FieldError(this, <b>遺言過長＞２５０</b>))
+      if (in.length() > 600)  List(FieldError(this, <b>遺言過長＞６００</b>))
       else Nil
   }
   object ip_address0     extends MappedString(this, 20) with LifecycleCallbacks {
@@ -290,4 +290,6 @@ object UserEntry extends UserEntry with LongKeyedMetaMapper[UserEntry] {
                                  last_day_no, last_talk, user_flags, created, updated)
 }
 
+
+object AdminUserEntry extends UserEntry
 object WaterElemental extends UserEntry

@@ -86,11 +86,11 @@ class UpController {
       try { S.param("day_no").getOrElse("0").toLong }
       catch { case e: Exception => 0 } 
       
-    if (say_data.length > 200)
-      say_data = S.param("say").getOrElse("").trim().substring(0, 200)
+    if (say_data.length > 550)
+      say_data = S.param("say").getOrElse("").trim().substring(0, 550)
     say_data = JinrouUtil.encodeHtml(say_data)
 
-    if (say_data.length > 250)   // 太多控制碼了，程式不比對了，直接空白
+    if (say_data.length > 600)   // 太多控制碼了，程式不比對了，直接空白
       say_data = ""
 
     //println("say_data : [" + say_data + "]")
@@ -189,7 +189,7 @@ class UpController {
         if (user_entry.has_flag(UserEntryFlagEnum.BECAME_MOB)) {
           val random_int = new Random().nextInt(10)
           if (random_int == 0) {
-            talk.font_type(20)
+            talk.font_type("20")
           }
         }
 

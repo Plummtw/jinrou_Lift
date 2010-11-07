@@ -123,6 +123,10 @@ object VoteHelper {
     //val votes = Vote.findAll(By(Vote.roomday_id, room_day.id.is), By(Vote.vote_time, room_day.vote_time.is),
     //                         By(Vote.mtype, MTypeEnum.VOTE_HANG.toString))
 
+    // 處理隱士逆轉投票
+    val reverse_votes = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is),
+                                              By(SystemMessage.mtype, MTypeEnum.VOTE_REVERSEVOTE.toString))
+
     // 處理惡魔支配術
     val dominates = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is),
                                           By(SystemMessage.mtype, MTypeEnum.VOTE_DEMON_DOMINATE.toString))
@@ -358,20 +362,40 @@ object VoteHelper {
       }
     }
 
+    // 和隱士投同樣的人的多 1 票
+    val hermits = user_entrys.filter(x=> (x.current_role == RoleEnum.HERMIT) && (x.live.is)).map(_.id.is)
+    if (hermits.length >= 1) {
+      val hermits_votes = votes.filter(x => hermits.contains(x.actioner_id.is))
+      val hermits_votes_target = hermits_votes.map(_.actionee_id.is)
+
+      votes.foreach { vote =>
+        if (hermits_votes_target.contains(vote.actionee_id.is))
+          vote.vote_number(vote.vote_number.is + 2)
+      }
+    }
+
     // 儲存
     votes.foreach { vote => vote.save }
 
-    val votes_sorted = votes.sort(_.vote_number.is > _.vote_number.is)
-    
-    if ( votes_sorted(0).vote_number.is != votes_sorted(1).vote_number.is) {
+    if (reverse_votes.length == 0) {
+      val votes_sorted = votes.sort(_.vote_number.is > _.vote_number.is)
+      if ( votes_sorted(0).vote_number.is != votes_sorted(1).vote_number.is) {
+        val result_list = user_entrys.filter(_.id.is == votes_sorted(0).actioner_id.is)
+        if (result_list.length == 0)
+          return WaterElemental
+        else
+          return result_list(0)
+      }
+      else
+        return null
+    } else {
+      val votes_sorted = votes.sort(_.vote_number.is < _.vote_number.is)
       val result_list = user_entrys.filter(_.id.is == votes_sorted(0).actioner_id.is)
       if (result_list.length == 0)
         return WaterElemental
       else
         return result_list(0)
     }
-    else
-      return null
   }
   
   def generate_vote_tag(room: Room, room_day: RoomDay, vote_time: Int, heaven_mode: Boolean, user_entrys: List[UserEntry]) : scala.xml.Elem = {

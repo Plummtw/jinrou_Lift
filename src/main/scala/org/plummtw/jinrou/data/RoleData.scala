@@ -28,6 +28,7 @@ class RoleData(role: RoleEnum.Value, name: String, color : String, side: RoomVic
   def ctext        = <font color={role_color}>[{role_name}]</font>
   def simple_ctext = <font color={role_color}>[{role_name(0)}]</font>
   def role_ability(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) = <span></span>
+  def day_actions : List[ActionData] = List(ActionVote)
   
   // 測試是否投過票(行動過)
   def check_voted(room_day: RoomDay, user:UserEntry, vote_list:List[Vote]) : Boolean = {
@@ -90,13 +91,15 @@ class RoleData(role: RoleEnum.Value, name: String, color : String, side: RoomVic
   def list_actions_enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[ActionData] = {
     val actions = if ((room_day.day_no.is %2 == 0) &&
                       (room_day.day_no.is != 0))
-                    List(ActionVote)
+                    day_actions
                   else
                     role_actions        
     
     val actions_enabled = actions.filter(_.enabled(room, room_day, user, user_entrys))
     
     if ((actions_enabled.length == 1) && (actions_enabled(0).isInstanceOf[NoActionTrait]))
+      return List()
+    else if ((room_day.day_no.is %2 == 1) && (room_day.weather.is == WeatherEnum.TYPHOON.toString) && (user.role.is.substring(0,1) != RoleEnum.WEREWOLF.toString))
       return List()
     //else if ((actions_enabled.length == 1) && (actions_enabled(0) == ActionNoAction2))
     //  return List()
@@ -213,6 +216,10 @@ object RoleVillager    extends RoleData(RoleEnum.VILLAGER,    "村民", "", Room
     } else
       <span></span>   
   }
+}
+
+object RoleHermit    extends RoleData(RoleEnum.HERMIT,    "隱士", "#888888", RoomVictoryEnum.VILLAGER_WIN, List(ActionHide, ActionReverseVote ,ActionNoAction)) {
+  override def role_intro = <img src="images/role_hermit.gif"/>
 }
 
 
@@ -775,7 +782,103 @@ object RoleSorceror    extends RoleData(RoleEnum.SORCEROR,    "狂巫",   "#CC00
   }
 }
 
-object RoleFox         extends RoleData(RoleEnum.FOX,         "妖狐",   "#CC0099", RoomVictoryEnum.FOX_WIN, List(ActionFox, ActionFox1, ActionFox2, ActionNoAction2)) {
+object RoleFox         extends RoleData(RoleEnum.FOX,         "妖狐",   "#CC0099", RoomVictoryEnum.FOX_WIN, List(ActionFox, ActionFox1, ActionFox2, ActionFoxDisguise, ActionNoAction2)) {
+  def betrayer_mimic(user_entrys: List[UserEntry]) : Boolean = {
+    val betrayers = user_entrys.filter(x => (x.current_role == RoleEnum.BETRAYER) ||
+                                             (x.subrole.is == SubroleEnum.FOXBELIEVER.toString))
+    if (betrayers.length == 0)
+      return false
+
+    val live_betrayers = betrayers.filter(_.live.is)
+    if (live_betrayers.length != 0)
+      return false
+
+    return true
+  }
+  
+  def godfat_mimic(user_entrys: List[UserEntry]) : Boolean = {
+    val godfats = user_entrys.filter(x => (x.current_role == RoleEnum.GODFAT))
+    if (godfats.length == 0)
+      return false
+
+    val live_godfats = godfats.filter(_.live.is)
+    if (live_godfats.length != 0)
+      return false
+
+    return true
+  }
+
+  def combo(room : Room, room_day : RoomDay, user_entrys: List[UserEntry]) = {
+    val lives = user_entrys.map(x=>((x.live.is == false) || x.test_foxside(room, room_day, user_entrys)))
+    //lives.foreach(x=> println(x.toString))
+
+    val combo =
+        (if  (lives(0) && lives(1) && lives(2) && lives(3) && lives(4)) 1 else 0) +
+        (if  (lives(5) && lives(6) && lives(7) && lives(8) && lives(9)) 1 else 0) +
+        (if  (lives(10) && lives(11) && lives(12) && lives(13) && lives(14)) 1 else 0) +
+        (if  (lives(15) && lives(16) && lives(17) && lives(18) && lives(19)) 1 else 0) +
+        (if  (lives(20) && lives(21) && lives(22) && lives(23) && lives(24)) 1 else 0) +
+        (if  (lives(0) && lives(5) && lives(10) && lives(15) && lives(20)) 1 else 0) +
+        (if  (lives(1) && lives(6) && lives(11) && lives(16) && lives(21)) 1 else 0) +
+        (if  (lives(2) && lives(7) && lives(12) && lives(17) && lives(22)) 1 else 0) +
+        (if  (lives(3) && lives(8) && lives(13) && lives(18) && lives(23)) 1 else 0) +
+        (if  (lives(4) && lives(9) && lives(14) && lives(19) && lives(24)) 1 else 0) +
+        (if  (lives(0) && lives(6) && lives(12) && lives(18) && lives(24)) 1 else 0) +
+        (if  (lives(4) && lives(8) && lives(12) && lives(16) && lives(20)) 1 else 0)
+      val max_combo = Math.min(combo, 5)
+      max_combo
+  }
+
+  def godfat_ability(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) = {
+    val lives = user_entrys.map(_.live.is == false)
+    //lives.foreach(x=> println(x.toString))
+
+    val max_combo = combo(room, room_day, user_entrys)
+    val combo_str = max_combo.toString + "/5"
+    val combos    = Math.max(0, max_combo - 1)
+
+    val user_index = user_entrys.indexOf(user)
+    val user_x     = (user_index % 5)
+    val user_y     = (user_index / 5)
+
+    val user_up     = ((user_y+4)%5)*5 + user_x
+    val user_down   = ((user_y+1)%5)*5 + user_x
+    val user_y2     = ((user_y+2)%5)*5 + user_x
+    val user_y3     = ((user_y+3)%5)*5 + user_x
+
+    val user_left   = user_y*5 + ((user_x+4)%5)
+    val user_right  = user_y*5 + ((user_x+1)%5)
+    val user_x2     = user_y*5 + ((user_x+2)%5)
+    val user_x3     = user_y*5 + ((user_x+3)%5)
+
+    val user_up_left  = ((user_y+4)%5)*5 + ((user_x+4)%5)
+    val user_up_right = ((user_y+4)%5)*5 + ((user_x+1)%5)
+    val user_down_left = ((user_y+1)%5)*5 + ((user_x+4)%5)
+    val user_down_right = ((user_y+1)%5)*5 + ((user_x+1)%5)
+
+    val user_connected = List(user_entrys(user_up), user_entrys(user_down),
+                              user_entrys(user_left), user_entrys(user_right),
+                              user_entrys(user_up_left), user_entrys(user_up_right),
+                              user_entrys(user_down_left), user_entrys(user_down_right),
+                              user_entrys(user_x2), user_entrys(user_x3),
+                              user_entrys(user_y2), user_entrys(user_y3)
+                             ).sort(_.user_no.is > _.user_no.is)
+    val user_known     = user_connected.slice(0, combos*3)
+    val user_groups     = JinrouUtil.zipListBySize(3)(user_known)
+
+    <table cellSpacing="0" cellPadding="0" border="1"><tbody>
+    <tr><td>連線數：</td><td>{combo_str}</td></tr>
+    {
+      for (user_group <- user_groups ) yield
+        <tr>
+         { for (actionee <- user_group ) yield
+         <td>{actionee.handle_name.is}</td>
+         <td>是{RoleEnum.get_role(actionee.current_role).toString}</td>
+         <td>{SubroleEnum.get_subrole(actionee.subrole.is).toString}</td>
+         } </tr>
+    }</tbody></table>
+  }
+
   override def role_intro = <img src="images/role_fox.gif"/>
   
   override def role_ability(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) = {
@@ -790,19 +893,34 @@ object RoleFox         extends RoleData(RoleEnum.FOX,         "妖狐",   "#CC00
 
        val werewolf_tag =
          if (room.has_flag(RoomFlagEnum.FOX_OPTION2))
-           Seq(<tr><td>昨天晚上 人狼  襲擊 {actionee.handle_name.is}</td></tr>)
+           Seq(<tr><td colspan="2">昨天晚上 人狼  襲擊 {actionee.handle_name.is}</td></tr>)
          else
            NodeSeq.Empty
 
        val fox_targeted_tag =
          if   ((actionee.id.is == user.id.is) &&
                (system_message_hunter.length == 0))
-           Seq(<tr><td><img src="images/role_fox_targeted.gif"/></td></tr>)
+           Seq(<tr><td colspan="2"><img src="images/role_fox_targeted.gif"/></td></tr>)
          else
            NodeSeq.Empty
 
+        val betrayer_tag =
+          if ((room.has_flag(RoomFlagEnum.FOX_OPTION4)) &&
+              (betrayer_mimic(user_entrys)))
+            Seq(<tr><td>累計票數：</td><td>{user.action_point.is.toString}</td></tr>)
+          else
+            NodeSeq.Empty
+
+        val godfat_tag =
+          if ((room.has_flag(RoomFlagEnum.FOX_OPTION4)) &&
+              (godfat_mimic(user_entrys)))
+            //RoleGodfat.role_ability(room, room_day, user, user_entrys) \\ "tr"
+            godfat_ability(room, room_day, user, user_entrys) \\ "tr"
+          else
+            NodeSeq.Empty
+
         <table cellSpacing="0" cellPadding="0" border="1"><tbody>
-          {werewolf_tag}{fox_targeted_tag}</tbody></table>
+          {werewolf_tag}{fox_targeted_tag}{betrayer_tag}{godfat_tag}</tbody></table>
     }
     else
       <span></span>
@@ -983,7 +1101,7 @@ object RolePenguin  extends RoleData(RoleEnum.PENGUIN,     "企鵝",   "#AADDDD"
 
   override def role_ability(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) = {
     val action_point_tag : NodeSeq =
-      if ((user.role.is.length > 1) && (user.role.is(1).toString != RoleEnum.INHERITER.toString))
+      if ((user.role.is.length == 1) || (user.role.is(1).toString != RoleEnum.INHERITER.toString))
         Seq(<tr><td>已冰凍人數：</td><td>{user.action_point.is}/3</td></tr>)
       else
         Seq(<tr><td colspan="2">無法察覺已冰凍人數</td></tr>)

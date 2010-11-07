@@ -17,7 +17,7 @@ class Talk extends LongKeyedMapper[Talk] with IdPK {
   object actionee_id   extends MappedLongForeignKey(this, UserEntry)
   object font_type     extends MappedString(this, 2)
   
-  object message       extends MappedString(this, 250)
+  object message       extends MappedString(this, 600)
   object mtype         extends MappedString(this, 3)
   
   object created       extends MappedDateTime(this) {

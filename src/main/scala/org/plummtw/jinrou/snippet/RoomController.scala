@@ -171,6 +171,7 @@ class RoomController {
       //"gemini_talk"       -> SHtml.hidden(() => option_list = option_list ::: List(RoomFlagEnum.GEMINI_TALK)),
       "auto_vote"         -> SHtml.checkbox(true,  if (_) option_list = option_list ::: List(RoomFlagEnum.AUTO_VOTE),     "id"->"auto_vote"),
       "weather"           -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.WEATHER),       "id"->"weather"),
+      "weather1"          -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.WEATHER1),      "id"->"weather1"),
       "mob_mode"          -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MOB_MODE),      "id"->"mob_mode"),
       "mob_mode1"         -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MOB_MODE1),     "id"->"mob_mode1"),
       
@@ -190,6 +191,7 @@ class RoomController {
       
       "role_demon"        -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_DEMON),    "id"->"role_demon"),
       "role_pontiff"      -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_PONTIFF),  "id"->"role_pontiff"),
+      "role_penguin"      -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_PENGUIN),  "id"->"role_penguin"),
       "role_inheriter"    -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_INHERITER),"id"->"role_inheriter"),
       "role_shifter"      -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_SHIFTER),  "id"->"role_shifter"),
       "role_cardmaster"   -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_CARDMASTER),"id"->"role_cardmaster"),
@@ -224,6 +226,7 @@ class RoomController {
       "runner_option1"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.RUNNER_OPTION1), "id"->"runner_option1"),
       "runner_option2"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.RUNNER_OPTION2), "id"->"runner_option2"),
       "runner_option3"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.RUNNER_OPTION3), "id"->"runner_option3"),
+      "archmage_option1"  -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.ARCHMAGE_OPTION1), "id"->"archmage_option1"),
       "wolfcub_option1"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.WOLFCUB_OPTION1), "id"->"wolfcub_option1"),
       "madman_knowledge"  -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MADMAN_KNOWLEDGE), "id"->"madman_knowledge"),
       "madman_suicide"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MADMAN_SUICIDE),  "id"->"madman_suicide"),
@@ -234,6 +237,7 @@ class RoomController {
       "fox_option1"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.FOX_OPTION1),      "id"->"fox_option1"),
       "fox_option2"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.FOX_OPTION2),      "id"->"fox_option2"),
       "fox_option3"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.FOX_OPTION3),      "id"->"fox_option3"),
+      "fox_option4"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.FOX_OPTION4),      "id"->"fox_option4"),
       "betrayer_option1"  -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.BETRAYER_OPTION1), "id"->"betrayer_option1"),
       "betrayer_option2"  -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.BETRAYER_OPTION2), "id"->"betrayer_option2"),
       "betrayer_option3"  -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.BETRAYER_OPTION3), "id"->"betrayer_option3"),
@@ -245,6 +249,7 @@ class RoomController {
       "demon_option3"     -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.DEMON_OPTION3),    "id"->"demon_option3"),
       "penguin_option1"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.PENGUIN_OPTION1),  "id"->"penguin_option1"),
       "penguin_option2"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.PENGUIN_OPTION2),  "id"->"penguin_option2"),
+      "penguin_option3"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.PENGUIN_OPTION3),  "id"->"penguin_option3"),
       "pontiff_option1"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.PONTIFF_OPTION1), "id"->"pontiff_option1"),
       "pontiff_option2"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.PONTIFF_OPTION2), "id"->"pontiff_option2"),
       "pontiff_option3"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.PONTIFF_OPTION3), "id"->"pontiff_option3"),
@@ -252,6 +257,10 @@ class RoomController {
       "inheriter_neutral" -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.INHERITER_NEUTRAL), "id"->"inheriter_neutral"),
       "shifter_reveal"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SHIFTER_REVEAL), "id"->"shifter_reveal"),
       "shifter_lover"     -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SHIFTER_LOVER), "id"->"shifter_lover"),
+      "cardmaster_option1" -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.CARDMASTER_OPTION1), "id"->"cardmaster_option1"),
+
+      "gm_penguin1"         -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.GM_PENGUIN1), "id"->"gm_penguin1"),
+      "gm_hermit1"          -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.GM_HERMIT1), "id"->"gm_hermit1"),
 
       "submit"            -> SHtml.submit(" 建  立 ",  create_room)      
     )
