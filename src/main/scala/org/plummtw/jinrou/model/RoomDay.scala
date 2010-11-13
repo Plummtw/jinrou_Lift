@@ -1,5 +1,7 @@
 package org.plummtw.jinrou.model 
- 
+
+import org.plummtw.jinrou.enum._
+
 import net.liftweb._ 
 import mapper._ 
 import http._ 
@@ -19,6 +21,10 @@ class RoomDay extends LongKeyedMapper[RoomDay] with IdPK {
   object deadline      extends MappedDateTime(this)
 
   object weather       extends MappedString(this, 1)
+
+  object item           extends MappedString(this, 3) {
+    override def defaultValue = ItemEnum.ITEM_NO_ITEM.toString
+  }
   
   object created       extends MappedDateTime(this) {
     override def defaultValue = new java.util.Date()
@@ -32,7 +38,7 @@ class RoomDay extends LongKeyedMapper[RoomDay] with IdPK {
 }
 
 object RoomDay extends RoomDay with LongKeyedMetaMapper[RoomDay] {
-  override def fieldOrder = List(id, room_id, day_no, vote_time, deadline, created, updated, weather)
+  override def fieldOrder = List(id, room_id, day_no, vote_time, deadline, created, updated, weather, item)
 }
 
 /*

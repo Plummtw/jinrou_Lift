@@ -1,6 +1,8 @@
 
 
 surefire-reports
+*.zip
+*.rar
 *.jar
 *.war
 *.timestamp

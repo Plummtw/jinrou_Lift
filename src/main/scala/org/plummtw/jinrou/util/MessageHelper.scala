@@ -17,6 +17,24 @@ import org.plummtw.jinrou.enum._
 object TalkIdCache extends TimedCache[Long, UserEntry](30000)
 
 object MessageHelper {
+  // 道具腹語娃娃
+  def ventriloquist_talk_tag(room:Room, room_day:RoomDay, talk:Talk, user:UserEntry, heaven_mode:Boolean, user_entrys:List[UserEntry]) : NodeSeq= {
+    val style_str = "color:#009999;font-size:17pt;"
+    val user_entry = user_entrys.filter(_.id.is == talk.actioner_id.is)(0)
+    val user_icon  = user_entry.get_user_icon()
+
+    if (heaven_mode)
+      Seq(<tr><td width="200" align="left" valign="middle" style="border-bottom: silver 1px dashed;"><font color={user_icon.color.is}>◆</font>{user_entry.handle_name.is}<small>的腹語術</small></td>
+          <td><span style="margin:1px;" align="left"></span></td>
+          <td width="1000" valign="middle" style="border-bottom: silver 1px dashed;">
+          <span style={style_str}> {Unparsed(talk.message.is)} </span></td></tr>)
+      else
+      Seq(<tr><td width="200" align="left" valign="middle" style="border-bottom: silver 1px dashed;"><small>腹語</small></td>
+          <td><span style="margin:1px;" align="left"></span></td>
+          <td width="1000" valign="middle" style="border-bottom: silver 1px dashed;">
+          <span style={style_str}> {Unparsed(talk.message.is)} </span></td></tr>)
+  }
+
   // 狂巫密言術
   def secret_talk_tag(room:Room, room_day:RoomDay, talk:Talk, user:UserEntry, heaven_mode:Boolean, user_entrys:List[UserEntry]) : NodeSeq= {
     val style_str = "color:red;font-size:18pt;"
@@ -376,6 +394,7 @@ object MessageHelper {
       case MTypeEnum.TALK_DAY_FOG    => fog_talk_tag(talk, user, heaven_mode, user_entrys)
       case MTypeEnum.TALK_GEMINI_DAY => simple_talk_tag(room, room_day, talk, user, heaven_mode, user_entrys)
       case MTypeEnum.TALK_SECRET     => secret_talk_tag(room, room_day, talk, user, heaven_mode, user_entrys)
+      case MTypeEnum.TALK_VENTRILOQUIST => ventriloquist_talk_tag(room, room_day, talk, user, heaven_mode, user_entrys)
       case MTypeEnum.TALK_DISGUISED  => disguised_talk_tag(talk, user, heaven_mode, user_entrys)
       case MTypeEnum.TALK_SEALED     => sealed_talk_tag(talk, user, heaven_mode, user_entrys)
       case MTypeEnum.TALK_NIGHT      => simple_talk_tag(room, room_day, talk, user, heaven_mode, user_entrys)
@@ -407,6 +426,18 @@ object MessageHelper {
       
       case MTypeEnum.VOTE_KICK             => simple_message_tag(generated_message,true,"#AAAA33","snow")
       case MTypeEnum.VOTE_HANG             => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 投票處死",heaven_mode || ((user != null) && (!user.live.is)),"#AAAA33","snow")
+
+      case MTypeEnum.ITEM_UNLUCKY_PURSE    => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用不運錢包",heaven_mode,"#AAAA33","snow")
+      case MTypeEnum.ITEM_BLESS_STAFF      => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用祝福之杖",heaven_mode,"#AAAA33","snow")
+      case MTypeEnum.ITEM_BLACK_FEATHER    => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用咒縛黑羽",heaven_mode,"#AAAA33","snow")
+      case MTypeEnum.ITEM_THIEF_SECRET     => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用盜賊極意",heaven_mode,"#AAAA33","snow")
+      case MTypeEnum.ITEM_VENTRILOQUIST    => simple_message_tag(user_entry.handle_name.is + " 使用腹語娃娃",heaven_mode,"#AAAA33","snow")
+      case MTypeEnum.ITEM_DMESSAGE_SEAL    => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用封印遺書",heaven_mode,"#AAAA33","snow")
+      case MTypeEnum.ITEM_MIRROR_SHIELD    => simple_message_tag(user_entry.handle_name.is + " 使用鏡盾捲軸",heaven_mode,"#AAAA33","snow")
+      case MTypeEnum.ITEM_SHAMAN_CROWN     => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用薩滿冕冠",heaven_mode,"#AAAA33","snow")
+      case MTypeEnum.ITEM_WEATHER_ROD      => simple_message_tag(user_entry.handle_name.is + " 使用天候棒 (" + talk.message.is + ")" ,heaven_mode ,"#AAAA33","snow")
+      case MTypeEnum.ITEM_DEATH_NOTE       => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用死亡筆記",heaven_mode,"#AAAA33","snow")
+      case MTypeEnum.ITEM_POPULATION_CENSUS => simple_message_tag(user_entry.handle_name.is + " 使用人口普查",heaven_mode,"#AAAA33","snow")
 
       case MTypeEnum.VOTE_VILLAGER         => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 進行推理",heaven_mode,"#AAAA33","black")
       case MTypeEnum.VOTE_BECOMEMOB        => simple_message_tag(user_entry.handle_name.is + " 進入暴民模式",heaven_mode,"#AAAAAA","snow")

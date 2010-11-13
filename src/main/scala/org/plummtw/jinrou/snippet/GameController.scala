@@ -354,7 +354,7 @@ class GameController {
     //  ()=>UserEntryHelper.user_table(user_entrys, heaven_mode))
     var user_table_down : NodeSeq = NodeSeq.Empty
     var user_table =
-      UserEntryHelper.user_table(room, user_entrys, heaven_mode)
+      UserEntryHelper.user_table(room, user_entry, user_entrys, heaven_mode)
     if (S.getSessionAttribute("list_down") == "on") {
       user_table_down = user_table
       user_table = NodeSeq.Empty
@@ -382,6 +382,23 @@ class GameController {
     var messages     =
       MessageHelper.messages_normal(room, room_day, user_entry, heaven_mode, is_blinded, user_entrys)
 
+    val item_intro =
+      if (room.has_flag(RoomFlagEnum.ITEM_MODE) && (user_entry != null) &&
+          (user_entry.live.is) && (room_day.day_no.is != 0)) {
+        val system_messages = SystemMessage.findAll(By(SystemMessage.roomday_id,  room_day.id.is),
+                                                    By(SystemMessage.actioner_id, user_entry.id.is))
+        val item_messages = system_messages.filter(_.mtype.is.substring(0,1) == MTypeEnum.ITEM_PREFIX)
+        val item_result =
+          if (item_messages.length != 0) {
+            val item_message = item_messages(0)
+            val item_datas = ItemEnum.ITEM_MAP.values.toList.filter(_.action_enum.toString == item_message.mtype.is)
+            if (item_datas.length > 0 )
+              item_datas(0).item_intro(room, room_day, user_entry, user_entrys)
+            else ""
+          } else ""
+
+        <span>{"持有道具：" + ItemEnum.get_item(user_entry.item_flags.is).tag_string + "　" + item_result}</span>
+      } else <span></span>
 
     val role_intro = 
       if ((user_entry != null) && (user_entry.live.is) && (room_day.day_no.is != 0))
@@ -518,8 +535,12 @@ class GameController {
       "day_no"            -> <span>{((room_day.day_no.is+2)/2).toString}</span>,
       "weather"           -> <span>{WeatherEnum.get_weather(room_day.weather.is)}</span>,
       "live_player"       -> <span>{user_entrys.count(_.live.is).toString}</span>,
+      "auction"           -> (if (room.has_flag(RoomFlagEnum.ITEM_MODE) && (room_day.day_no.is != 0))
+                              <span>{"(競標：" + ItemEnum.get_item(room_day.item.is).tag_string + ")"}</span>
+                              else <span></span>),
       "alert_message"     -> alert_message,
       "user_table"        -> user_table,
+      "item_intro"        -> item_intro,
       "role_intro"        -> role_intro,
       "vote_tag_d"        -> vote_tag_d,
       "messages"          -> messages,

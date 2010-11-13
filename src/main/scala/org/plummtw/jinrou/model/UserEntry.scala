@@ -79,6 +79,10 @@ class UserEntry extends LongKeyedMapper[UserEntry] with IdPK {
   object action_point  extends MappedInt(this) {
     override def defaultValue = 0
   }
+
+  object cash  extends MappedInt(this) {
+    override def defaultValue = 1
+  }
   
   object live          extends MappedBoolean(this) {
     override def defaultValue = true
@@ -107,6 +111,8 @@ class UserEntry extends LongKeyedMapper[UserEntry] with IdPK {
   object last_talk     extends MappedString(this, 250)
   
   object user_flags    extends MappedString(this, 20)
+
+  object item_flags    extends MappedString(this, 2)
   
 
   object created       extends MappedDateTime(this) {
@@ -231,6 +237,17 @@ class UserEntry extends LongKeyedMapper[UserEntry] with IdPK {
       user_role_data.generate_action_tag(room, room_day, this, user_entrys, vote_list)
   }
 
+  def get_item_tag(room:Room, room_day:RoomDay, user_entrys:List[UserEntry], vote_list:List[ItemVote]) = {
+    val user_item       = if (room_day.day_no.is == 0) ItemEnum.ITEM_NO_ITEM.toString
+                          else item_flags.is
+    val user_item_data  = ItemEnum.get_item(user_item)
+
+    if (uname.is == "dummy_boy")
+       <span></span>
+    else
+      user_item_data.generate_action_tag(room, room_day, this, user_entrys, vote_list)
+  }
+
   // 測試是否為失憶者
   def test_memoryloss(room:Room, room_day:RoomDay, user_entrys: List[UserEntry]) : Boolean = {
     if (((this.subrole.is.indexOf(SubroleEnum.MEMORYLOSS4.toString) != -1 ) &&
@@ -287,7 +304,7 @@ class UserEntry extends LongKeyedMapper[UserEntry] with IdPK {
 object UserEntry extends UserEntry with LongKeyedMetaMapper[UserEntry] {
   override def fieldOrder = List(id, room_id, user_no, uname, handle_name, trip, sex, password, user_icon_id,
                                  role, subrole, action_point, live, last_words, ip_address0, ip_address, ip_address_md5,
-                                 last_day_no, last_talk, user_flags, created, updated)
+                                 last_day_no, last_talk, user_flags, created, updated, cash, item_flags)
 }
 
 

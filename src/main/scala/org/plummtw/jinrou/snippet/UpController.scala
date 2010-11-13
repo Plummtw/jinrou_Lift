@@ -100,18 +100,24 @@ class UpController {
     //println("check say_day_no == room_day.day_no.is : " + (day_no == room_day.day_no.is))
     //println("check room.status.is == RoomStatusEnum.ENDED.toString : " + (room.status.is == RoomStatusEnum.ENDED.toString))
     //println("check  !user_entry.live.is : " + (!user_entry.live.is))
-
-    val vote_betrayer_disguise = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is),
+    val system_messages        = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is))
+    val vote_betrayer_disguise = system_messages.filter(_.mtype.is == MTypeEnum.VOTE_BETRAYER_DISGUISE.toString)
+    val vote_betrayer_fog = system_messages.filter(_.mtype.is == MTypeEnum.VOTE_BETRAYER_FOG.toString)
+    val vote_sorceror_whisper = system_messages.filter(x => (x.mtype.is == MTypeEnum.VOTE_SORCEROR_WHISPER.toString) &&
+                                                            (x.actioner_id.is == user_entry.id.is))
+    val vote_ventriloquist = system_messages.filter(x => (x.mtype.is == MTypeEnum.ITEM_VENTRILOQUIST.toString) &&
+                                                         (x.actioner_id.is == user_entry.id.is))
+//*    val vote_betrayer_disguise = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is),
 //                                                       By(SystemMessage.actioner_id, user_entry.id.is),
-                                                       By(SystemMessage.mtype, MTypeEnum.VOTE_BETRAYER_DISGUISE.toString))
-    val vote_betrayer_fog      = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is),
-                                                       By(SystemMessage.mtype, MTypeEnum.VOTE_BETRAYER_FOG.toString))
-    val vote_sorceror_whisper = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is),
-                                                      By(SystemMessage.actioner_id, user_entry.id.is),
-                                                      By(SystemMessage.mtype, MTypeEnum.VOTE_SORCEROR_WHISPER.toString))
+//*                                                       By(SystemMessage.mtype, MTypeEnum.VOTE_BETRAYER_DISGUISE.toString))
+//*    val vote_betrayer_fog      = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is),
+//*                                                       By(SystemMessage.mtype, MTypeEnum.VOTE_BETRAYER_FOG.toString))
+//*    val vote_sorceror_whisper = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is),
+//*                                                      By(SystemMessage.actioner_id, user_entry.id.is),
+//*                                                      By(SystemMessage.mtype, MTypeEnum.VOTE_SORCEROR_WHISPER.toString))
 
 
-    if ((say_data != "") && List("20","16","12","8","S","L").contains(font_type)) {
+    if ((say_data != "") && List("20","16","12","8","S","L","V").contains(font_type)) {
       if (font_type == "L") {
         // 遺言
         if (user_entry.live.is) {
@@ -138,6 +144,8 @@ class UpController {
           else if (room_day.day_no.is % 2 == 0) {
             if ((font_type == "S") && (vote_sorceror_whisper.length != 0))
               MTypeEnum.TALK_SECRET.toString
+            else if ((font_type == "V") && (vote_ventriloquist.length != 0))
+              MTypeEnum.TALK_VENTRILOQUIST.toString
             else if ((say_gemini == "on") && (user_entry.current_role == RoleEnum.GEMINI) &&
                      (!user_entry.test_memoryloss(room, room_day, user_entrys)) &&
                      (!user_entry.test_fake(room_day)) &&
@@ -252,7 +260,67 @@ class UpController {
 
     var vote_list = Vote.findAll(By(Vote.roomday_id, room_day.id.is), By(Vote.vote_time, room_day.vote_time.is))
 
-    if (command_data != "") {
+    if (command_data.startsWith("item_")) {
+      val user_item = ItemEnum.get_item(user_entry.item_flags.is)
+      if (user_item.command_name != command_data) {
+        Log.warn("Item Error " + command_data + " UserEntry: " + user_entry.id.is)
+      } else {
+        var command_target : UserEntry = null
+        if (user_item.targetable) {
+          val targetable_users = user_item.targetable_users(room, room_day, user_entry, user_entrys)
+          val command_target_list = user_entrys.filter(_.id.is == command_target_no)
+          command_target = if (command_target_list.length != 0) command_target_list(0) else null
+
+          if ((command_target == null) || (!targetable_users.contains(command_target))) {
+            Log.warn("Item Target Error " + command_data + " UserEntry: " + user_entry.id.is + " " + command_target)
+            S.error(<b>目標錯誤 : {command_target}</b>)
+            S.redirectTo("up_error.html")
+          }
+        }
+
+        // 寫入道具使用
+        val item_vote = ItemVote.create.roomday_id(room_day.id.is).actioner_id(user_entry.id.is)
+                        .mtype(user_item.action_enum.toString.toUpperCase)
+        if (user_item.targetable)
+          item_vote.actionee_id(command_target.id.is)
+        else
+          item_vote.actionee_id(Empty)
+
+        val item_option_key =
+          if (user_item.isInstanceOf[ItemOption])
+            S.param("item_option").getOrElse("")
+          else ""
+
+        val item_option_val =
+          if (user_item.isInstanceOf[ItemOption])
+            user_item.asInstanceOf[ItemOption].option_map.get(item_option_key).getOrElse("")
+          else ""
+
+        item_vote.vote_flags(item_option_key)
+
+        item_vote.validate match {
+          case Nil => item_vote.save()
+          case xs  => Log.warn(xs)
+        }
+
+        // 寫入行動字串
+        val talk = Talk.create.roomday_id(room_day.id.is).actioner_id(user_entry.id.is)
+                  .mtype(user_item.action_enum.toString)
+
+        if (user_item.targetable)
+          talk.actionee_id(command_target.id.is)
+        else
+          talk.actionee_id(Empty)
+
+        talk.message(item_option_val)
+
+        talk.validate match {
+          case Nil => talk.save()
+          case xs  => Log.warn(xs)
+        }
+      }
+
+    } else if (command_data != "") {
       val actions = user_entry.get_action_list(room, room_day, user_entrys, vote_list)
       val actions_filtered = actions.filter(_.command_name == command_data)
       val action  = 
@@ -362,6 +430,12 @@ class UpController {
               // 寫入投票
               val vote = Vote.create.roomday_id(room_day.id.is).actioner_id(user_entry.id.is)
                          .vote_time(vote_time).mtype(action.action_enum.toString.toUpperCase)
+              if (room.has_flag(RoomFlagEnum.ITEM_MODE) && (action == ActionVote)) {
+                val auction_number =
+                  try { Math.max(0, Math.min(S.param("auction").getOrElse("0").toInt, user_entry.cash.is)) }
+                  catch { case e: Exception => 0}
+                vote.auc_number(auction_number)
+              }
 
               if (action.targetable) {
                 // 暴民投票為亂數
@@ -420,9 +494,15 @@ class UpController {
                               (user_entry != null) && (!user_entry.live.is)
 
     val js_reload_game_str  = js_reload_game(dead_mode)
+    val item_bar            = (if (room.has_flag(RoomFlagEnum.ITEM_MODE) && (room_day.day_no.is % 2 == 1))
+                                 user_entry.get_item_tag(room, room_day, user_entrys, ItemVote.findAll(By(ItemVote.roomday_id, room_day.id.is)))
+                               else
+                                 <span></span>)
     val action_bar          = user_entry.get_action_tag(room, room_day, user_entrys, vote_list)
-    val say_option          = if (vote_sorceror_whisper.length != 0) Seq(<option value="S">隱密發言</option>)
-                              else NodeSeq.Empty
+    val say_option          = (if (vote_sorceror_whisper.length != 0) Seq(<option value="S">隱密發言</option>)
+                              else NodeSeq.Empty) ++
+                              (if (vote_ventriloquist.length != 0) Seq(<option value="V">腹語發言</option>)
+                              else NodeSeq.Empty)
     val say_checkbox        = if ((room.status.is != RoomStatusEnum.ENDED.toString) &&
                                   (room_day.day_no.is != 0) && (room_day.day_no.is %2 == 0) &&
                                   (user_entry.live.is)) {
@@ -437,6 +517,23 @@ class UpController {
                                   NodeSeq.Empty
                               }
                               else NodeSeq.Empty
+    val item_option         = if ((room.status.is != RoomStatusEnum.ENDED.toString) &&
+                                  (room_day.day_no.is %2 == 1) &&
+                                  (user_entry.live.is)) {
+                                val user_item = ItemEnum.get_item(user_entry.item_flags.is)
+                                if (user_item.isInstanceOf[ItemOption]) {
+                                  val option_map = user_item.asInstanceOf[ItemOption].option_map
+                                  var option_map_option : NodeSeq = NodeSeq.Empty
+                                  option_map.keys.foreach { option_key =>
+                                    if (option_map_option == NodeSeq.Empty)
+                                      option_map_option ++= <option value={option_key} selected="selected">{option_map.get(option_key).getOrElse("")}</option>
+                                    else
+                                      option_map_option ++= <option value={option_key}>{option_map.get(option_key).getOrElse("")}</option>
+                                  }
+                                  Seq(<select style="width:100px;" name="item_option">{option_map_option}</select>)
+                                } else NodeSeq.Empty
+                              } else NodeSeq.Empty
+
     val reload_page         = if (room.status.is == RoomStatusEnum.ENDED.toString) "game_end"
                               else if (dead_mode) "heaven_view"
                               else "game_view"
@@ -457,6 +554,8 @@ class UpController {
                                 </form>,
       "say_option"           -> say_option,
       "say_checkbox"         -> say_checkbox,
+      "item_option"          -> item_option,
+      "item_bar"             -> item_bar,
       "action_bar"           -> action_bar
     )
   }
@@ -513,29 +612,49 @@ class UpController {
                           else user_entry.role.is.substring(0,1)
     val user_role_enum  = RoleEnum.valueOf(user_role).getOrElse(RoleEnum.NONE)
     val user_role_data  = RoleEnum.get_role(user_role_enum)
+
+    var targetable_users : List[UserEntry] = null
+    var tag_string       : String          = ""
     
     // 是否行動
     val command_data       = JinrouUtil.encodeHtml(S.param("command").getOrElse("").trim())
-    if (command_data == "") {
-      Log.warn("No Command " + command_data + " UserEntry: " + user_entry.id.is)
-      S.error(<b>找不到對應行動</b>)
-      S.redirectTo("up_normal.html?room_no=" + room_no)
+
+    if (command_data.startsWith("item_")) {
+      val user_item = ItemEnum.get_item(user_entry.item_flags.is)
+      if (user_item.command_name != command_data) {
+        Log.warn("Item Error " + command_data + " UserEntry: " + user_entry.id.is)
+      } else if (!user_item.targetable) {
+        Log.warn("Item No Target " + command_data + " UserEntry: " + user_entry.id.is)
+        S.error(<b>無可指定對象 {command_data}</b>)
+        S.redirectTo("up_normal.html?room_no=" + room_no)
+      } else {
+        targetable_users = user_item.targetable_users(room, room_day, user_entry, user_entrys)
+        tag_string = user_item.tag_string
+      }
+    } else {
+      if (command_data == "") {
+        Log.warn("No Command " + command_data + " UserEntry: " + user_entry.id.is)
+        S.error(<b>找不到對應行動</b>)
+        S.redirectTo("up_normal.html?room_no=" + room_no)
+      }
+
+      val vote_list = Vote.findAll(By(Vote.roomday_id, room_day.id.is), By(Vote.vote_time, room_day.vote_time.is))
+      val actions = user_role_data.check_action_list(room, room_day, user_entry, user_entrys, vote_list)
+      val actions_filtered = actions.filter(_.command_name == command_data)
+      val action  =
+        if   (actions_filtered.length == 0) null
+        else  actions_filtered(0)
+
+      if (action == null) {
+        Log.warn("Cannot Command " + command_data + " UserEntry: " + user_entry.id.is)
+        S.error(<b>你無法進行這項行動 {command_data}</b>)
+        S.redirectTo("up_normal.html?room_no=" + room_no)
+       }
+
+      targetable_users = action.targetable_users(room, room_day, user_entry, user_entrys)
+      tag_string = action.tag_string
     }
 
-    val vote_list = Vote.findAll(By(Vote.roomday_id, room_day.id.is), By(Vote.vote_time, room_day.vote_time.is))
-    val actions = user_role_data.check_action_list(room, room_day, user_entry, user_entrys, vote_list)
-    val actions_filtered = actions.filter(_.command_name == command_data)
-    val action  =
-      if   (actions_filtered.length == 0) null
-      else  actions_filtered(0)
-
-    if (action == null) {
-      Log.warn("Cannot Command " + command_data + " UserEntry: " + user_entry.id.is)
-      S.error(<b>你無法進行這項行動 {command_data}</b>)
-      S.redirectTo("up_normal.html?room_no=" + room_no)
-    }
-
-    val targetable_users = action.targetable_users(room, room_day, user_entry, user_entrys)
     if (targetable_users.length == 0) {
       Log.warn("No Target " + command_data + " UserEntry: " + user_entry.id.is)
       S.error(<b>無可指定對象 {command_data}</b>)
@@ -554,7 +673,11 @@ class UpController {
       "command_hidden_field"   -> <input type="hidden" name="command"   value={command_data} />,
       "vote_time_hidden_field" -> <input type="hidden" name="vote_time" value={room_day.vote_time.is.toString} />,
       "action_table"           -> action_table,
-      "submit"                 -> <input type="submit" name="submit"  value={"　" + action.tag_string + "　"} />
+      "auction"                -> (if (room.has_flag(RoomFlagEnum.ITEM_MODE) && (room_day.day_no.is % 2 == 0) && (room_day.day_no.is != 0))
+                                     <span>競標金額：<input type="text" name="auction" size="3" maxlength="3" value="0"/></span>
+                                   else
+                                     <span></span>),
+      "submit"                 -> <input type="submit" name="submit"  value={"　" + tag_string + "　"} />
 
       //"action_bar"           -> action_bar
     )

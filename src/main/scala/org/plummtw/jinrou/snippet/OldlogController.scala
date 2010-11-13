@@ -166,7 +166,7 @@ class OldlogController {
     // (room_day.day_no.is == 0)
     //def user_table = GameProcessCache.get_cache(room_id, "user_table", true,
     //  ()=>UserEntryHelper.user_table(room, user_entrys, true))
-    val user_table = UserEntryHelper.user_table(room, user_entrys, true)
+    val user_table = UserEntryHelper.user_table(room, null, user_entrys, true)
 
     //val room_days = RoomDay.findAll(By(RoomDay.room_id, room_id), OrderBy(RoomDay.day_no, Descending))
 

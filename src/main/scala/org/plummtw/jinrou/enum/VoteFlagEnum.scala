@@ -9,6 +9,8 @@ object VoteFlagEnum extends Enumeration {
   val BLESSED     = Value("B")
   val SHOUTED     = Value("S")
   val CURSED      = Value("C")
+  val BFEATHERED = Value("E")
+
   val INVALID     = Value("I")
   val FAKE         = Value("F")
 
@@ -17,6 +19,8 @@ object VoteFlagEnum extends Enumeration {
   val DOMINATE    = Value("D")
   val COMMAND      = Value("J")
   val VORTEX        = Value("R")
+
+  val ITEM          = Value("I")
 
   val COLORSPRAY    = Value("T")
 }

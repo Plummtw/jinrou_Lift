@@ -279,7 +279,7 @@ object ActionSorcerorAugure extends ActionData(MTypeEnum.VOTE_SORCEROR_AUGURE, "
 object ActionSorcerorWhisper extends ActionData(MTypeEnum.VOTE_SORCEROR_WHISPER, "密言術！", "sorceror_whisper", false) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
     return ((user.action_point.is >= 3) ||
-            (room.has_flag(RoomFlagEnum.SORCEROR_WHISPER1) && (user.action_point.is >= 3)))
+            (room.has_flag(RoomFlagEnum.SORCEROR_WHISPER1) && (user.action_point.is >= 2)))
   }
 }
 

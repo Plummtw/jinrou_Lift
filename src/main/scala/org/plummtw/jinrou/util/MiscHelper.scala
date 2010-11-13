@@ -25,7 +25,8 @@ object MiscHelper {
           actioner_list(0)
         else
           null
-      if ((actioner != null) && (actioner.last_words.is != "") && (actioner.current_role != RoleEnum.RUNNER)) {
+      if ((actioner != null) && (actioner.last_words.is != "") && (actioner.current_role != RoleEnum.RUNNER) &&
+          (actioner.hasnt_flag(UserEntryFlagEnum.DMESSAGE_SEALED))) {
         if (result == NodeSeq.Empty)
           result = result ++ Seq(<table border="0" cellpadding="0" cellspacing="0" width="100%">
                                    <tr style="background-color:#ccddff;color:black;font-weight:bold;">

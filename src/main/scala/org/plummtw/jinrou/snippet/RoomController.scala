@@ -172,6 +172,7 @@ class RoomController {
       "auto_vote"         -> SHtml.checkbox(true,  if (_) option_list = option_list ::: List(RoomFlagEnum.AUTO_VOTE),     "id"->"auto_vote"),
       "weather"           -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.WEATHER),       "id"->"weather"),
       "weather1"          -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.WEATHER1),      "id"->"weather1"),
+      "item_mode"         -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.ITEM_MODE),     "id"->"item_mode"),
       "mob_mode"          -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MOB_MODE),      "id"->"mob_mode"),
       "mob_mode1"         -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MOB_MODE1),     "id"->"mob_mode1"),
       
@@ -194,6 +195,7 @@ class RoomController {
       "role_penguin"      -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_PENGUIN),  "id"->"role_penguin"),
       "role_inheriter"    -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_INHERITER),"id"->"role_inheriter"),
       "role_shifter"      -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_SHIFTER),  "id"->"role_shifter"),
+      "role_hermit"       -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_HERMIT),   "id"->"role_hermit"),
       "role_cardmaster"   -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_CARDMASTER),"id"->"role_cardmaster"),
 
       "subrole_memoryloss4"  -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.SUBROLE_MEMORYLOSS4), "id"->"subrole_memoryloss4"),

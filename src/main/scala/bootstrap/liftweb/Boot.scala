@@ -29,7 +29,7 @@ class Boot {
     //LiftRules.redirectAjaxOnSessionLoss = false
 
     //Schemifier.schemify(true, Log.infoF _, User)
-    Schemifier.schemify(true, Log.infoF _, AdminManage, Room, RoomDay, SystemMessage, Talk, UserEntry, UserIcon, Vote)
+    Schemifier.schemify(true, Log.infoF _, AdminManage, Room, RoomDay, SystemMessage, Talk, UserEntry, UserIcon, Vote, ItemVote)
 
     // Build SiteMap
     //val entries = Menu(Loc("Home", List("index"), "Home")) :: User.sitemap

@@ -31,7 +31,7 @@
           <entry:login_form />
           <form id="realtime_form" name="realtime_form">
           <tr>
-           <td >第 <entry:day_no/> 日　天氣:<entry:weather/>　(生存者<entry:live_player />人)　
+           <td >第 <entry:day_no/> 日　天氣:<entry:weather/>　(生存者<entry:live_player />人) <entry:auction/>
            <input class="left_real_time" type="text" id="realtime_output" name="realtime_output" size="50" readonly="readonly"/></td>
           </tr>
           <tr><td><span style="background-color:#CC3300;color:snow;"><entry:alert_message/></span></td></tr>
@@ -58,6 +58,9 @@
      </tr>
      <tr>
        <entry:role_intro/>
+     </tr>
+     <tr>
+       <entry:item_intro/>
      </tr>
      <tr>
        <entry:vote_tag_d/>

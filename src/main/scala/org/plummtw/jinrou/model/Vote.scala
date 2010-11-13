@@ -20,8 +20,11 @@ class Vote extends LongKeyedMapper[Vote] with IdPK {
   object vote_number   extends MappedInt(this)
   object vote_time     extends MappedInt(this)
   object mtype         extends MappedString(this, 3)
-  object vote_flags    extends MappedString(this, 5)
-  
+  object vote_flags    extends MappedString(this, 20)
+
+  object auc_number   extends MappedInt(this) {
+    override def defaultValue = 0
+  }
 
   object created       extends MappedDateTime(this) {
     override def defaultValue = new java.util.Date()

@@ -64,4 +64,6 @@ object UserEntryFlagEnum extends Enumeration {
   val DEATH_2             = Value("8")
   val DEATH_1              = Value("9")
   val DEATH_0              = Value("0")
+
+  val DMESSAGE_SEALED     = Value("%")
 }

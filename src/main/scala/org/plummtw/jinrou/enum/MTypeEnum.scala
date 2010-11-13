@@ -11,6 +11,7 @@ object MTypeEnum extends Enumeration {
   val TALK_DAY         = Value("TD")
   val TALK_DAY_FOG    = Value("TDF")
   val TALK_SECRET      = Value("TS")
+  val TALK_VENTRILOQUIST = Value("TV")
   val TALK_SEALED      = Value("TZ")
   val TALK_NIGHT       = Value("TN")  
   val TALK_WEREWOLF    = Value("TW")
@@ -61,6 +62,21 @@ object MTypeEnum extends Enumeration {
   val DEATH_PENGUIN_ICE  = Value("DKI")
   val DEATH_SUBPONTIFF = Value("DSP")
   val DEATH_LOVER        = Value("DL")
+  val DEATH_DEATH_NOTE  = Value("DDN")
+
+  val ITEM_PREFIX          = "I"
+  val ITEM_NO_ITEM         = Value(ITEM_PREFIX + ItemEnum.ITEM_NO_ITEM.toString)
+  val ITEM_UNLUCKY_PURSE = Value(ITEM_PREFIX + ItemEnum.UNLUCKY_PURSE.toString)
+  val ITEM_BLESS_STAFF  = Value(ITEM_PREFIX + ItemEnum.BLESS_STAFF.toString)
+  val ITEM_BLACK_FEATHER = Value(ITEM_PREFIX + ItemEnum.BLACK_FEATHER.toString)
+  val ITEM_THIEF_SECRET = Value(ITEM_PREFIX + ItemEnum.THIEF_SECRET.toString)
+  val ITEM_VENTRILOQUIST = Value(ITEM_PREFIX + ItemEnum.VENTRILOQUIST.toString)
+  val ITEM_DMESSAGE_SEAL = Value(ITEM_PREFIX + ItemEnum.DMESSAGE_SEAL.toString)
+  val ITEM_MIRROR_SHIELD = Value(ITEM_PREFIX + ItemEnum.MIRROR_SHIELD.toString)
+  val ITEM_SHAMAN_CROWN = Value(ITEM_PREFIX + ItemEnum.SHAMAN_CROWN.toString)
+  val ITEM_WEATHER_ROD = Value(ITEM_PREFIX + ItemEnum.WEATHER_ROD.toString)
+  val ITEM_DEATH_NOTE = Value(ITEM_PREFIX + ItemEnum.DEATH_NOTE.toString)
+  val ITEM_POPULATION_CENSUS = Value(ITEM_PREFIX + ItemEnum.POPULATION_CENSUS.toString)
 
   val VOTE             = Value("V")  
   val VOTE_STARTGAME   = Value("V_")
@@ -174,7 +190,8 @@ object MTypeEnum extends Enumeration {
     DEATH_WOLFCUB_EATEN  -> "被幼狼襲擊",
     DEATH_PENGUIN_ICE -> "被企鵝冰凍",
     DEATH_SUBPONTIFF -> "跟隨教主死亡",
-    DEATH_LOVER    -> "跟隨生命連繫者死亡"
+    DEATH_LOVER    -> "跟隨生命連繫者死亡",
+    DEATH_DEATH_NOTE -> "被死亡筆記寫上",
   )
 
   def get_death_text(death : MTypeEnum.Value) : String = {

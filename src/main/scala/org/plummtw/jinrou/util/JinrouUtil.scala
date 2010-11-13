@@ -150,8 +150,8 @@ object JinrouUtil {
 
   def css_style(background_color:String, text_color:String)= {
     "body{background-color:" + background_color + ";color:" + text_color + """;}
-      A:link { color: blue; } 
-      A:visited { color: blue; } 
+      A:link { color: #3333FF; }
+      A:visited { color: #3333FF; }
       A:active { color: red; } 
       A:hover { color: red; } 
       .left_real_time{background-color:""" + background_color + ";color:" + text_color + """;font-size:11pt;border-width:0px;border-style:solid;}

@@ -122,17 +122,15 @@ object VoteHelper {
   def check_vote_hang(room: Room, room_day: RoomDay, user_entrys: List[UserEntry], vote_list: List[Vote]) : UserEntry = {
     //val votes = Vote.findAll(By(Vote.roomday_id, room_day.id.is), By(Vote.vote_time, room_day.vote_time.is),
     //                         By(Vote.mtype, MTypeEnum.VOTE_HANG.toString))
+    val sys_messages = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is))
 
     // 處理隱士逆轉投票
-    val reverse_votes = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is),
-                                              By(SystemMessage.mtype, MTypeEnum.VOTE_REVERSEVOTE.toString))
+    val reverse_votes = sys_messages.filter(_.mtype.is == MTypeEnum.VOTE_REVERSEVOTE.toString)
 
     // 處理惡魔支配術
-    val dominates = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is),
-                                          By(SystemMessage.mtype, MTypeEnum.VOTE_DEMON_DOMINATE.toString))
+    val dominates = sys_messages.filter(_.mtype.is == MTypeEnum.VOTE_DEMON_DOMINATE.toString)
     // 處理教主指令投票
-    val pontiff_commands = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is),
-                                                 By(SystemMessage.mtype, MTypeEnum.VOTE_PONTIFF_COMMAND.toString))
+    val pontiff_commands = sys_messages.filter(_.mtype.is == MTypeEnum.VOTE_PONTIFF_COMMAND.toString)
     var pontiff_target    : Long            = 0
     var pontiff_affecters : List[Long]      = List()
 
@@ -197,8 +195,7 @@ object VoteHelper {
     }
     
     // 處理狂巫鼓舞術
-    val shouted = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is), 
-                                        By(SystemMessage.mtype, MTypeEnum.VOTE_SORCEROR_SHOUT.toString))
+    val shouted = sys_messages.filter(_.mtype.is == MTypeEnum.VOTE_SORCEROR_SHOUT.toString)
     val werewolf_side = 
       if ((room_day.weather.is != WeatherEnum.SNOWY.toString) && (shouted.length != 0)) {
         var shout_enabled = false
@@ -244,11 +241,27 @@ object VoteHelper {
       }
     }
 
+    // 道具黑羽
+    val black_feathers = sys_messages.filter(_.mtype.is == MTypeEnum.ITEM_BLACK_FEATHER.toString)
+    if ((room_day.weather.is != WeatherEnum.SNOWY.toString) && (black_feathers.length != 0)) {
+      black_feathers.foreach{ black_feather =>
+        val black_feather_user   = user_entrys.filter(_.id.is == black_feather.actioner_id.is)(0)
+        val black_feather_target = user_entrys.filter(_.id.is == black_feather.actionee_id.is)(0)
+        val vote_black_feather_list = votes.filter(_.actioner_id.is == black_feather_target.id.is)
+
+        if (vote_black_feather_list.length != 0) {
+          val vote_black_feather = vote_black_feather_list(0)
+
+          if ((vote_black_feather.vote_flags.is.indexOf(VoteFlagEnum.BFEATHERED.toString) == -1)) 
+            vote_black_feather.vote_flags(vote_black_feather.vote_flags.is + VoteFlagEnum.BFEATHERED.toString)
+          vote_black_feather.vote_number(vote_black_feather.vote_number.is + 4)
+        }
+      }
+    }
+
     // 處理惡魔詛咒術
-    val curses = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is),
-                                       By(SystemMessage.mtype, MTypeEnum.VOTE_DEMON_CURSE.toString)) :::
-                 SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is),
-                                       By(SystemMessage.mtype, MTypeEnum.VOTE_DEMON_CURSE2.toString))
+    val curses = sys_messages.filter(x => (x.mtype.is == MTypeEnum.VOTE_DEMON_CURSE.toString) ||
+                                          (x.mtype.is == MTypeEnum.VOTE_DEMON_CURSE2.toString))
     if ((room_day.weather.is != WeatherEnum.SNOWY.toString) && (curses.length != 0)) {
       curses.foreach{ curse =>
         val curser = user_entrys.filter(_.id.is == curse.actioner_id.is)(0)
@@ -272,8 +285,7 @@ object VoteHelper {
     }
 
     // 處理哥德法七彩噴射
-    val colorsprays = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is),
-                                       By(SystemMessage.mtype, MTypeEnum.VOTE_GODFAT_COLORSPRAY.toString))
+    val colorsprays = sys_messages.filter(_.mtype.is == MTypeEnum.VOTE_GODFAT_COLORSPRAY.toString)
     if ((room_day.weather.is != WeatherEnum.SNOWY.toString) && (colorsprays.length != 0)) {
       colorsprays.foreach{ colorspray =>
         val actioner = user_entrys.filter(_.id.is == colorspray.actioner_id.is)(0)
@@ -293,8 +305,8 @@ object VoteHelper {
 
 
     // 處理牧師祝福術
-    val blesseds = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is), 
-                                       By(SystemMessage.mtype, MTypeEnum.VOTE_CLERIC_BLESS.toString))
+    val blesseds = sys_messages.filter(x => (x.mtype.is == MTypeEnum.VOTE_CLERIC_BLESS.toString) ||
+                                            (x.mtype.is == MTypeEnum.ITEM_BLESS_STAFF.toString))
     if ((room_day.weather.is != WeatherEnum.SNOWY.toString) && (blesseds.length != 0)) {
       blesseds.foreach{ blessed =>
         val blesser = user_entrys.filter(_.id.is == blessed.actioner_id.is)(0)
@@ -303,17 +315,15 @@ object VoteHelper {
         if (vote_blessed_list.length != 0) {
           val vote_blessed = vote_blessed_list(0)
         
-          if ((blesser.live.is) && (vote_blessed.vote_flags.is.indexOf(VoteFlagEnum.BLESSED.toString) == -1)) {
+          if ((blesser.live.is) && (vote_blessed.vote_flags.is.indexOf(VoteFlagEnum.BLESSED.toString) == -1)) 
             vote_blessed.vote_flags(vote_blessed.vote_flags.is + VoteFlagEnum.BLESSED.toString)
-            vote_blessed.vote_number(Math.max(0, vote_blessed.vote_number.is - 2))
-          }
+          vote_blessed.vote_number(Math.max(0, vote_blessed.vote_number.is - 2))
         }
       }
     }
 
     // 處理惡魔斗轉
-    val vortexes = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is),
-                                         By(SystemMessage.mtype, MTypeEnum.VOTE_DEMON_VORTEX.toString))
+    val vortexes = sys_messages.filter(_.mtype.is == MTypeEnum.VOTE_DEMON_VORTEX.toString)
     if ((room_day.weather.is != WeatherEnum.SNOWY.toString) && (vortexes.length != 0)) {
       vortexes.foreach{ vortex =>
         val vortexer = user_entrys.filter(_.id.is == vortex.actioner_id.is)(0)
@@ -381,6 +391,43 @@ object VoteHelper {
       val votes_sorted = votes.sort(_.vote_number.is > _.vote_number.is)
       if ( votes_sorted(0).vote_number.is != votes_sorted(1).vote_number.is) {
         val result_list = user_entrys.filter(_.id.is == votes_sorted(0).actioner_id.is)
+
+        if (room.has_flag(RoomFlagEnum.ITEM_MODE)) {
+          // 依競標獲得道具
+          val auc_votes = votes.sort(_.auc_number.is > _.auc_number.is)
+          if (auc_votes(0).auc_number.is > auc_votes(1).auc_number.is) {
+            val auc_winners = user_entrys.filter(_.id.is == auc_votes(0).actioner_id.is)
+            if (auc_winners.length > 0) {
+              auc_winners(0).item_flags(room_day.item.is)
+
+              room_day.item(room_day.item.is + "*")
+              room_day.save()
+            }
+          }
+
+          // 依投票獲得金錢
+          val cash_votes = votes.filter(_.actionee_id.is == votes_sorted(0).actioner_id.is).map(_.actioner_id.is)
+          val cash_gain  = user_entrys.length / (votes_sorted(0).vote_number.is / 2) //cash_votes.length
+
+          user_entrys.foreach { user =>
+            val user_auc = votes.filter(_.actioner_id.is == user.id.is)
+            if (user_auc.length > 0) {
+              user.cash(user.cash.is - user_auc(0).auc_number.is)
+            }
+
+            if (cash_votes.contains(user.id.is)) {
+              user.cash(user.cash.is + cash_gain)
+            }
+
+            if ((user.item_flags.is == ItemEnum.BLESS_STAFF.toString) ||
+                (user.item_flags.is == ItemEnum.BLACK_FEATHER.toString)) {
+              user.cash(user.cash.is + 1)
+            }
+            
+            user.save()
+          }
+        }
+        
         if (result_list.length == 0)
           return WaterElemental
         else
@@ -407,11 +454,12 @@ object VoteHelper {
       val auto_str    = if (vote.vote_flags.is.indexOf(VoteFlagEnum.AUTO.toString) != -1 )    "(自投)" else ""
       val blessed_str = if (vote.vote_flags.is.indexOf(VoteFlagEnum.BLESSED.toString) != -1 ) "(祝福)" else ""
       val cursed_str  = if (vote.vote_flags.is.indexOf(VoteFlagEnum.CURSED.toString) != -1 )  "(詛咒)" else ""
+      val bfeather_str = if (vote.vote_flags.is.indexOf(VoteFlagEnum.BFEATHERED.toString) != -1 )  "(黑羽)" else ""
       val shouted_str = if (vote.vote_flags.is.indexOf(VoteFlagEnum.SHOUTED.toString) != -1 ) "(鼓舞)" else ""
       val vortex_str = if (vote.vote_flags.is.indexOf(VoteFlagEnum.VORTEX.toString) != -1 ) "(斗轉)" else ""
       val colored_str = if (vote.vote_flags.is.indexOf(VoteFlagEnum.COLORSPRAY.toString) != -1 ) "(七彩)" else ""
     
-      return auto_str + blessed_str + cursed_str + shouted_str + vortex_str + colored_str
+      return auto_str + blessed_str + cursed_str + bfeather_str + shouted_str + vortex_str + colored_str
     }
     def vote_no(room_day:RoomDay, user:UserEntry, vote_reveal:Boolean, vote_flags:String): String =
       if (!vote_reveal) ""
@@ -447,13 +495,20 @@ object VoteHelper {
           <span>{actionee_list(0).handle_name.is}</span>
         else
           <font color="#1E90FF">水元素</font>
-    
+
+      val auction_str =
+        if ((! heaven_mode))
+          <span></span>
+        else
+          <span>競價：{vote.auc_number.is}</span>
+
       return <tr>
          <td align="left"><strong>{actioner_name}</strong></td>
          <td>{(vote.vote_number.is/2).toString+" 票"}</td>
          <td>{"投票給 " + vote_no(room_day, actioner, vote_reveal, vote.vote_flags.is) +" 票 →"}</td>
          <td><strong>{actionee_name}</strong></td>
-         <td> {vote_flags_str(vote)}</td>
+         <td>{vote_flags_str(vote)}</td>
+         <td>{auction_str}</td>
         </tr>
     }
     val vote_reveal = (room.has_flag(RoomFlagEnum.VOTE_REVEAL))
@@ -462,7 +517,7 @@ object VoteHelper {
       return <span></span>
 
     return <table border="1" cellspacing="0" cellpadding="2" style="font-size:12pt;">
-      <td colspan="5" align="center">{"第 " + ((room_day.day_no+2)/2).toString + "日 (第 " + vote_time.toString +" 回)"}</td> {
+      <td colspan="6" align="center">{"第 " + ((room_day.day_no+2)/2).toString + "日 (第 " + vote_time.toString +" 回)"}</td> {
          for (vote <- votes) yield vote_tag(vote, vote_reveal)
       }
     </table>

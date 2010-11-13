@@ -209,7 +209,7 @@ class GameEndController {
     //def user_table = GameProcessCache.get_cache(room_id, "user_table", true,
     //  ()=>UserEntryHelper.user_table(user_entrys, true))
     def user_table =
-      UserEntryHelper.user_table(room, user_entrys, true)
+      UserEntryHelper.user_table(room, null, user_entrys, true)
 
     // 這邊可能靈界和正常看到的不同，要準備兩份 Cache 先不弄    
     // (room_day.day_no.is %2 == 1) || message_refresh

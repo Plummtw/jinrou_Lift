@@ -14,6 +14,7 @@ object RoomFlagEnum extends Enumeration {
   val AUTO_VOTE    = Value("AV")
   val WEATHER       = Value("WE")
   val WEATHER1       = Value("WF")
+  val ITEM_MODE      = Value("IT")
   val MOB_MODE      = Value("MM")
   val MOB_MODE1     = Value("MN")
   
@@ -39,6 +40,8 @@ object RoomFlagEnum extends Enumeration {
 
   val ROLE_INHERITER = Value("RI")  
   val ROLE_SHIFTER   = Value("RS")
+
+  val ROLE_HERMIT     = Value("RY")
   val ROLE_CARDMASTER = Value("RQ")
   
   val SUBROLE_MEMORYLOSS4  = Value("S4")
@@ -118,6 +121,7 @@ object RoomFlagEnum extends Enumeration {
     AUTO_VOTE    -> "(自投)",
     WEATHER      -> "(天候)",
     WEATHER1     -> "(天候1)",
+    ITEM_MODE    -> "(道具)",
     MOB_MODE     -> "(暴)",
     MOB_MODE1    -> "(暴1)",
   
@@ -143,6 +147,7 @@ object RoomFlagEnum extends Enumeration {
 
     ROLE_INHERITER -> "[繼]",
     ROLE_SHIFTER   -> "[模]",
+    ROLE_HERMIT    -> "[隱]",
     ROLE_CARDMASTER -> "[卡]",
 
     SUBROLE_MEMORYLOSS4  -> "[忘4]",

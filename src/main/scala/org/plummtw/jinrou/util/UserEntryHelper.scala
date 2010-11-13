@@ -35,7 +35,7 @@ object LinkHelper {
 object UserEntryHelper {
   // http://74.82.5.143/
   // http://identicon.relucks.org/
-  def user_cell(room: Room, user_entry: UserEntry, reveal: Boolean ) : NodeSeq = {
+  def user_cell(room: Room, current_user: UserEntry, user_entry: UserEntry, reveal: Boolean ) : NodeSeq = {
     var result : NodeSeq = Seq()
     val user_icon : UserIcon = user_entry.get_user_icon()
     val id_icon : NodeSeq =
@@ -46,9 +46,13 @@ object UserEntryHelper {
 
     if (user_entry.live.is)
       result ++= <td valign="top" bgcolor={if (user_entry.user_flags.is == UserEntryFlagEnum.VOTED.toString) "#FF50FF" else ""}>
-      <img src={user_icon.icon_filename.is} width={user_icon.icon_width.is.toString} height={user_icon.icon_height.is.toString} border="2" style={"border-color:" + user_icon.color.is} /></td>
+      <img src={user_icon.icon_filename.is} width={user_icon.icon_width.is.toString} height={user_icon.icon_height.is.toString} border="2" style={"border-color:" + user_icon.color.is} />{
+       if (room.has_flag(RoomFlagEnum.ITEM_MODE) && (reveal || ((current_user != null) && (user_entry.id.is == current_user.id.is))))
+         Seq(<br/><span>{"金:" + user_entry.cash.is}</span>) else NodeSeq.Empty}</td>
     else
-      result ++= <td valign="top" bgcolor="#992222"><img src="images/grave.gif"   border="2"  onMouseover={"this.src='" + user_icon.icon_filename.is + "'"} onMouseout="this.src='images/grave.gif'"  style={"border-color:" + user_icon.color.is} /></td>
+      result ++= <td valign="top" bgcolor="#992222"><img src="images/grave.gif"   border="2"  onMouseover={"this.src='" + user_icon.icon_filename.is + "'"} onMouseout="this.src='images/grave.gif'"  style={"border-color:" + user_icon.color.is} />{
+       // if (user_entry.user_flags.is == UserEntryFlagEnum.VOTED.toString) "#FF50FF" else ""}{
+       if (room.has_flag(RoomFlagEnum.ITEM_MODE) && reveal) Seq(<br/><span>{"金：" + user_entry.cash.is}</span>) else NodeSeq.Empty}</td>
 
     // <img src={"http://identicon.relucks.org/" + user_entry.ip_address_md5.is} />
     result ++= <td bgcolor={if (!user_entry.live.is) "#992222" else if (user_entry.user_flags.is == UserEntryFlagEnum.VOTED.toString) "#FF50FF" else ""}>
@@ -114,7 +118,7 @@ object UserEntryHelper {
       result ++= <td class="table_votelist1" valign="top" bgcolor={if (user_entry.user_flags.is == UserEntryFlagEnum.VOTED.toString) "#FF50FF" else ""}>
       <img src={user_icon.icon_filename.is} width={user_icon.icon_width.is.toString} height={user_icon.icon_height.is.toString} border="2" style={"border-color:" + user_icon.color.is} /></td>
     else
-      result ++= <td class="table_votelist1" valign="top" bgcolor="#992222"><img src="images/grave.gif"   border="2"  onMouseover={"this.src='" + user_icon.icon_filename.is + "'"} onMouseout="this.src='grave.gif'"  style={"border-color:" + user_icon.color.is} /></td>
+      result ++= <td class="table_votelist1" valign="top" bgcolor="#992222"><img src="images/grave.gif"   border="2"  onMouseover={"this.src='" + user_icon.icon_filename.is + "'"} onMouseout="this.src='images/grave.gif'"  style={"border-color:" + user_icon.color.is} /></td>
 
     result ++= <td class="table_votelist2" width="150px" bgcolor={if (!user_entry.live.is) "#992222" else if (user_entry.user_flags.is == UserEntryFlagEnum.VOTED.toString) "#FF50FF" else ""}>
           {user_entry.handle_name.is}<br/><font color={user_icon.color.is}>◆</font>
@@ -147,12 +151,12 @@ object UserEntryHelper {
 
 
   // User Table
-  def user_table(room:Room, user_entrys: List[UserEntry], reveal: Boolean) : NodeSeq = {
+  def user_table(room:Room, current_user:UserEntry, user_entrys: List[UserEntry], reveal: Boolean) : NodeSeq = {
     val user_groups = JinrouUtil.zipListBySize(5)(user_entrys)
 
     return <table border="0" cellpadding="0" cellspacing="5" style="font-size:10pt;border-width:1px;border-color:black;border-style:dotted;">    
     { for (val user_group <- user_groups) yield <tr> { 
-       for (val user_entry <- user_group) yield user_cell(room, user_entry, reveal)
+       for (val user_entry <- user_group) yield user_cell(room, current_user, user_entry, reveal)
     } </tr> } </table> }
 
   // User Table

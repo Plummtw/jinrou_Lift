@@ -22,7 +22,7 @@ object GameProcesser {
   def process_death(room_day:RoomDay, user: UserEntry, mtype: MTypeEnum.Value)  {
     if (user.live.is) {
       user.live(false)
-      user.save
+      //x user.save
 
       val sys_mes = SystemMessage.create.roomday_id(room_day.id.is)
                     .actioner_id(user.id.is).mtype(mtype.toString)
@@ -460,12 +460,35 @@ object GameProcesser {
     }
   }
 
+  def generate_item(room : Room) = {
+    // 計算競標道具
+    var new_item = ItemEnum.ITEM_NO_ITEM
+    if (room.has_flag(RoomFlagEnum.ITEM_MODE)) {
+      val item_list = ItemEnum.ITEM_MAP.values.toList
+      val total_weight = item_list.map(_.weight).reduceLeft[Int](_+_)
+      var random_weight = new java.util.Random().nextInt(total_weight)
+      //println("Total_Weight : " + total_weight)
+
+      ItemEnum.ITEM_MAP.keys.foreach { item =>
+        //println("Random_Weight : " + random_weight)
+        val item_weight = ItemEnum.get_item(item).weight
+        //println("Item [" + item.toString + "] Weight : " + item_weight)
+
+        if ((random_weight < item_weight) && (random_weight >= 0))
+          new_item = item
+        random_weight -= item_weight
+        //println("New Item : " + new_item.toString)
+      }
+    }
+    new_item
+  }
+
   def process_start_game(room:Room, user_entrys:List[UserEntry]) = {
     GameProcesser.dispatch_role(room, user_entrys)
     user_entrys.foreach(_.save)
 
-    // 加入大廳
-    val new_day = RoomDay.create.room_id(room.id.is).day_no(1).vote_time(1)
+    // 加入第一夜
+    val new_day = RoomDay.create.room_id(room.id.is).day_no(1).vote_time(1).item(generate_item(room).toString)
     new_day.save()
 
     // 產生人數字串
@@ -537,7 +560,7 @@ object GameProcesser {
 //             (actionee.has_flag(UserEntryFlagEnum.GODFAT_SPECIAL3))) &&
             (actioner.hasnt_flag(UserEntryFlagEnum.GODFAT_TARGETED))) {
           actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.GODFAT_TARGETED.toString)
-          actioner.save
+          //x actioner.save
         }
       }
     }
@@ -551,7 +574,7 @@ object GameProcesser {
 
       user_entrys.filter(_.current_role == RoleEnum.ARCHMAGE).foreach { archmage =>
         archmage.user_flags(archmage.user_flags.is + UserEntryFlagEnum.WATER_ELEM_USED.toString)
-        archmage.save()
+        //x archmage.save()
       }
     } else
       process_death(room_day, voted_player, MTypeEnum.DEATH_HANGED)
@@ -565,12 +588,12 @@ object GameProcesser {
     val death1s  =  user_entrys.filter(_.has_flag(UserEntryFlagEnum.DEATH_1))
     death1s.foreach { suddendeath =>
        suddendeath.user_flags(suddendeath.user_flags.is.replace(UserEntryFlagEnum.DEATH_1.toString,UserEntryFlagEnum.DEATH_0.toString))
-       suddendeath.save
+       //x suddendeath.save
     }
     val death2s  =  user_entrys.filter(_.has_flag(UserEntryFlagEnum.DEATH_2))
     death2s.foreach { suddendeath =>
        suddendeath.user_flags(suddendeath.user_flags.is.replace(UserEntryFlagEnum.DEATH_2.toString,UserEntryFlagEnum.DEATH_1.toString))
-       suddendeath.save
+       //x suddendeath.save
     }
 
     if (voted_player != WaterElemental) {
@@ -597,7 +620,7 @@ object GameProcesser {
           if (target.live.is) {
              // target.subrole(SubroleEnum.SUDDENDEATH.toString)
              target.user_flags(target.user_flags.is + UserEntryFlagEnum.DEATH_2.toString)
-             target.save
+             //x target.save
           }
         }
       }
@@ -611,7 +634,7 @@ object GameProcesser {
           if (target_list.length == 0) {
             val target = user_entrys.filter(x=>(x.live.is) && (x.current_role == RoleEnum.ARCHMAGE))(0)
             target.user_flags( target.user_flags.is + UserEntryFlagEnum.WATER_ELEM_USED.toString )
-            target.save
+            //x target.save
 
             val sys_mes = SystemMessage.create.roomday_id(room_day.id.is)
                          .actioner_id(0).mtype(MTypeEnum.DEATH_SUDDEN.toString)
@@ -648,7 +671,7 @@ object GameProcesser {
         if ((actioner.live.is) && (target.id.is == voted_player.id.is)) {
           if (target_role_str2 != RoleEnum.INHERITER.toString) {
             actioner.role(target_role_str2 + actioner.role.is)
-            actioner.save
+            //x actioner.save
           }
 
           if ((!room.has_flag(RoomFlagEnum.INHERITER_NEUTRAL))) {
@@ -681,7 +704,7 @@ object GameProcesser {
       val auto_player = user_entrys.filter(_.id.is == vote_auto.actioner_id.is)(0)
       if (auto_player.hasnt_flag(UserEntryFlagEnum.AUTOVOTED))  {
         auto_player.user_flags(auto_player.user_flags.is + UserEntryFlagEnum.AUTOVOTED.toString)
-        auto_player.save
+        //x auto_player.save
       }
       else if (auto_player.live.is) {
         process_death(room_day, auto_player, MTypeEnum.DEATH_SUDDEN)
@@ -709,7 +732,7 @@ object GameProcesser {
          val actioner = user_entrys.filter(_.id.is == vote.actioner_id.is)(0)
          if ((actioner.current_role == RoleEnum.BETRAYER) && actioner.live.is) {
            actioner.action_point(actioner.action_point.is + (vote.vote_number.is /2 ))
-           actioner.save
+           //x actioner.save
          }
       }
     }
@@ -721,7 +744,7 @@ object GameProcesser {
          if (((actioner.current_role == RoleEnum.FOX) || (actioner.current_role == RoleEnum.GODFAT))
              && actioner.live.is) {
            actioner.action_point(actioner.action_point.is + (vote.vote_number.is /2 ))
-           actioner.save
+           //x actioner.save
          }
       }
     }
@@ -730,12 +753,24 @@ object GameProcesser {
     val hided_user_entrys = user_entrys.filter(_.has_flag(UserEntryFlagEnum.HIDED))
     hided_user_entrys.foreach { hided_user_entry =>
       hided_user_entry.user_flags(hided_user_entry.user_flags.replace(UserEntryFlagEnum.HIDED.toString, ""))
-      hided_user_entry.save
+      //x hided_user_entry.save
     }
-    
+
     //users_for_save.removeDuplicates.foreach( _.save )
 
-    //計算天氣變化
+    // 顯示道具訊息
+    if (room.has_flag(RoomFlagEnum.ITEM_MODE)) {
+      val talk_sentence =
+        if (room_day.item.is.endsWith("*"))
+          "＜＜道具競標成功＞＞"
+        else
+          "＜＜道具競標失敗＞＞"
+
+      val talk = Talk.create.mtype(MTypeEnum.MESSAGE_GENERAL.toString).message(talk_sentence).font_type("12")
+      talks_for_save = talks_for_save ::: List(talk)
+    }
+
+    // 計算天氣變化
     var new_weather = room_day.weather.is
     if (((room.has_flag(RoomFlagEnum.WEATHER1)) && (new Random().nextInt(2) == 0)) ||
         (new_weather == WeatherEnum.TYPHOON.toString)) {
@@ -755,9 +790,12 @@ object GameProcesser {
         new_weather = WeatherEnum.TYPHOON.toString
     }
 
+    // 儲存使用者
+    user_entrys.foreach { user => user.save }
+
     // 新的一日
     val new_room_day  = RoomDay.create.room_id(room.id.is).day_no(room_day.day_no.is + 1)
-                        .vote_time(1).weather(new_weather)
+                        .vote_time(1).weather(new_weather).item(generate_item(room).toString)
     new_room_day.save                    
 
     // 白天到晚上時不用加入 SystemMessage
@@ -802,7 +840,10 @@ object GameProcesser {
     //var users_for_save : List[UserEntry] = List()
     var talks_for_save : List[Talk]      = List()
     var votes_for_save : List[Vote]      = List()
+    var itemvotes_for_save : List[ItemVote] = List()
     
+    var item_votes = ItemVote.findAll(By(ItemVote.roomday_id, room_day.id.is))
+
     // 妖狐指定背德
     val fox_votes = votes.filter(x => (x.mtype.is == MTypeEnum.VOTE_FOX.toString) ||
                                       (x.mtype.is == MTypeEnum.VOTE_FOX1.toString))
@@ -810,7 +851,7 @@ object GameProcesser {
       val target = user_entrys.filter(_.id.is == vote.actionee_id.is)(0)
       target.role(RoleEnum.BETRAYER.toString)
       target.action_point(1)
-      target.save
+      //x target.save
     }
 
     // 模仿師模仿
@@ -833,11 +874,11 @@ object GameProcesser {
           target_role_str
       if (room.has_flag(RoomFlagEnum.SHIFTER_LOVER)) {
         target.user_flags(target.user_flags.is + UserEntryFlagEnum.LOVER.toString)
-        target.save
+        //x target.save
         actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.LOVER.toString)
       }
       actioner.role(target_role_str2 + actioner.role.is)
-      actioner.save
+      //x actioner.save
 
       val target_role_enum =
         RoleEnum.get_role(target_role_str2)
@@ -857,7 +898,7 @@ object GameProcesser {
       val target_role_str2 = RoleEnum.PENGUIN.toString
 
       actioner.role(target_role_str2 + actioner.role.is)
-      actioner.save
+      //x actioner.save
 
       val target_role_enum = RoleEnum.get_role(target_role_str2)
 
@@ -879,7 +920,7 @@ object GameProcesser {
 
       if (actioner.live) {
         actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.FOX_SPECIAL.toString)
-        actioner.save
+        //x actioner.save
       }
     }
 
@@ -900,7 +941,7 @@ object GameProcesser {
         actioner.role(target.role.is.substring(0,1))
         actioner.subrole(SubroleEnum.FOXBELIEVER.toString)
         actioner.action_point(0)
-        actioner.save
+        //x actioner.save
         
         val target_role_str = target.role.is.substring(0,1)
         val target_role_enum =  RoleEnum.get_role(target_role_str)
@@ -917,7 +958,7 @@ object GameProcesser {
       val actioner = user_entrys.filter(_.id.is == vote.actioner_id.is)(0)
 
       actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.GODFAT_SPECIAL1.toString)
-      actioner.save
+      //x actioner.save
 
       val talk_sentence = "＜＜哥德法特化成功＞＞ (咒術)"
       val talk = Talk.create.mtype(MTypeEnum.MESSAGE_GENERAL.toString).message(talk_sentence).font_type("12")
@@ -929,7 +970,7 @@ object GameProcesser {
       val actioner = user_entrys.filter(_.id.is == vote.actioner_id.is)(0)
 
       actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.GODFAT_SPECIAL2.toString)
-      actioner.save
+      //x actioner.save
 
       val talk_sentence = "＜＜哥德法特化成功＞＞ (方陣)"
       val talk = Talk.create.mtype(MTypeEnum.MESSAGE_GENERAL.toString).message(talk_sentence).font_type("12")
@@ -941,7 +982,7 @@ object GameProcesser {
       val actioner = user_entrys.filter(_.id.is == vote.actioner_id.is)(0)
 
       actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.GODFAT_SPECIAL3.toString)
-      actioner.save
+      //x actioner.save
 
       val talk_sentence = "＜＜哥德法特化成功＞＞ (秘術)"
       val talk = Talk.create.mtype(MTypeEnum.MESSAGE_GENERAL.toString).message(talk_sentence).font_type("12")
@@ -955,10 +996,10 @@ object GameProcesser {
       val actionee = user_entrys.filter(_.id.is == vote.actionee_id.is)(0)
 
       actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.GODFAT_SPECIAL_USED.toString)
-      actioner.save
+      //x actioner.save
 
       actionee.user_flags(actionee.user_flags.is + UserEntryFlagEnum.DEATH_2.toString)
-      actionee.save
+      //x actionee.save
     }
 
     val godfat_colorspray_votes = votes.filter(_.mtype.is == MTypeEnum.VOTE_GODFAT_COLORSPRAY.toString)
@@ -966,7 +1007,7 @@ object GameProcesser {
       val actioner = user_entrys.filter(_.id.is == vote.actioner_id.is)(0)
 
       actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.GODFAT_SPECIAL_USED.toString)
-      actioner.save
+      //x actioner.save
 
       val talk_sentence = "＜＜哥德法使用七彩噴射＞＞"
       val talk = Talk.create.mtype(MTypeEnum.MESSAGE_FOX.toString).message(talk_sentence).font_type("12")
@@ -979,7 +1020,7 @@ object GameProcesser {
       val actioner = user_entrys.filter(_.id.is == vote.actioner_id.is)(0)
 
       actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.GODFAT_BLIND_USED.toString)
-      actioner.save
+      //x actioner.save
 
       val talk_sentence = "＜＜哥德法使用眩光＞＞"
       val talk = Talk.create.mtype(MTypeEnum.MESSAGE_FOX.toString).message(talk_sentence).font_type("12")
@@ -992,30 +1033,56 @@ object GameProcesser {
       val actionee = user_entrys.filter(_.id.is == vote.actionee_id.is)(0)
 
       actioner.role(RoleEnum.FOX.toString + actioner.role.is.substring(1))
-      actioner.save
+      //x actioner.save
 
       actionee.role(RoleEnum.GODFAT.toString + actionee.role.is.substring(1))
-      actionee.save
+      //x actionee.save
+    }
+
+    // 道具盜賊極意
+    val item_thief_secrets = item_votes.filter(_.mtype.is == MTypeEnum.ITEM_THIEF_SECRET.toString)
+    item_thief_secrets.foreach { item_thief_secret =>
+      val actioner = user_entrys.filter(_.id.is == item_thief_secret.actioner_id.is)(0)
+      val target   = user_entrys.filter(_.id.is == item_thief_secret.actionee_id.is)(0)
+      if (actioner.live.is && target.live.is) {
+        item_votes = item_votes.filter(_.actioner_id.is != target.id.is)
+
+        actioner.item_flags(target.item_flags.is)
+        target.item_flags(ItemEnum.ITEM_NO_ITEM.toString)
+      }
+    }
+
+    // 道具鏡盾
+    val item_mirror_shields = item_votes.filter(_.mtype.is == MTypeEnum.ITEM_MIRROR_SHIELD.toString)
+    item_mirror_shields.foreach { item_mirror_shield =>
+      val actioner = user_entrys.filter(_.id.is == item_mirror_shield.actioner_id.is)(0)
+       actioner.item_flags(ItemEnum.ITEM_NO_ITEM.toString)
+
+      val target_mirror_shield_votes = votes.filter(_.actionee_id.is == actioner.id.is)
+      target_mirror_shield_votes.foreach { target_mirror_shield_vote =>
+        target_mirror_shield_vote.actionee_id(target_mirror_shield_vote.actioner_id.is)
+        target_mirror_shield_vote.save
+      }
     }
 
     // 隱士技能
     val hermit_hide_votes = votes.filter(_.mtype.is == MTypeEnum.VOTE_HIDE.toString)
     hermit_hide_votes.foreach { hermit_hide_vote =>
-       val actioner = user_entrys.filter(_.id.is == hermit_hide_vote.actioner_id.is)(0)
-       actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.HIDED.toString)
-       actioner.save
+      val actioner = user_entrys.filter(_.id.is == hermit_hide_vote.actioner_id.is)(0)
+      actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.HIDED.toString)
+      //x actioner.save
 
-       val target_hermit_votes = votes.filter(_.actionee_id.is == actioner.id.is)
-       target_hermit_votes.foreach { target_hermit_vote =>
-         target_hermit_vote.actionee_id(target_hermit_vote.actioner_id.is)
-         target_hermit_vote.save
-       }
+      val target_hermit_votes = votes.filter(_.actionee_id.is == actioner.id.is)
+      target_hermit_votes.foreach { target_hermit_vote =>
+        target_hermit_vote.actionee_id(target_hermit_vote.actioner_id.is)
+        target_hermit_vote.save
+      }
     }
     val hermit_reverse_votes = votes.filter(_.mtype.is == MTypeEnum.VOTE_REVERSEVOTE.toString)
     hermit_reverse_votes.foreach { hermit_reverse_vote =>
        val actioner = user_entrys.filter(_.id.is == hermit_reverse_vote.actioner_id.is)(0)
        actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.REVERSE_USED.toString)
-       actioner.save
+       //x actioner.save
     }
     
 
@@ -1025,7 +1092,7 @@ object GameProcesser {
       val actioner = user_entrys.filter(_.id.is == scholar_analyze.actioner_id.is)(0)
       if (actioner.live.is) {
         actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.ANALYZED.toString)
-        actioner.save
+        //x actioner.save
       }
     }
     val scholar_reports = votes.filter(_.mtype.is == MTypeEnum.VOTE_SCHOLAR_REPORT.toString)
@@ -1033,7 +1100,7 @@ object GameProcesser {
       val actioner = user_entrys.filter(_.id.is == scholar_report.actioner_id.is)(0)
       if (actioner.live.is) {
         actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.REPORTED.toString)
-        actioner.save
+        //x actioner.save
       }
     }
 
@@ -1048,7 +1115,7 @@ object GameProcesser {
         else
           actioner.action_point(actioner.action_point.is + 2)
         //actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.CURSE_USED.toString)
-        actioner.save
+        //x actioner.save
       }
     }
 
@@ -1057,7 +1124,7 @@ object GameProcesser {
       val actioner = user_entrys.filter(_.id.is == demon_chaos.actioner_id.is)(0)
       if (actioner.live.is) {
         actioner.action_point(actioner.action_point.is + 2)
-        actioner.save
+        //x actioner.save
       }
     }
 
@@ -1066,7 +1133,7 @@ object GameProcesser {
       val actioner = user_entrys.filter(_.id.is == demon_dominate.actioner_id.is)(0)
       if (actioner.live.is) {
         actioner.action_point(actioner.action_point.is + 1)
-        actioner.save
+        //x actioner.save
       }
     }
 
@@ -1076,7 +1143,7 @@ object GameProcesser {
       if (actioner.live.is) {
         actioner.action_point(actioner.action_point.is + 3)
         actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.VORTEX_USED.toString)
-        actioner.save
+        //x actioner.save
       }
     }
 
@@ -1091,7 +1158,7 @@ object GameProcesser {
         else
           actioner.action_point(actioner.action_point.is - 2)
         actioner.user_flags(actioner.user_flags.is.replace(UserEntryFlagEnum.CARD_HERMIT.toString, ""))
-        actioner.save
+        //x actioner.save
       }
     }
 
@@ -1129,7 +1196,7 @@ object GameProcesser {
         // 轉換成功視同詛咒被用掉
         //demon_victimer.user_flags(demon_victimer.user_flags.is + UserEntryFlagEnum.CURSE_USED.toString)
         demon_victimer.user_flags(demon_victimer.user_flags.is.replace(UserEntryFlagEnum.CARD_TOWER.toString, ""))
-        demon_victimer.save
+        //x demon_victimer.save
 
         werewolf_target = user_entrys.filter(_.id.is == demon_victimer.id.is)(0)
       //}
@@ -1142,7 +1209,7 @@ object GameProcesser {
       val actioner = user_entrys.filter(_.id.is == vote.actioner_id.is)(0)
       if (actioner.current_role == RoleEnum.CARDMASTER) {
         actioner.user_flags(actioner.user_flags.is.replace(UserEntryFlagEnum.CARD_CHARIOT.toString, ""))
-        actioner.save
+        //x actioner.save
       }
     }
 
@@ -1206,13 +1273,13 @@ object GameProcesser {
         if (werewolf_target.hasnt_flag(UserEntryFlagEnum.BITED)) {
           werewolf_target.user_flags( werewolf_target.user_flags.is + UserEntryFlagEnum.BITED.toString )
         }
-        werewolf_target.save
+        //x werewolf_target.save
       }
       else if ((werewolf_target.current_role == RoleEnum.ARCHMAGE) &&
                (werewolf_target.hasnt_flag(UserEntryFlagEnum.WATER_ELEM_USED)) &&
                (!werewolf_power)) {                         // 6. 咬到水元素
         werewolf_target.user_flags( werewolf_target.user_flags.is + UserEntryFlagEnum.WATER_ELEM_USED.toString )
-        werewolf_target.save
+        //x werewolf_target.save
 
         val sys_mes = SystemMessage.create.roomday_id(room_day.id.is)
                     .actioner_id(0).mtype(MTypeEnum.DEATH_EATEN.toString)
@@ -1224,7 +1291,7 @@ object GameProcesser {
           val herbalist_elixir = herbalist_elixirs(0)
           val actioner = user_entrys.filter(_.id.is == herbalist_elixir.actioner_id.is)(0)
           actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.ELIXIR_USED.toString)
-          actioner.save
+          //x actioner.save
         }
         else if (room_day.weather.is == WeatherEnum.TYPHOON.toString) {}        //7.1 颱天算咬失敗
         else {
@@ -1242,7 +1309,7 @@ object GameProcesser {
             val live_sorcerors = user_entrys.filter(x=>(x.current_role == RoleEnum.SORCEROR) && (x.live.is))
             live_sorcerors.foreach { live_sorceror =>
               live_sorceror.action_point(Math.min(10, live_sorceror.action_point.is + 2))
-              live_sorceror.save
+              //x live_sorceror.save
             }
 
             // 咬到獵人？
@@ -1273,7 +1340,7 @@ object GameProcesser {
       val live_madmans = user_entrys.filter(x=>(x.current_role == RoleEnum.MADMAN) && (x.live.is))
       live_madmans.foreach { live_madman =>
         live_madman.action_point(Math.min(10, live_madman.action_point.is + 1))
-        live_madman.save
+        //x live_madman.save
       }
     }
 
@@ -1297,7 +1364,7 @@ object GameProcesser {
         else if ((wolfcub_target.current_role == RoleEnum.ARCHMAGE) &&
                (wolfcub_target.hasnt_flag(UserEntryFlagEnum.WATER_ELEM_USED))) { // 6. 咬到水元素
           wolfcub_target.user_flags( wolfcub_target.user_flags.is + UserEntryFlagEnum.WATER_ELEM_USED.toString )
-          wolfcub_target.save
+          //x wolfcub_target.save
 
           val sys_mes = SystemMessage.create.roomday_id(room_day.id.is)
                         .actioner_id(0).mtype(MTypeEnum.DEATH_EATEN.toString)
@@ -1311,7 +1378,7 @@ object GameProcesser {
             val actioner = user_entrys.filter(_.id.is == herbalist_elixir.actioner_id.is)(0)
             if (actioner.hasnt_flag(UserEntryFlagEnum.ELIXIR_USED)) {
               actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.ELIXIR_USED.toString)
-              actioner.save
+              //x actioner.save
             }
           }
           else {
@@ -1351,23 +1418,32 @@ object GameProcesser {
           process_death(room_day, actioner, MTypeEnum.DEATH_GODFAT)
         } else if (target.current_role == RoleEnum.DEMON) {
           target.action_point(target.action_point.is + 3)
-          target.save
+          //x target.save
         } else if (target.subrole.is == SubroleEnum.ALPHAWOLF.toString) {
           if (target.hasnt_flag(UserEntryFlagEnum.AUGURED)) {
             augurer_vote.vote_flags(augurer_vote.vote_flags.is + VoteFlagEnum.FAKE.toString)
             augurer_vote.save
 
             target.user_flags(target.user_flags.is + UserEntryFlagEnum.AUGURED.toString)
-            target.save
+            //x target.save
           }
         }
 
         if (actioner.current_role == RoleEnum.CARDMASTER) {
           actioner.user_flags(actioner.user_flags.is.replace(UserEntryFlagEnum.CARD_MAGICIAN.toString, ""))
-          actioner.save
+          //x actioner.save
         }
       }
     }
+
+    // 道具薩滿冕冠
+    //val item_shaman_crowns = item_votes.filter(_.mtype.is == MTypeEnum.ITEM_SHAMAN_CROWN.toString)
+    //item_shaman_crowns.foreach { item_shaman_crown =>
+    //  val actioner = user_entrys.filter(_.id.is == item_shaman_crown.actioner_id.is)(0)
+    //  if (actioner.live.is) {
+    //    actioner.item_flags(ItemEnum.ITEM_NO_ITEM.toString)
+    //  }
+    //}
 
     // 狂巫法術
     val sorceror_augures = votes.filter(_.mtype.is == MTypeEnum.VOTE_SORCEROR_AUGURE.toString)
@@ -1383,10 +1459,10 @@ object GameProcesser {
           sys_mes.save
         } else if (target.current_role == RoleEnum.DEMON) {
           target.action_point(target.action_point.is + 2)
-          target.save
+          //x target.save
         }
         actioner.action_point(Math.max(0, actioner.action_point.is-2))
-        actioner.save
+        //x actioner.save
       }
     }
     val sorceror_whispers = votes.filter(_.mtype.is == MTypeEnum.VOTE_SORCEROR_WHISPER.toString)
@@ -1397,7 +1473,7 @@ object GameProcesser {
           actioner.action_point(Math.max(0, actioner.action_point.is-2))
         else
           actioner.action_point(Math.max(0, actioner.action_point.is-3))
-        actioner.save
+        //x actioner.save
       }
     }
     val sorceror_conjures = votes.filter(_.mtype.is == MTypeEnum.VOTE_SORCEROR_CONJURE.toString)
@@ -1417,7 +1493,7 @@ object GameProcesser {
           */
         } else if (target.current_role == RoleEnum.DEMON) {
           target.action_point(target.action_point.is + 5)
-          target.save
+          //x target.save
         } else if (target.current_role == RoleEnum.FOX) {
           val fox_barriers = fox_barrier_votes.filter(_.actioner_id.is == target.id.is)
           if (fox_barriers.length == 0)
@@ -1435,7 +1511,7 @@ object GameProcesser {
         }
 
         actioner.action_point(Math.max(0, actioner.action_point.is-4))
-        actioner.save
+        //x actioner.save
       }
     }
     val sorceror_shouts = votes.filter(_.mtype.is == MTypeEnum.VOTE_SORCEROR_SHOUT.toString)
@@ -1445,7 +1521,7 @@ object GameProcesser {
         if (room.has_flag(RoomFlagEnum.SORCEROR_SHOUT1))
           actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.SHOUTED.toString)
         actioner.action_point(Math.max(0, actioner.action_point.is-5))
-        actioner.save
+        //x actioner.save
       }
     }
     val sorceror_believes = votes.filter(_.mtype.is == MTypeEnum.VOTE_SORCEROR_BELIEVE.toString)
@@ -1456,11 +1532,11 @@ object GameProcesser {
       if (actioner.live.is)
       {
         actioner.action_point(Math.max(0, actioner.action_point.is-5))
-        actioner.save
+        //x actioner.save
         if ((RoleEnum.get_role(target.role.is.substring(0,1)).role_side == RoomVictoryEnum.VILLAGER_WIN) &&
           (target.subrole.is == "")) {
           target.subrole(SubroleEnum.WOLFBELIEVER.toString)
-          target.save
+          //x target.save
         }
       }
       
@@ -1470,17 +1546,17 @@ object GameProcesser {
     val stunned1s  =  user_entrys.filter(_.has_flag(UserEntryFlagEnum.STUNNED_1))
     stunned1s.foreach { stunned1 =>
        stunned1.user_flags(stunned1.user_flags.is.replace(UserEntryFlagEnum.STUNNED_1.toString,""))
-       stunned1.save
+       //x stunned1.save
     }
     val stunned2s  =  user_entrys.filter(_.has_flag(UserEntryFlagEnum.STUNNED_2))
     stunned2s.foreach { stunned2 =>
        stunned2.user_flags(stunned2.user_flags.is.replace(UserEntryFlagEnum.STUNNED_2.toString,UserEntryFlagEnum.STUNNED_1.toString))
-       stunned2.save
+       //x stunned2.save
     }
     val stunned3s  =  user_entrys.filter(_.has_flag(UserEntryFlagEnum.STUNNED_3))
     stunned3s.foreach { stunned3 =>
        stunned3.user_flags(stunned3.user_flags.is.replace(UserEntryFlagEnum.STUNNED_3.toString,UserEntryFlagEnum.STUNNED_2.toString))
-       stunned3.save
+       //x stunned3.save
     }
 
     // 冰封
@@ -1494,11 +1570,11 @@ object GameProcesser {
           (x.current_role == RoleEnum.PENGUIN)) // && (x.live.is))
         live_penguins.foreach { live_penguin =>
           live_penguin.action_point(live_penguin.action_point.is+1)
-          live_penguin.save
+          //x live_penguin.save
         }
       } else {
         iced1.user_flags(iced1.user_flags.is.replace(UserEntryFlagEnum.ICED_1.toString, ""))
-        iced1.save
+        //x iced1.save
       }
        
     }
@@ -1511,7 +1587,7 @@ object GameProcesser {
       else
         iced2.user_flags(iced2.user_flags.is.replace(UserEntryFlagEnum.ICED_2.toString, ""))
 
-      iced2.save
+      //x iced2.save
     }
     val iced3s  =  user_entrys.filter(_.has_flag(UserEntryFlagEnum.ICED_3))
     iced3s.foreach { iced3 =>
@@ -1522,7 +1598,7 @@ object GameProcesser {
       else
         iced3.user_flags(iced3.user_flags.is.replace(UserEntryFlagEnum.ICED_3.toString, ""))
 
-      iced3.save
+      //x iced3.save
     }
     /* val iced4s  =  user_entrys.filter(_.has_flag(UserEntryFlagEnum.ICED_4))
     iced4s.foreach { iced4 =>
@@ -1550,7 +1626,7 @@ object GameProcesser {
           target.user_flags(target.user_flags.is + UserEntryFlagEnum.ICED_2.toString)
         else
           target.user_flags(target.user_flags.is + UserEntryFlagEnum.ICED_3.toString)
-        target.save
+        //x target.save
       }
     }
 
@@ -1574,12 +1650,12 @@ object GameProcesser {
             target.user_flags(target.user_flags.is + UserEntryFlagEnum.ICED_2.toString)
           else
             target.user_flags(target.user_flags.is + UserEntryFlagEnum.ICED_3.toString)
-          target.save
+          //x target.save
         }
       }
 
       actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.CHILL_USED.toString)
-      actioner.save
+      //x actioner.save
     }
 
     // 教主 STUN 回復
@@ -1587,7 +1663,7 @@ object GameProcesser {
     pontiffs.foreach { pontiff =>
       if (pontiff.user_flags.is.indexOf( UserEntryFlagEnum.PONTIFF_STUNNED.toString ) != -1 ) {
          pontiff.user_flags(pontiff.user_flags.is.replace(UserEntryFlagEnum.PONTIFF_STUNNED.toString,""))
-         pontiff.save
+         //x pontiff.save
       }
     }
 
@@ -1601,11 +1677,11 @@ object GameProcesser {
           (actioner.live.is)) {
         if (target.subrole.is == SubroleEnum.NORELIGION.toString) {
           actioner.user_flags( actioner.user_flags.is + UserEntryFlagEnum.PONTIFF_STUNNED.toString )
-          actioner.save
+          //x actioner.save
         } else if ((target.hasnt_flag(UserEntryFlagEnum.RELIGION)) &&
                    (target.hasnt_flag(UserEntryFlagEnum.NORELIGION))) {
           target.user_flags( target.user_flags.is + UserEntryFlagEnum.RELIGION.toString )
-          target.save
+          //x target.save
         }
       }
     }
@@ -1618,7 +1694,7 @@ object GameProcesser {
       if ((archmage_dispell_votes.filter(_.actionee_id.is == actioner.id.is).length == 0) &&
           (actioner.live.is)) {
         actioner.user_flags( actioner.user_flags.is + UserEntryFlagEnum.PONTIFF_COMMAND_USED.toString )
-        actioner.save
+        //x actioner.save
       }
     }
 
@@ -1628,7 +1704,7 @@ object GameProcesser {
       val actioner = user_entrys.filter(_.id.is == pontiff_aura_vote.actioner_id.is)(0)
       if (actioner.live.is) {
         actioner.user_flags( actioner.user_flags.is + UserEntryFlagEnum.PONTIFF_AURA.toString )
-        actioner.save
+        //x actioner.save
       }
     }
 
@@ -1663,11 +1739,11 @@ object GameProcesser {
             else
               ""
           target.user_flags(lover_str + autovoted_str + religion_str)
-          target.save()
+          //x target.save()
         }
 
         actioner.action_point(Math.max(actioner.action_point.is -3, 0))
-        actioner.save()
+        //x actioner.save()
       }
     }
     // 大魔導 召喚水元素
@@ -1677,7 +1753,7 @@ object GameProcesser {
       if ((actioner.live.is) && (actioner.has_flag(UserEntryFlagEnum.WATER_ELEM_USED))) {
          actioner.user_flags(actioner.user_flags.is.replace(UserEntryFlagEnum.WATER_ELEM_USED.toString, ""))
          actioner.action_point(Math.max(actioner.action_point.is -3, 0))
-         actioner.save()
+         //x actioner.save()
       }
     }
 
@@ -1691,12 +1767,12 @@ object GameProcesser {
           (target.current_role != RoleEnum.PONTIFF)) {
         if (target.hasnt_flag(UserEntryFlagEnum.NORELIGION)) {
           target.user_flags( target.user_flags.is + UserEntryFlagEnum.NORELIGION.toString )
-          target.save
+          //x target.save
         }
       }
 
       actioner.user_flags(actioner.user_flags.is.replace(UserEntryFlagEnum.CARD_JUSTICE.toString, ""))
-      actioner.save
+      //x actioner.save
     }
 
     // 暴民模式
@@ -1708,7 +1784,7 @@ object GameProcesser {
 
       if ((actioner.live.is) && (actioner.hasnt_flag(UserEntryFlagEnum.BECAME_MOB))) {
         actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.BECAME_MOB.toString)
-        actioner.save
+        //x actioner.save
       }
     }
 
@@ -1726,6 +1802,19 @@ object GameProcesser {
       }
     }
 
+    // 道具死亡筆記
+    val item_death_notes = item_votes.filter(_.mtype.is == MTypeEnum.ITEM_DEATH_NOTE.toString)
+    item_death_notes.foreach { item_death_note =>
+      val actioner = user_entrys.filter(_.id.is == item_death_note.actioner_id.is)(0)
+      val target   = user_entrys.filter(_.id.is == item_death_note.actionee_id.is)(0)
+      if (actioner.live.is) {
+        actioner.item_flags(ItemEnum.ITEM_NO_ITEM.toString)
+
+        if (target.live.is)
+          process_death(room_day, target, MTypeEnum.DEATH_DEATH_NOTE)
+      }
+    }
+
     val herbalist_poison_votes   = votes.filter(_.mtype.is == MTypeEnum.VOTE_HERBALIST_POISON.toString)
     // 藥師使用毒藥
     herbalist_poison_votes.foreach { herbalist_poison_vote =>
@@ -1734,7 +1823,7 @@ object GameProcesser {
       
       if ((actioner.live.is) && (target.live.is)) {
         actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.POISON_USED.toString)
-        actioner.save
+        //x actioner.save
 
         process_death(room_day, target, MTypeEnum.DEATH_POISON_H)
       }
@@ -1749,16 +1838,57 @@ object GameProcesser {
         val mix_result_int = new Random().nextInt(5)
         mix_result_int match
         {
-          case 0 => actioner.user_flags(actioner.user_flags.is.replace(UserEntryFlagEnum.ELIXIR_USED.toString, "")).save
-          case 1 => actioner.user_flags(actioner.user_flags.is.replace(UserEntryFlagEnum.POISON_USED.toString, "")).save
+          case 0 => actioner.user_flags(actioner.user_flags.is.replace(UserEntryFlagEnum.ELIXIR_USED.toString, "")) //x .save
+          case 1 => actioner.user_flags(actioner.user_flags.is.replace(UserEntryFlagEnum.POISON_USED.toString, "")) //x .save
           case 2 => val herbalist_mix_new_vote = Vote.create.roomday_id(room_day.id.is).mtype(MTypeEnum.VOTE_BETRAYER_DISGUISE.toString).actioner_id(0).actionee_id(actioner.id.is)
                     //herbalist_mix_new_vote.save
                     votes_for_save = votes_for_save ::: List(herbalist_mix_new_vote)
           case 3 => val herbalist_mix_new_vote = Vote.create.roomday_id(room_day.id.is).mtype(MTypeEnum.VOTE_BETRAYER_FOG.toString).actioner_id(0)
                     //herbalist_mix_new_vote.save
                     votes_for_save = votes_for_save ::: List(herbalist_mix_new_vote)
-          case 4 => actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.DEATH_2.toString).save
+          case 4 => actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.DEATH_2.toString) //x .save
         }
+      }
+    }
+
+    // 道具封印遺書
+    val item_dmessage_seals = item_votes.filter(_.mtype.is == MTypeEnum.ITEM_DMESSAGE_SEAL.toString)
+    item_dmessage_seals.foreach { item_dmessage_seal =>
+      val actioner = user_entrys.filter(_.id.is == item_dmessage_seal.actioner_id.is)(0)
+      val target   = user_entrys.filter(_.id.is == item_dmessage_seal.actionee_id.is)(0)
+      if (actioner.live.is) {
+        actioner.item_flags(ItemEnum.ITEM_NO_ITEM.toString)
+
+        if (target.hasnt_flag(UserEntryFlagEnum.DMESSAGE_SEALED))
+          target.user_flags(target.user_flags.is + UserEntryFlagEnum.DMESSAGE_SEALED.toString)
+      }
+    }
+
+    // 道具不運錢包
+    val item_unlucky_purses = item_votes.filter(_.mtype.is == MTypeEnum.ITEM_UNLUCKY_PURSE.toString)
+    item_unlucky_purses.foreach { item_unlucky_purse =>
+      val actioner = user_entrys.filter(_.id.is == item_unlucky_purse.actioner_id.is)(0)
+      val target   = user_entrys.filter(_.id.is == item_unlucky_purse.actionee_id.is)(0)
+      if (actioner.live.is) {
+        actioner.item_flags(ItemEnum.ITEM_NO_ITEM.toString)
+
+        if (target.live.is) {
+          actioner.cash(actioner.cash.is + target.cash.is / 2)
+          target.cash(0)
+        }
+      }
+    }
+
+    // 其他道具：如祝福之杖及黑羽等
+    val item_other_items = item_votes.filter{ x => (x.mtype.is == MTypeEnum.ITEM_BLESS_STAFF.toString ) ||
+                                                    (x.mtype.is == MTypeEnum.ITEM_BLACK_FEATHER.toString ) ||
+                                                    (x.mtype.is == MTypeEnum.ITEM_VENTRILOQUIST.toString ) ||
+                                                    (x.mtype.is == MTypeEnum.ITEM_SHAMAN_CROWN.toString ) ||
+                                                    (x.mtype.is == MTypeEnum.ITEM_POPULATION_CENSUS.toString )}
+    item_other_items.foreach { item_other_item =>
+      val actioner = user_entrys.filter(_.id.is == item_other_item.actioner_id.is)(0)
+      if (actioner.live.is) {
+        actioner.item_flags(ItemEnum.ITEM_NO_ITEM.toString)
       }
     }
 
@@ -1770,10 +1900,10 @@ object GameProcesser {
 
       if ((actioner.live.is) && (target.live.is)) {
         actioner.action_point(Math.max(actioner.action_point.is -1, 0))
-        actioner.save
+        //x actioner.save
 
         target.user_flags(target.user_flags.is + UserEntryFlagEnum.STUNNED_1.toString)
-        target.save
+        //x target.save
       }
     }
 
@@ -1787,10 +1917,10 @@ object GameProcesser {
       if ((actioner.live.is) && (target.live.is)) {
         actioner.action_point(Math.max(actioner.action_point.is -2, 0))
         actioner.user_flags(actioner.user_flags.is.replace(UserEntryFlagEnum.CARD_STRENGTH.toString, ""))
-        actioner.save
+        //x actioner.save
 
         target.user_flags(target.user_flags.is + UserEntryFlagEnum.STUNNED_3.toString)
-        target.save
+        //x target.save
       }
     }
 
@@ -1803,10 +1933,10 @@ object GameProcesser {
       if ((actioner.live.is) && (target.live.is) &&
           (target.subrole.is == "")) {
         actioner.action_point(Math.max(actioner.action_point.is -2, 0))
-        actioner.save
+        //x actioner.save
 
         target.subrole(SubroleEnum.MEMORYLOSS8.toString)
-        target.save
+        //x target.save
       }
     }
 
@@ -1837,7 +1967,7 @@ object GameProcesser {
         if (card_pool.size() != 0) {
           java.util.Collections.shuffle(card_pool)
           cardmaster.user_flags(cardmaster.user_flags.is + card_pool.removeFirst())
-          cardmaster.save
+          //x cardmaster.save
         }
       }
     }
@@ -1848,14 +1978,14 @@ object GameProcesser {
       val actioner = user_entrys.filter(_.id.is == betrayer_fog.actioner_id.is)(0)
       if (actioner.live.is) {
         actioner.action_point(Math.max(actioner.action_point.is - 4, 0))
-        actioner.save
+        //x actioner.save
       }
     }
 
     // 大魔導回復法力
     user_entrys.filter(x=>((x.current_role == RoleEnum.ARCHMAGE) && (x.live.is))).foreach{archmage =>
       archmage.action_point(Math.min(archmage.action_point.is + 1, 10))
-      archmage.save
+      //x archmage.save
     }
 
     // 若狐全掛，背德連帶死亡
@@ -1873,15 +2003,25 @@ object GameProcesser {
          val live_villager = live_villagers(0)
          live_villager.role(RoleEnum.ARCHMAGE.toString + live_villager.role.is.substring(1))
          live_villager.action_point(2)
-         live_villager.save
+         //x live_villager.save
        }
+    }
+
+    // 道具：天候棒
+    val item_weather_rods = item_votes.filter{ x => (x.mtype.is == MTypeEnum.ITEM_WEATHER_ROD.toString )}
+    item_weather_rods.foreach { item_weather_rod =>
+      val actioner = user_entrys.filter(_.id.is == item_weather_rod.actioner_id.is)(0)
+      if (actioner.live.is) {
+        actioner.item_flags(ItemEnum.ITEM_NO_ITEM.toString)
+        room_day.weather(item_weather_rod.vote_flags.is)
+      }
     }
 
     val card_sun_votes  = votes.filter(_.mtype.is == MTypeEnum.VOTE_CARD_SUN.toString)
     card_sun_votes.foreach { vote =>
       val actioner = user_entrys.filter(_.id.is == vote.actioner_id.is)(0)
       actioner.user_flags(actioner.user_flags.is.replace(UserEntryFlagEnum.CARD_SUN.toString, ""))
-      actioner.save
+      //x actioner.save
       room_day.weather(WeatherEnum.SUNNY.toString)
     }
 
@@ -1891,7 +2031,7 @@ object GameProcesser {
 
     // 新的一日
     val new_room_day  = RoomDay.create.room_id(room.id.is).day_no(room_day.day_no.is + 1)
-                        .vote_time(1).weather(room_day.weather.is)
+                        .vote_time(1).weather(room_day.weather.is).item(room_day.item.is)
     new_room_day.save                    
     
     (votes ::: votes_for_save).foreach { vote =>
@@ -1900,6 +2040,16 @@ object GameProcesser {
                     .mtype(vote.mtype.is).message(vote.vote_flags.is)
       sys_mes.save
     }
+    (item_votes ::: itemvotes_for_save).foreach { item_vote =>
+      val sys_mes = SystemMessage.create.roomday_id(new_room_day.id.is)
+                    .actioner_id(item_vote.actioner_id.is).actionee_id(item_vote.actionee_id.is)
+                    .mtype(item_vote.mtype.is).message(item_vote.vote_flags.is)
+      sys_mes.save
+    }
+
+
+    // 儲存使用者
+    user_entrys.foreach { user => user.save }
     
     // 加入模仿者訊息
     talks_for_save.foreach { talk_for_save =>
@@ -1930,6 +2080,12 @@ object GameProcesser {
       val talk = Talk.create.roomday_id(new_room_day.id.is).mtype(MTypeEnum.MESSAGE_GENERAL.toString)
                    .message("< < 你發現 " + dummy_boy.handle_name.is + " 的職業是 " +
                             RoleEnum.get_role(dummy_boy.current_role).toString + " > >")
+      talk.save
+    }
+
+    if (room.has_flag(RoomFlagEnum.ITEM_MODE)) {
+      val talk = Talk.create.roomday_id(new_room_day.id.is).mtype(MTypeEnum.MESSAGE_GENERAL.toString)
+                   .message("< < 本日競標道具：" + ItemEnum.get_item(room_day.item.is).tag_string + " > >")
       talk.save
     }
     //room.addToRoom_days(new_day)
@@ -2038,8 +2194,10 @@ object GameProcesser {
             process_followers(room, room_day, user_entrys)
 
           }
-          auto_player.save
+          //auto_player.save
         }
+
+        user_entrys.foreach(_.save)
 
         var victory_check = GameProcesser.check_victory(room, user_entrys)
         if (victory_check != RoomVictoryEnum.NONE) {
@@ -2194,6 +2352,8 @@ object GameProcesser {
                     process_followers(room, room_day, user_entrys)
                   }
                 }
+
+                user_entrys.foreach(_.save)
 
                 // 判斷是否遊戲結束
                 val victory = check_victory(room, user_entrys)
