@@ -82,7 +82,7 @@ class Boot {
 object DBVendor extends ConnectionManager {
   private var pool: List[Connection] = Nil
   private var poolSize = 0
-  private val maxPoolSize = 66
+  private val maxPoolSize = 75
 
   private def createOne: Box[Connection] = try {
     val driverName: String = Props.get("db.driver") openOr
@@ -111,35 +111,50 @@ object DBVendor extends ConnectionManager {
     case e: Exception => e.printStackTrace; Empty
   }
 
-  def newConnection(name: ConnectionIdentifier): Box[Connection] =
-    synchronized {
-      pool match {
-        case Nil if poolSize < maxPoolSize =>
-          val ret = createOne
-        poolSize = poolSize + 1
-        ret.foreach(c => pool = c :: pool)
-        ret
+  def newConnection(name: ConnectionIdentifier): Box[Connection] = {
+    var counter : Int = 1
+    var result : Box[Connection] = Empty
+    while (result == Empty) {
+      result = synchronized {
+        pool match {
+          case Nil if poolSize < maxPoolSize =>
+            val ret = createOne
+            poolSize = poolSize + 1
+            ret.foreach(c => pool = c :: pool)
+            ret
 
-        case Nil => wait(100L); newConnection(name)
-        case x :: xs => try {
-          x.setAutoCommit(false)
-          Full(x)
-        } catch {
-          case e => 
-            e.printStackTrace
-            try {
-            pool = xs
-            poolSize = poolSize - 1
-            x.close
-            newConnection(name)
+          case Nil => Empty
+          case x :: xs => try {
+            x.setAutoCommit(false)
+            Full(x)
           } catch {
-            case e => 
+            case e =>
+              println(e.toString)
               e.printStackTrace
-              newConnection(name)
+              try {
+              pool = xs
+              poolSize = poolSize - 1
+              x.close
+              Empty
+            } catch {
+              case e =>
+                println(e.toString)
+                e.printStackTrace
+                Empty
+            }
           }
         }
       }
+      
+      if (result == Empty) {
+        println("Database Pool Overflow : " + counter)
+        wait(100L + (new java.util.Random()).nextInt(500))
+        counter += 1
+      }
     }
+
+    result
+  }
 
   def releaseConnection(conn: Connection): Unit = synchronized {
     pool = conn :: pool

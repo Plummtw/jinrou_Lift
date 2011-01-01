@@ -335,7 +335,7 @@ class UpController {
           GameProcessLock.get_lock(room_id).synchronized {
             // 重新取一次 Roomday
             room_day = RoomDay.findAll(By(RoomDay.room_id, room_id), OrderBy(RoomDay.day_no, Descending))(0)
-            if (room_day.day_no == 0) {
+            if (room_day.day_no.is == 0) {
               user_entry.user_flags(UserEntryFlagEnum.VOTED.toString)
               user_entry.save()
 

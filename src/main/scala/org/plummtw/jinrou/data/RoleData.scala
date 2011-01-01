@@ -976,7 +976,9 @@ object RoleBetrayer    extends RoleData(RoleEnum.BETRAYER,    "背德",   "#DD00
   }
 }
 
-object RoleGodfat      extends RoleData(RoleEnum.GODFAT,      "哥德法", "#BB00AA", RoomVictoryEnum.FOX_WIN, List(ActionGodfatSpecial1, ActionGodfatSpecial2, ActionGodfatSpecial3, ActionGodfatDeathGaze, ActionGodfatColorSpray, ActionGodfatBlind2, ActionGodfatExchange, ActionNoAction)) {
+object RoleGodfat      extends RoleData(RoleEnum.GODFAT,      "哥德法", "#BB00AA", RoomVictoryEnum.FOX_WIN, 
+                                        List(ActionGodfatSpecial1, ActionGodfatSpecial2, ActionGodfatSpecial3, ActionGodfatSpecial4, ActionGodfatDeathGaze, ActionGodfatHellword, ActionGodfatColorSpray, ActionGodfatBlind2, ActionGodfatExchange,
+                                             ActionGodfatNecromancer, ActionGodfatHunter, ActionGodfatHerbalist, ActionGodfatPoisoner, ActionGodfatScholar, ActionNoAction)) {
   //override def role_intro = <span>[角色]<br/>　　您所扮演的角色是哥德法。您不知道妖狐是誰，但是占卜師或狂巫占卜到您，就會被逆咒殺。</span>
   override def role_intro = <img src="images/role_godfat.gif"/>
 
@@ -1005,7 +1007,8 @@ object RoleGodfat      extends RoleData(RoleEnum.GODFAT,      "哥德法", "#BB0
   override def role_ability(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) = {
     if ((user_entrys.length == 25) &&
         (user.hasnt_flag(UserEntryFlagEnum.GODFAT_SPECIAL1)) &&
-        (user.hasnt_flag(UserEntryFlagEnum.GODFAT_SPECIAL3))){
+        (user.hasnt_flag(UserEntryFlagEnum.GODFAT_SPECIAL3)) &&
+        (user.hasnt_flag(UserEntryFlagEnum.GODFAT_SPECIAL4))){
       val lives = user_entrys.map(_.live.is == false)
       //lives.foreach(x=> println(x.toString))
 
@@ -1052,6 +1055,9 @@ object RoleGodfat      extends RoleData(RoleEnum.GODFAT,      "哥德法", "#BB0
            <td>{SubroleEnum.get_subrole(actionee.subrole.is).toString}</td>
            } </tr>
       }</tbody></table>
+    } else if (user.has_flag(UserEntryFlagEnum.GODFAT_SPECIAL4)) {
+      <table cellSpacing="0" cellPadding="0" border="1"><tbody>
+      <tr><td>預言數：</td><td>{ user.action_point.is.toString + "/5"}</td></tr></tbody></table>
     } else
     <span></span>
   }

@@ -127,6 +127,9 @@ object VoteHelper {
     // 處理隱士逆轉投票
     val reverse_votes = sys_messages.filter(_.mtype.is == MTypeEnum.VOTE_REVERSEVOTE.toString)
 
+    // 處理哥德法言咒
+    val hellword_votes = sys_messages.filter(_.mtype.is == MTypeEnum.VOTE_GODFAT_HELLWORD.toString)
+
     // 處理惡魔支配術
     val dominates = sys_messages.filter(_.mtype.is == MTypeEnum.VOTE_DEMON_DOMINATE.toString)
     // 處理教主指令投票
@@ -252,9 +255,11 @@ object VoteHelper {
         if (vote_black_feather_list.length != 0) {
           val vote_black_feather = vote_black_feather_list(0)
 
-          if ((vote_black_feather.vote_flags.is.indexOf(VoteFlagEnum.BFEATHERED.toString) == -1)) 
-            vote_black_feather.vote_flags(vote_black_feather.vote_flags.is + VoteFlagEnum.BFEATHERED.toString)
-          vote_black_feather.vote_number(vote_black_feather.vote_number.is + 4)
+          if (black_feather_user.live.is) {
+            if ((vote_black_feather.vote_flags.is.indexOf(VoteFlagEnum.BFEATHERED.toString) == -1))
+              vote_black_feather.vote_flags(vote_black_feather.vote_flags.is + VoteFlagEnum.BFEATHERED.toString)
+            vote_black_feather.vote_number(vote_black_feather.vote_number.is + 4)
+          }
         }
       }
     }
@@ -317,7 +322,8 @@ object VoteHelper {
         
           if ((blesser.live.is) && (vote_blessed.vote_flags.is.indexOf(VoteFlagEnum.BLESSED.toString) == -1)) 
             vote_blessed.vote_flags(vote_blessed.vote_flags.is + VoteFlagEnum.BLESSED.toString)
-          vote_blessed.vote_number(Math.max(0, vote_blessed.vote_number.is - 2))
+          if (blesser.live.is)
+            vote_blessed.vote_number(Math.max(0, vote_blessed.vote_number.is - 2))
         }
       }
     }
@@ -374,13 +380,24 @@ object VoteHelper {
 
     // 和隱士投同樣的人的多 1 票
     val hermits = user_entrys.filter(x=> (x.current_role == RoleEnum.HERMIT) && (x.live.is)).map(_.id.is)
-    if (hermits.length >= 1) {
+    if ((hermits.length >= 1) && (reverse_votes.length != 0)) {
       val hermits_votes = votes.filter(x => hermits.contains(x.actioner_id.is))
       val hermits_votes_target = hermits_votes.map(_.actionee_id.is)
 
       votes.foreach { vote =>
         if (hermits_votes_target.contains(vote.actionee_id.is))
           vote.vote_number(vote.vote_number.is + 2)
+      }
+    }
+
+    if (hellword_votes.length != 0) {
+      val talks = Talk.findAll(By(Talk.roomday_id, room_day.id.is))
+      val day_talks = talks.filter(x => (x.mtype.is == MTypeEnum.TALK_DAY.toString) ||
+                                        (x.mtype.is == MTypeEnum.TALK_DAY_FOG.toString))
+      votes.foreach { vote =>
+        val actioner_id = vote.actioner_id.is
+        val actioner_talk = day_talks.filter(_.actioner_id.is == actioner_id)
+        vote.vote_number(vote.vote_number.is + actioner_talk.length *2)
       }
     }
 
@@ -419,11 +436,6 @@ object VoteHelper {
               user.cash(user.cash.is + cash_gain)
             }
 
-            if ((user.item_flags.is == ItemEnum.BLESS_STAFF.toString) ||
-                (user.item_flags.is == ItemEnum.BLACK_FEATHER.toString)) {
-              user.cash(user.cash.is + 1)
-            }
-            
             user.save()
           }
         }

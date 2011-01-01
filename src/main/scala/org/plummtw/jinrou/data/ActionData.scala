@@ -420,6 +420,14 @@ object ActionGodfatSpecial3 extends ActionData(MTypeEnum.VOTE_GODFAT_SPECIAL3, "
   }
 }
 
+object ActionGodfatSpecial4 extends ActionData(MTypeEnum.VOTE_GODFAT_SPECIAL4, "預言特化！", "godfat_special4", false) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
+    return ((room_day.day_no.is == 1) && (room.has_flag(RoomFlagEnum.GODFAT_SPECIAL4)) &&
+            (user.subrole.is != SubroleEnum.WOLFBELIEVER.toString) &&
+            (user.subrole.is != SubroleEnum.SUBPONTIFF.toString))
+  }
+}
+
 
 object ActionGodfatDeathGaze extends ActionData(MTypeEnum.VOTE_GODFAT_DEATHGAZE, "絕望視線", "godfat_deathgaze", true) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
@@ -436,6 +444,13 @@ object ActionGodfatDeathGaze extends ActionData(MTypeEnum.VOTE_GODFAT_DEATHGAZE,
       result.filter(x=>x.hasnt_flag(UserEntryFlagEnum.PONTIFF_AURA))
     else
       result
+  }
+}
+
+object ActionGodfatHellword extends ActionData(MTypeEnum.VOTE_GODFAT_HELLWORD, "言咒！", "godfat_hellword", false) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
+    return  ((user.has_flag(UserEntryFlagEnum.GODFAT_SPECIAL1)) &&
+             (user.hasnt_flag(UserEntryFlagEnum.GODFAT_SPECIAL2_USED)))
   }
 }
 
@@ -459,7 +474,7 @@ object ActionGodfatColorSpray extends ActionData(MTypeEnum.VOTE_GODFAT_COLORSPRA
 object ActionGodfatBlind extends ActionData(MTypeEnum.VOTE_GODFAT_BLIND, "眩光", "godfat_blind", true) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
     return  ((user.has_flag(UserEntryFlagEnum.GODFAT_SPECIAL2)) &&
-             (user.hasnt_flag(UserEntryFlagEnum.GODFAT_BLIND_USED)))
+             (user.hasnt_flag(UserEntryFlagEnum.GODFAT_SPECIAL2_USED)))
   }
 
   override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
@@ -476,7 +491,7 @@ object ActionGodfatBlind extends ActionData(MTypeEnum.VOTE_GODFAT_BLIND, "眩光
 object ActionGodfatBlind2 extends ActionData(MTypeEnum.VOTE_GODFAT_BLIND2, "眩光！", "godfat_blind2", false) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
     return  ((user.has_flag(UserEntryFlagEnum.GODFAT_SPECIAL2)) &&
-             (user.hasnt_flag(UserEntryFlagEnum.GODFAT_BLIND_USED)))
+             (user.hasnt_flag(UserEntryFlagEnum.GODFAT_SPECIAL2_USED)))
   }
 }
 
@@ -490,6 +505,56 @@ object ActionGodfatExchange extends ActionData(MTypeEnum.VOTE_GODFAT_EXCHANGE, "
   override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
     return user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.id.is != user.id.is) && (x.live.is) &&
                                  (x.current_role == RoleEnum.FOX) && (x.has_flag(UserEntryFlagEnum.GODFAT_TARGETED)))
+  }
+}
+
+object ActionGodfatNecromancer extends ActionData(MTypeEnum.VOTE_GODFAT_NECROMANCER, "靈能", "godfat_necromancer", true) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
+    return  (user.has_flag(UserEntryFlagEnum.GODFAT_SPECIAL4))
+  }
+
+  override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
+    return user_entrys.filter(x=> (x.id.is != user.id.is) && (x.hasnt_flag(UserEntryFlagEnum.GODFAT_PREDICTED)))
+  }
+}
+
+object ActionGodfatHunter extends ActionData(MTypeEnum.VOTE_GODFAT_HUNTER, "獵人", "godfat_hunter", true) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
+    return  (user.has_flag(UserEntryFlagEnum.GODFAT_SPECIAL4))
+  }
+
+  override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
+    return user_entrys.filter(x=> (x.id.is != user.id.is) && (x.hasnt_flag(UserEntryFlagEnum.GODFAT_PREDICTED)))
+  }
+}
+
+object ActionGodfatHerbalist extends ActionData(MTypeEnum.VOTE_GODFAT_HERBALIST, "藥師", "godfat_herbalist", true) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
+    return  (user.has_flag(UserEntryFlagEnum.GODFAT_SPECIAL4))
+  }
+
+  override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
+    return user_entrys.filter(x=> (x.id.is != user.id.is) && (x.hasnt_flag(UserEntryFlagEnum.GODFAT_PREDICTED)))
+  }
+}
+
+object ActionGodfatPoisoner extends ActionData(MTypeEnum.VOTE_GODFAT_POISONER, "埋毒", "godfat_poisoner", true) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
+    return  (user.has_flag(UserEntryFlagEnum.GODFAT_SPECIAL4))
+  }
+
+  override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
+    return user_entrys.filter(x=> (x.id.is != user.id.is) && (x.hasnt_flag(UserEntryFlagEnum.GODFAT_PREDICTED)))
+  }
+}
+
+object ActionGodfatScholar extends ActionData(MTypeEnum.VOTE_GODFAT_SCHOLAR, "學者", "godfat_scholar", true) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
+    return  (user.has_flag(UserEntryFlagEnum.GODFAT_SPECIAL4))
+  }
+
+  override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
+    return user_entrys.filter(x=> (x.id.is != user.id.is) && (x.hasnt_flag(UserEntryFlagEnum.GODFAT_PREDICTED)))
   }
 }
 

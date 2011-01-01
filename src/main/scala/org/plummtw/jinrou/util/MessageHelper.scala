@@ -483,12 +483,18 @@ object MessageHelper {
       case MTypeEnum.VOTE_GODFAT_SPECIAL1  => simple_message_tag(user_entry.handle_name.is + " 進行咒術特化",heaven_mode,"#BB00AA","snow")
       case MTypeEnum.VOTE_GODFAT_SPECIAL2  => simple_message_tag(user_entry.handle_name.is + " 進行方陣特化",heaven_mode,"#BB00AA","snow")
       case MTypeEnum.VOTE_GODFAT_SPECIAL3  => simple_message_tag(user_entry.handle_name.is + " 進行秘術特化",heaven_mode,"#BB00AA","snow")
+      case MTypeEnum.VOTE_GODFAT_SPECIAL4  => simple_message_tag(user_entry.handle_name.is + " 進行預言特化",heaven_mode,"#BB00AA","snow")
       case MTypeEnum.VOTE_GODFAT_DEATHGAZE  => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用絕望視線",heaven_mode,"#BB00AA","snow")
+      case MTypeEnum.VOTE_GODFAT_HELLWORD   => simple_message_tag(user_entry.handle_name.is + " 使用言咒",heaven_mode,"#BB00AA","snow")
       case MTypeEnum.VOTE_GODFAT_COLORSPRAY  => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用七彩噴射",heaven_mode,"#BB00AA","snow")
       case MTypeEnum.VOTE_GODFAT_BLIND      => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用眩光",heaven_mode,"#BB00AA","snow")
       case MTypeEnum.VOTE_GODFAT_BLIND2    => simple_message_tag(user_entry.handle_name.is + " 使用眩光",heaven_mode,"#BB00AA","snow")
       case MTypeEnum.VOTE_GODFAT_EXCHANGE  => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用秘術換身",heaven_mode,"#BB00AA","snow")
-
+      case MTypeEnum.VOTE_GODFAT_NECROMANCER  => simple_message_tag(user_entry.handle_name.is + " 預言 " + user_target.handle_name.is + " 為靈能者",heaven_mode,"#BB00AA","snow")
+      case MTypeEnum.VOTE_GODFAT_HUNTER  => simple_message_tag(user_entry.handle_name.is + " 預言 " + user_target.handle_name.is + " 為獵人",heaven_mode,"#BB00AA","snow")
+      case MTypeEnum.VOTE_GODFAT_HERBALIST  => simple_message_tag(user_entry.handle_name.is + " 預言 " + user_target.handle_name.is + " 為藥師",heaven_mode,"#BB00AA","snow")
+      case MTypeEnum.VOTE_GODFAT_POISONER  => simple_message_tag(user_entry.handle_name.is + " 預言 " + user_target.handle_name.is + " 為埋毒者",heaven_mode,"#BB00AA","snow")
+      case MTypeEnum.VOTE_GODFAT_SCHOLAR  => simple_message_tag(user_entry.handle_name.is + " 預言 " + user_target.handle_name.is + " 為學者",heaven_mode,"#BB00AA","snow")
 
       case MTypeEnum.VOTE_DEMON_CHAOS      => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用混沌術",heaven_mode,"#666666","#FF0000")
       case MTypeEnum.VOTE_DEMON_DOMINATE   => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 支配",heaven_mode,"#666666","#FF0000")
@@ -566,9 +572,20 @@ object MessageHelper {
 
       if (user_entry_id == 0) 
         talks = List()
-      else
+      else {
+        val live_users = user_entrys.filter(x => (x.live.is) && (x.id.is != user_entry_id))
         talks = talks.filter(x=> ((x.mtype.is != MTypeEnum.TALK_DAY.toString) && (x.mtype.is != MTypeEnum.TALK_DAY_FOG.toString)) ||
-                                  (user_entry_id % 2 == x.actioner_id.is % 2))
+                                  (user_entry_id == x.actioner_id.is) ||
+                                  (user_entry_id % 5 != x.id.is % 5)) // == x.actioner_id.is % 2))
+        talks.foreach { talk =>
+          if (((talk.mtype.is != MTypeEnum.TALK_DAY.toString) || (talk.mtype.is != MTypeEnum.TALK_DAY_FOG.toString)) &&
+              (user_entry_id != talk.actioner_id.is) && (user_entry_id % 3 == talk.id.is % 3)) {
+            val new_user =  live_users(((talk.id.is + user_entry_id) % live_users.length).asInstanceOf[Int])
+            talk.actioner_id(new_user.id.is)
+            talk
+          }
+        }
+      }
     }
     
     Seq(<table border="0" cellpadding="0" cellspacing="0" style="font-family:新細明體;"> {

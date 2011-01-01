@@ -82,7 +82,7 @@ object ItemBlackFeather extends ItemData(MTypeEnum.ITEM_BLACK_FEATHER, "咒縛�
 
 object ItemThiefSecret extends ItemData(MTypeEnum.ITEM_THIEF_SECRET, "盜賊極意", "item_thief_secret", true, 5) {
   override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
-    val result = user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.id.is != user.id.is) && (x.live.is))
+    val result = user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.id.is != user.id.is))
     if ((user.has_flag(UserEntryFlagEnum.RELIGION)) ||
         (user.subrole.is == SubroleEnum.SUBPONTIFF.toString))
       result.filter(x=>x.hasnt_flag(UserEntryFlagEnum.PONTIFF_AURA))
@@ -151,6 +151,9 @@ object ItemDeathNote extends ItemData(MTypeEnum.ITEM_DEATH_NOTE, "死亡筆記",
     else
       result
   }
+}
+
+object ItemPandoraBox extends ItemData(MTypeEnum.ITEM_PANDORA_BOX, "潘朵拉箱！", "item_pandora_box", false, 2) {
 }
 
 object ItemPopulationCensus extends ItemData(MTypeEnum.ITEM_POPULATION_CENSUS, "人口普查！", "item_population_census", false, 1) {

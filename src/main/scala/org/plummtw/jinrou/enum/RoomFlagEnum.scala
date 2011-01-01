@@ -62,6 +62,7 @@ object RoomFlagEnum extends Enumeration {
   val NECROMANCER_OPTION1 = Value("N1")
   val GEMINI_DAYTALK    = Value("G1")
   val GEMINI_BALANCE    = Value("G2")
+  val GEMINI_LEGACY     = Value("G3")
   val HUNTER_OPTION1    = Value("H1")
   val HUNTER_OPTION2     = Value("H2")
   val CLERIC_OPTION1    = Value("C1")
@@ -92,6 +93,7 @@ object RoomFlagEnum extends Enumeration {
   val GODFAT_SPECIAL1  = Value("T1")
   val GODFAT_SPECIAL2   = Value("T2")
   val GODFAT_SPECIAL3   = Value("T3")
+  val GODFAT_SPECIAL4   = Value("T4")
   val DEMON_OPTION1    = Value("D1")
   val DEMON_OPTION2    = Value("D2")
   val DEMON_OPTION3    = Value("D3")
@@ -168,6 +170,7 @@ object RoomFlagEnum extends Enumeration {
     NECROMANCER_OPTION1 -> "<靈>",
     GEMINI_DAYTALK   -> "<共1>",
     GEMINI_BALANCE   -> "<共2>",
+    GEMINI_LEGACY    -> "<共3>",
     HUNTER_OPTION1   -> "<獵1>",
     HUNTER_OPTION2   -> "<獵2>",
     CLERIC_OPTION1   -> "<牧1>",
@@ -198,6 +201,7 @@ object RoomFlagEnum extends Enumeration {
     GODFAT_SPECIAL1  -> "<哥1>",
     GODFAT_SPECIAL2  -> "<哥2>",
     GODFAT_SPECIAL3  -> "<哥3>",
+    GODFAT_SPECIAL4  -> "<哥4>",
     DEMON_OPTION1    -> "<惡1>",
     DEMON_OPTION2    -> "<惡2>",
     DEMON_OPTION3    -> "<惡3>",

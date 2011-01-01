@@ -50,11 +50,14 @@ object UserEntryFlagEnum extends Enumeration {
   val FOX_SPECIAL         = Value("f")
 
   val GODFAT_TARGETED     = Value("+")
+  val GODFAT_PREDICTED     = Value("-")
+
   val GODFAT_SPECIAL1      = Value("!")
   val GODFAT_SPECIAL2      = Value("@")
   val GODFAT_SPECIAL3      = Value("#")
+  val GODFAT_SPECIAL4      = Value("$")
   val GODFAT_SPECIAL_USED  = Value("G")
-  val GODFAT_BLIND_USED  = Value("=")
+  val GODFAT_SPECIAL2_USED  = Value("=")
   
   val ICED_1           = Value("4")
   val ICED_2           = Value("5")

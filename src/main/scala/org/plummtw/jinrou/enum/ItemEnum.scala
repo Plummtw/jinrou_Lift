@@ -24,6 +24,7 @@ object ItemEnum extends Enumeration {
   val SHAMAN_CROWN = Value("SC")
   val WEATHER_ROD = Value("WR")
   val DEATH_NOTE = Value("DN")
+  val PANDORA_BOX = Value("PB")
   val POPULATION_CENSUS = Value("PC")
 
 
@@ -40,6 +41,7 @@ object ItemEnum extends Enumeration {
      SHAMAN_CROWN -> ItemShamanCrown,
      WEATHER_ROD  -> ItemWeatherRod,
      DEATH_NOTE -> ItemDeathNote,
+     PANDORA_BOX -> ItemPandoraBox,
      POPULATION_CENSUS -> ItemPopulationCensus
   )
 
