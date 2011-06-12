@@ -173,6 +173,7 @@ class RoomController {
       "weather"           -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.WEATHER),       "id"->"weather"),
       "weather1"          -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.WEATHER1),      "id"->"weather1"),
       "item_mode"         -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.ITEM_MODE),     "id"->"item_mode"),
+      "item_cubic"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.ITEM_CUBIC),     "id"->"item_cubic"),
       "mob_mode"          -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MOB_MODE),      "id"->"mob_mode"),
       "mob_mode1"         -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MOB_MODE1),     "id"->"mob_mode1"),
       
@@ -191,6 +192,8 @@ class RoomController {
       "role_godfat"       -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_GODFAT),   "id"->"role_godfat"),
       
       "role_demon"        -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_DEMON),    "id"->"role_demon"),
+      "role_fallen_angel" -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_FALLEN_ANGEL), "id"->"role_fallen_angel"),
+
       "role_pontiff"      -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_PONTIFF),  "id"->"role_pontiff"),
       "role_penguin"      -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_PENGUIN),  "id"->"role_penguin"),
       "role_inheriter"    -> SHtml.checkbox(true, if (_) option_list = option_list ::: List(RoomFlagEnum.ROLE_INHERITER),"id"->"role_inheriter"),
@@ -260,11 +263,12 @@ class RoomController {
       "inheriter_reveal"  -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.INHERITER_REVEAL), "id"->"inheriter_reveal"),
       "inheriter_neutral" -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.INHERITER_NEUTRAL), "id"->"inheriter_neutral"),
       "shifter_reveal"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SHIFTER_REVEAL), "id"->"shifter_reveal"),
-      "shifter_lover"     -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SHIFTER_LOVER), "id"->"shifter_lover"),
+      "shifter_links"     -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SHIFTER_LINKS), "id"->"shifter_links"),
       "cardmaster_option1" -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.CARDMASTER_OPTION1), "id"->"cardmaster_option1"),
 
       "gm_penguin1"         -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.GM_PENGUIN1), "id"->"gm_penguin1"),
       "gm_hermit1"          -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.GM_HERMIT1), "id"->"gm_hermit1"),
+      "gm_pontiff1"         -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.GM_PONTIFF1), "id"->"gm_pontiff1"),
 
       "submit"            -> SHtml.submit(" 建  立 ",  create_room)      
     )

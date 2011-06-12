@@ -97,12 +97,12 @@ object DBVendor extends ConnectionManager {
 
     val dm = (Props.get("db.user"), Props.get("db.password")) match {
       case (Full(user), Full(pwd)) =>
-        println(user)
-        println(pwd)
+        //println(user)
+        //println(pwd)
         DriverManager.getConnection(dbUrl, user, pwd)
 
       case _ =>
-        println("No User Password") 
+        Log.info("No User Password")
         DriverManager.getConnection(dbUrl)
     }
 
@@ -118,6 +118,7 @@ object DBVendor extends ConnectionManager {
       result = synchronized {
         pool match {
           case Nil if poolSize < maxPoolSize =>
+            Log.warn("Create Pool" + poolSize)
             val ret = createOne
             poolSize = poolSize + 1
             ret.foreach(c => pool = c :: pool)
@@ -125,6 +126,7 @@ object DBVendor extends ConnectionManager {
 
           case Nil => Empty
           case x :: xs => try {
+            pool = xs
             x.setAutoCommit(false)
             Full(x)
           } catch {
@@ -132,22 +134,20 @@ object DBVendor extends ConnectionManager {
               println(e.toString)
               e.printStackTrace
               try {
-              pool = xs
-              poolSize = poolSize - 1
-              x.close
-              Empty
-            } catch {
-              case e =>
+                x.close
+                Empty
+              } catch {
+                case e =>
                 println(e.toString)
                 e.printStackTrace
                 Empty
-            }
+              }
           }
         }
       }
       
       if (result == Empty) {
-        println("Database Pool Overflow : " + counter)
+        Log.warn("Database Pool Overflow : " + counter)
         wait(100L + (new java.util.Random()).nextInt(500))
         counter += 1
       }

@@ -49,7 +49,7 @@ object GameProcesser {
   }
 
   // 跟隨死亡
-  def process_followers(room:Room, room_day:RoomDay, user_entrys: List[UserEntry]) = {
+  def process_followers(room:Room, room_day:RoomDay, user_entrys: List[UserEntry]) : Unit = {
     // 若教主全掛，副教主連帶死亡
     val live_pontiff    = user_entrys.filter(x=>(x.current_role == RoleEnum.PONTIFF) && (x.live.is))
     val live_subpontiff = user_entrys.filter(x=>(x.subrole.is == SubroleEnum.SUBPONTIFF.toString) &&
@@ -90,13 +90,16 @@ object GameProcesser {
       }
     }
 
-    if ((room.has_flag(RoomFlagEnum.SHIFTER_LOVER)) &&
+    if ((room.has_flag(RoomFlagEnum.SHIFTER_LINKS)) &&
         (room_day.day_no.is < 12)) {
-      // 戀人檢測
-      val live_lover = user_entrys.filter(x=>(x.has_flag(UserEntryFlagEnum.LOVER) ) && (x.live.is))
-      if (live_lover.length == 1)
-        process_death(room, room_day, live_lover(0), user_entrys, MTypeEnum.DEATH_LOVER)
+      // 模仿師生命連結檢測
+      val live_links = user_entrys.filter(x=>(x.has_flag(UserEntryFlagEnum.LINKS) ) && (x.live.is))
+      if (live_links.length == 1) {
+        process_death(room, room_day, live_links(0), user_entrys, MTypeEnum.DEATH_LINKS)
+        process_followers(room, room_day, user_entrys)
+      }
 
+      /*
        // 若教主全掛，副教主連帶死亡
       val live_pontiff2    = user_entrys.filter(x=>(x.current_role == RoleEnum.PONTIFF) && (x.live.is))
       val live_subpontiff2 = user_entrys.filter(x=>(x.subrole.is == SubroleEnum.SUBPONTIFF.toString) &&
@@ -129,9 +132,9 @@ object GameProcesser {
       }
 
       // 戀人檢測
-      val live_lover2 = user_entrys.filter(x=>(x.has_flag(UserEntryFlagEnum.LOVER) ) && (x.live.is))
-      if (live_lover2.length == 1)
-        process_death(room, room_day, live_lover2(0), user_entrys, MTypeEnum.DEATH_LOVER)
+      val live_links2 = user_entrys.filter(x=>(x.has_flag(UserEntryFlagEnum.LINKS) ) && (x.live.is))
+      if (live_links2.length == 1)
+        process_death(room, room_day, live_links2(0), user_entrys, MTypeEnum.DEATH_LINKS)
 
       // 惡魔靈魂檢測
       val live_demons2 = user_entrys.filter(x=>(x.current_role == RoleEnum.DEMON) && (x.live.is) &&
@@ -141,7 +144,13 @@ object GameProcesser {
           process_death(room, room_day, live_demon, user_entrys, MTypeEnum.DEATH_SUDDEN)
         }
       }
+      */
+    }
 
+    val live_lovers = user_entrys.filter(x=>(x.has_flag(UserEntryFlagEnum.LOVER) ) && (x.live.is))
+    if (live_lovers.length == 1) {
+      process_death(room, room_day, live_lovers(0), user_entrys, MTypeEnum.DEATH_LOVER)
+      process_followers(room, room_day, user_entrys)
     }
   }
 
@@ -197,8 +206,12 @@ object GameProcesser {
       role_array.add(RoleEnum.GODFAT.toString)
     if ((user_entrys_size >= 25) && (room.has_flag(RoomFlagEnum.ROLE_SHIFTER)))
       role_array.add(RoleEnum.SHIFTER.toString)
-    if ((user_entrys_size >= 25) && (room.has_flag(RoomFlagEnum.ROLE_PONTIFF)))
-      role_array.add(RoleEnum.PONTIFF.toString)
+    if ((user_entrys_size >= 25) && (room.has_flag(RoomFlagEnum.ROLE_PONTIFF))) {
+      if (room.has_flag(RoomFlagEnum.GM_PONTIFF1))
+        role_array.add(RoleEnum.PENGUIN.toString)
+      else
+        role_array.add(RoleEnum.PONTIFF.toString)
+    }
 
     val werewolf_number = ((user_entrys_size + 2)/5) -
       (if ((user_entrys_size >= 23) && (room.has_flag(RoomFlagEnum.ROLE_WOLFCUB))) 1 else 0)
@@ -353,6 +366,7 @@ object GameProcesser {
     // 移除 Fox Demon Pontiff
     val user_no_for_remove = user_entrys.filter(x=>(x.role.is == RoleEnum.FOX.toString) ||
                                  (x.role.is == RoleEnum.DEMON.toString) ||
+                                 (x.role.is == RoleEnum.PENGUIN.toString) ||
                                  (x.role.is == RoleEnum.PONTIFF.toString)).map(_.user_no.is)
     var subrole_array2 : java.util.LinkedList[Int] = new java.util.LinkedList()
     user_no_for_remove.foreach(subrole_array2.add(_))
@@ -376,6 +390,7 @@ object GameProcesser {
 
     if ((user_entrys_size >= 25) &&
         (room.has_flag(RoomFlagEnum.ROLE_PONTIFF)) &&
+        (!room.has_flag(RoomFlagEnum.GM_PONTIFF1)) &&
         (room.has_flag(RoomFlagEnum.SUBROLE_SUBPONTIFF))) {
       // 設定副教主
       var subrole_array_subpontiff : java.util.LinkedList[Int] = new java.util.LinkedList()
@@ -419,6 +434,7 @@ object GameProcesser {
          (user_dummy(0).role.is == RoleEnum.FOX.toString)||
          (user_dummy(0).role.is == RoleEnum.POISONER.toString)||
          (user_dummy(0).role.is == RoleEnum.DEMON.toString) ||
+         (user_dummy(0).role.is == RoleEnum.PENGUIN.toString) ||
          ((user_dummy(0).role.is == RoleEnum.PONTIFF.toString) &&
          (room.has_flag(RoomFlagEnum.SUBROLE_SUBPONTIFF))))) {
       val temp_user = user_entrys_ordered.filter(x => 
@@ -427,6 +443,7 @@ object GameProcesser {
         (x.role.is != RoleEnum.FOX.toString) &&
         (x.role.is != RoleEnum.POISONER.toString) &&
         (x.role.is != RoleEnum.DEMON.toString) &&
+        (x.role.is != RoleEnum.PENGUIN.toString) &&
         ((x.role.is != RoleEnum.PONTIFF.toString) ||
          (room.room_flags.is.indexOf(RoomFlagEnum.SUBROLE_SUBPONTIFF.toString) == -1))
       )
@@ -930,10 +947,10 @@ object GameProcesser {
           RoleEnum.VILLAGER.toString
         else
           target_role_str
-      if (room.has_flag(RoomFlagEnum.SHIFTER_LOVER)) {
-        target.user_flags(target.user_flags.is + UserEntryFlagEnum.LOVER.toString)
+      if (room.has_flag(RoomFlagEnum.SHIFTER_LINKS)) {
+        target.user_flags(target.user_flags.is + UserEntryFlagEnum.LINKS.toString)
         //x target.save
-        actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.LOVER.toString)
+        actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.LINKS.toString)
       }
       actioner.role(target_role_str2 + actioner.role.is)
       //x actioner.save
@@ -1182,6 +1199,18 @@ object GameProcesser {
       if (actionee.current_role == RoleEnum.SCHOLAR) {
         actioner.action_point(actioner.action_point.is + 1)
         actionee.user_flags(actionee.user_flags.is + UserEntryFlagEnum.GODFAT_PREDICTED.toString)
+      }
+    }
+
+    // 道具邱比特之箭
+    val item_cubic_arrows = item_votes.filter(_.mtype.is == MTypeEnum.ITEM_CUBIC_ARROW.toString)
+    item_cubic_arrows.foreach { item_cubic_arrow =>
+      val actioner = user_entrys.filter(_.id.is == item_cubic_arrow.actioner_id.is)(0)
+      val target   = user_entrys.filter(_.id.is == item_cubic_arrow.actionee_id.is)(0)
+      if (actioner.live.is && target.live.is) {
+        actioner.item_flags(ItemEnum.ITEM_NO_ITEM.toString)
+        actioner.user_flags(actioner.user_flags.is + UserEntryFlagEnum.LOVER.toString)
+        target.user_flags(actioner.user_flags.is + UserEntryFlagEnum.LOVER.toString)
       }
     }
 
@@ -1695,10 +1724,10 @@ object GameProcesser {
 
       if ((iced1.live.is) && (disrupts.length == 0)) {
         process_death(room, room_day, iced1, user_entrys, MTypeEnum.DEATH_PENGUIN_ICE)
-        val live_penguins = user_entrys.filter( x =>
+        val penguins = user_entrys.filter( x =>
           (x.current_role == RoleEnum.PENGUIN)) // && (x.live.is))
-        live_penguins.foreach { live_penguin =>
-          live_penguin.action_point(live_penguin.action_point.is+1)
+        penguins.foreach { penguin =>
+          penguin.action_point(penguin.action_point.is+1)
           //x live_penguin.save
         }
       } else {
@@ -1808,6 +1837,12 @@ object GameProcesser {
         if (target.subrole.is == SubroleEnum.NORELIGION.toString) {
           actioner.user_flags( actioner.user_flags.is + UserEntryFlagEnum.PONTIFF_STUNNED.toString )
           //x actioner.save
+        } else if (target.current_role == RoleEnum.FALLEN_ANGEL) {
+        } else if ((room.has_flag(RoomFlagEnum.ROLE_FALLEN_ANGEL)) && (target.current_role == RoleEnum.DEMON)) {
+          if (target.role.is.toString.length > 1)
+            target.role(RoleEnum.FALLEN_ANGEL.toString + target.role.is.toString.substring(1))
+          else
+            target.role(RoleEnum.FALLEN_ANGEL.toString)
         } else if ((target.hasnt_flag(UserEntryFlagEnum.RELIGION)) &&
                    (target.hasnt_flag(UserEntryFlagEnum.NORELIGION))) {
           target.user_flags( target.user_flags.is + UserEntryFlagEnum.RELIGION.toString )
@@ -1850,9 +1885,9 @@ object GameProcesser {
           if (target.current_role != RoleEnum.DEMON)
             target.action_point(0)
 
-          val lover_str =
-            if (target.has_flag(UserEntryFlagEnum.LOVER))
-              UserEntryFlagEnum.LOVER.toString
+          val links_str =
+            if (target.has_flag(UserEntryFlagEnum.LINKS))
+              UserEntryFlagEnum.LINKS.toString
             else
               ""
 
@@ -1868,7 +1903,7 @@ object GameProcesser {
               UserEntryFlagEnum.NORELIGION.toString
             else
               ""
-          target.user_flags(lover_str + autovoted_str + religion_str)
+          target.user_flags(links_str + autovoted_str + religion_str)
           //x target.save()
         }
 
@@ -2032,7 +2067,10 @@ object GameProcesser {
         actioner.action_point(Math.max(actioner.action_point.is -1, 0))
         //x actioner.save
 
-        target.user_flags(target.user_flags.is + UserEntryFlagEnum.STUNNED_1.toString)
+        if (RoleEnum.get_role(target.current_role).role_side == RoomVictoryEnum.VILLAGER_WIN)
+          target.user_flags(target.user_flags.is + UserEntryFlagEnum.STUNNED_1.toString)
+        else
+          target.user_flags(target.user_flags.is + UserEntryFlagEnum.STUNNED_2.toString)
         //x target.save
       }
     }
@@ -2100,6 +2138,18 @@ object GameProcesser {
           //x cardmaster.save
         }
       }
+    }
+
+    // 墮天使墮落
+    val fallen_votes  = votes.filter(_.mtype.is == MTypeEnum.VOTE_FALLENANGEL_FALLEN.toString)
+    fallen_votes.foreach { fallen_vote =>
+      val actioner = user_entrys.filter(_.id.is == fallen_vote.actioner_id.is)(0)
+      val target   = user_entrys.filter(_.id.is == fallen_vote.actionee_id.is)(0)
+
+      if ((actioner.live.is) && (target.live.is))  {
+        target.user_flags(target.user_flags.is + UserEntryFlagEnum.FALLEN.toString)
+      }
+
     }
 
     // 背德粉紅迷霧
@@ -2228,10 +2278,12 @@ object GameProcesser {
     
     val live_user_entrys = user_entrys.filter(x => (x.live.is) && (x.hasnt_flag(UserEntryFlagEnum.HIDED)))
 
+    val penguin_counts = 1 + 2 * user_entrys.filter(x => (x.current_role == RoleEnum.PENGUIN) &&
+      (x.role.is.toString.indexOf(RoleEnum.INHERITER.toString) == -1)).length
     val live_penguins = user_entrys.filter( x => x.hasnt_flag(UserEntryFlagEnum.HIDED) &&
         (x.current_role == RoleEnum.PENGUIN))
     live_penguins.foreach { live_penguin =>
-      if (live_penguin.action_point.is >= 3)
+      if (live_penguin.action_point.is >= penguin_counts)
         return RoomVictoryEnum.PENGUIN_WIN
     }
     
@@ -2240,6 +2292,7 @@ object GameProcesser {
         (x.current_role != RoleEnum.WOLFCUB) &&
         (x.current_role != RoleEnum.FOX) &&
         (x.current_role != RoleEnum.DEMON) &&
+        (x.current_role != RoleEnum.FALLEN_ANGEL) &&
         (x.current_role != RoleEnum.PENGUIN) &&
         ((x.current_role != RoleEnum.INHERITER) || (!room.has_flag(RoomFlagEnum.INHERITER_NEUTRAL))))
     val live_wolf     = live_user_entrys.filter(x=>(x.current_role == RoleEnum.WEREWOLF) || (x.current_role == RoleEnum.WOLFCUB))
@@ -2275,10 +2328,17 @@ object GameProcesser {
     } else {
       result = RoomVictoryEnum.NONE
       val godfat_predicter = live_user_entrys.filter(x => (x.current_role == RoleEnum.GODFAT) &&
-                                                          (x.action_point.is >=5) &&
+                                                          (x.action_point.is >=4) &&
                                                           (x.has_flag(UserEntryFlagEnum.GODFAT_SPECIAL4)))
       if (godfat_predicter.length  > 0)
         result = RoomVictoryEnum.FOX_WIN2
+    }
+
+
+    if (result != RoomVictoryEnum.NONE) {
+      val live_lover = live_user_entrys.filter(_.has_flag(UserEntryFlagEnum.LOVER))
+      if (live_lover.length > 1)
+        result = RoomVictoryEnum.LOVER_WIN
     }
     
     return result
@@ -2341,7 +2401,7 @@ object GameProcesser {
           room.status(RoomStatusEnum.ENDED.toString)
           room.victory(victory_check.toString)
           room.save
-        } else if (room_day.vote_time.is > 10) {
+        } else if (room_day.vote_time.is > 5) {
           // 直接結束，和局
           val new_day  = RoomDay.create.room_id(room.id.is).day_no(room_day.day_no.is + 1)
                                 .vote_time(1)

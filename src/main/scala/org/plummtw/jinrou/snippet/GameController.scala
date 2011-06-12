@@ -397,7 +397,8 @@ class GameController {
             else ""
           } else ""
 
-        <span>{"持有道具：" + ItemEnum.get_item(user_entry.item_flags.is).tag_string + "　" + item_result}</span>
+        //<span>{"持有道具：" + ItemEnum.get_item(user_entry.item_flags.is).tag_string + "　" + item_result}</span>
+        <span><img src="images/item_tag.gif"/>{ItemEnum.get_item(user_entry.item_flags.is).item_pic}<img src={"images/" + ItemEnum.get_item(user_entry.item_flags.is).command_name + ".gif"}/>{item_result}</span>
       } else <span></span>
 
     val role_intro = 
@@ -414,7 +415,7 @@ class GameController {
 
         val is_mob = user_entry.has_flag(UserEntryFlagEnum.BECAME_MOB)
         if (is_mob)
-          result = result ++ Seq(<span>＜暴民模式＞</span>)
+          result = result ++ Seq(<img src="images/mobmode.gif"/>) //<span>＜暴民模式＞</span>
 
         // 教徒時互相知道身分
         val live_pontiff = user_entrys.filter(x=>(x.current_role == RoleEnum.PONTIFF) && (x.live.is))
@@ -436,17 +437,28 @@ class GameController {
                                                      (x.has_flag(UserEntryFlagEnum.RELIGION))))
           val religion_str = users_religion.map(_.handle_name.is).mkString("", "　","")
 
+          //<tr><td>和你同一教派的成員有：</td><td>{religion_str}</td></tr></tbody></table>)
           result = result ++ Seq(<table cellSpacing="0" cellPadding="0" border="1"><tbody>
-            <tr><td>和你同一教派的成員有：</td><td>{religion_str}</td></tr></tbody></table>)
+            <tr><td><img src="images/pontiff_partners.gif"/></td><td>{religion_str}</td></tr></tbody></table>)
         } else if ((live_pontiff.length != 0) &&
             ((user_entry.has_flag(UserEntryFlagEnum.RELIGION)))){
           val users_religion = user_entrys.filter(x=>((x.current_role == RoleEnum.PONTIFF) ||
                                                      (x.has_flag(UserEntryFlagEnum.RELIGION))))
           val live_users_religion = users_religion.filter(_.live.is)
 
+          //<tr><td>教派成員總數：</td><td>{users_religion.length.toString}</td><td>存活教派成員總數：</td>
           result = result ++ Seq(<table cellSpacing="0" cellPadding="0" border="1"><tbody>
-            <tr><td>教派成員總數：</td><td>{users_religion.length.toString}</td><td>存活教派成員總數：</td>
+            <tr><td><img src="images/pontiff_total.gif"/></td><td>{users_religion.length.toString}</td><td><img src="images/pontiff_total_live.gif"/></td>
                 <td>{live_users_religion.length.toString}</td></tr></tbody></table>)
+        }
+
+        if (user_entry.has_flag(UserEntryFlagEnum.LOVER)) {
+          val users_lovers = user_entrys.filter(x=>(x.id.is != user_entry.id.is) &&
+                                                   (x.has_flag(UserEntryFlagEnum.LOVER)))
+          val lovers_str = users_lovers.map(_.handle_name.is).mkString("", "　","")
+
+          result = result ++ Seq(<table cellSpacing="0" cellPadding="0" border="1"><tbody>
+            <tr><td>戀人一覽：</td><td>{lovers_str}</td></tr></tbody></table>)
         }
 
         result
@@ -536,7 +548,8 @@ class GameController {
       "weather"           -> <span>{WeatherEnum.get_weather(room_day.weather.is)}</span>,
       "live_player"       -> <span>{user_entrys.count(_.live.is).toString}</span>,
       "auction"           -> (if (room.has_flag(RoomFlagEnum.ITEM_MODE) && (room_day.day_no.is != 0))
-                              <span>{"(競標：" + ItemEnum.get_item(room_day.item.is).tag_string + ")"}</span>
+                              //<span>{"(競標：" + ItemEnum.get_item(room_day.item.is).tag_string + ")"}</span>
+                              <span>(競標：{ItemEnum.get_item(room_day.item.is).item_pic}<img src={"images/" + ItemEnum.get_item(room_day.item.is).command_name + ".gif"}/>)</span>
                               else <span></span>),
       "alert_message"     -> alert_message,
       "user_table"        -> user_table,

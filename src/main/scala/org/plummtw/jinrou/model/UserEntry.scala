@@ -81,7 +81,7 @@ class UserEntry extends LongKeyedMapper[UserEntry] with IdPK {
   }
 
   object cash  extends MappedInt(this) {
-    override def defaultValue = 1
+    override def defaultValue = 5
   }
   
   object live          extends MappedBoolean(this) {

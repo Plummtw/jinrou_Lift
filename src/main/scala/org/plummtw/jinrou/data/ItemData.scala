@@ -24,7 +24,8 @@ class ItemData (action: MTypeEnum.Value, str: String, name: String, targetable_b
 
   override def toString(): String = "【" + tag_string + "】"
 
-  def item_intro(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) = ""
+  def item_intro(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) : NodeSeq = Seq() //""
+  def item_pic : NodeSeq = NodeSeq.Empty
 
   // 產生 Item Tag
   def generate_action_tag(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry], vote_list:List[ItemVote]) : NodeSeq = {
@@ -53,6 +54,7 @@ object ItemNoItem extends ItemData(MTypeEnum.ITEM_NO_ITEM, "無道具", "item_no
 }
 
 object ItemUnluckyPurse extends ItemData(MTypeEnum.ITEM_UNLUCKY_PURSE, "不運錢包", "item_unlucky_purse", true, 8) {
+  override def item_pic = Seq(<img src="icon/UP.gif" />)
   override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
     val result = user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.id.is != user.id.is) && (x.live.is))
     if ((user.has_flag(UserEntryFlagEnum.RELIGION)) ||
@@ -64,12 +66,14 @@ object ItemUnluckyPurse extends ItemData(MTypeEnum.ITEM_UNLUCKY_PURSE, "不運�
 }
 
 object ItemBlessStaff extends ItemData(MTypeEnum.ITEM_BLESS_STAFF, "祝福之杖", "item_bless_staff", true, 7) {
+  override def item_pic = Seq(<img src="icon/BS.gif" />)
   override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
     user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.live.is))
   }
 }
 
 object ItemBlackFeather extends ItemData(MTypeEnum.ITEM_BLACK_FEATHER, "咒縛黑羽", "item_black_feather", true, 6) {
+  override def item_pic = Seq(<img src="icon/BF.gif" />)
   override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
     val result = user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.id.is != user.id.is) && (x.live.is))
     if ((user.has_flag(UserEntryFlagEnum.RELIGION)) ||
@@ -81,6 +85,7 @@ object ItemBlackFeather extends ItemData(MTypeEnum.ITEM_BLACK_FEATHER, "咒縛�
 }
 
 object ItemThiefSecret extends ItemData(MTypeEnum.ITEM_THIEF_SECRET, "盜賊極意", "item_thief_secret", true, 5) {
+  override def item_pic = Seq(<img src="icon/TS.gif" />)
   override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
     val result = user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.id.is != user.id.is))
     if ((user.has_flag(UserEntryFlagEnum.RELIGION)) ||
@@ -92,9 +97,11 @@ object ItemThiefSecret extends ItemData(MTypeEnum.ITEM_THIEF_SECRET, "盜賊極�
 }
 
 object ItemVentriloquist extends ItemData(MTypeEnum.ITEM_VENTRILOQUIST, "腹語娃娃！", "item_ventriloquist", false, 5) {
+  override def item_pic = Seq(<img src="icon/VE.gif" />)
 }
 
 object ItemDMessageSeal extends ItemData(MTypeEnum.ITEM_DMESSAGE_SEAL, "封印遺書", "item_dmessage_seal", true, 4) {
+  override def item_pic = Seq(<img src="icon/DS.gif" />)
   override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
     val result = user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.id.is != user.id.is) && (x.live.is))
     if ((user.has_flag(UserEntryFlagEnum.RELIGION)) ||
@@ -106,33 +113,42 @@ object ItemDMessageSeal extends ItemData(MTypeEnum.ITEM_DMESSAGE_SEAL, "封印�
 }
 
 object ItemMirrorShield extends ItemData(MTypeEnum.ITEM_MIRROR_SHIELD, "鏡盾捲軸！", "item_mirror_shield", false, 4) {
+  override def item_pic = Seq(<img src="icon/MS.gif" />)
 }
 
 object ItemShamanCrown extends ItemData(MTypeEnum.ITEM_SHAMAN_CROWN, "薩滿冕冠", "item_shaman_crown", true, 3) {
+  override def item_pic = Seq(<img src="icon/SC.gif" />)
   override def item_intro(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) = {
     val  system_message = SystemMessage.findAll(By(SystemMessage.roomday_id,  room_day.id.is),
                                                 By(SystemMessage.actioner_id, user.id.is),
                                                 By(SystemMessage.mtype,       MTypeEnum.ITEM_SHAMAN_CROWN.toString))
 
-    val result_augure : String =
+    val result_augure : NodeSeq =
       if (system_message.length != 0) {
         val actionee   = user_entrys.filter(_.id.is == system_message(0).actionee_id.is)(0)
         val actionee_role = RoleEnum.get_role(actionee.role.is.substring(0,1))
-        val actionee_role_str =
+        val actionee_role_node =
           if (actionee_role.role_side == RoomVictoryEnum.VILLAGER_WIN)
-            actionee_role.toString
+             actionee_role.role_pic //actionee_role.toString
           else
-            "非人側"
+             <img src="images/role_result_inhuman.gif" /> // "非人側"
 
-      actionee.handle_name.is + "是" + actionee_role_str + "(" +
-        SubroleEnum.get_subrole(actionee.subrole.is).toString + ")"
-    } else ""
+      // <img src="images/yes.gif" />
+      //actionee.handle_name.is + "是" + actionee_role_str + "(" +
+      ////  SubroleEnum.get_subrole(actionee.subrole.is).toString + ")"
+        Seq(<span>{actionee.handle_name.is}</span>,
+          <img src="images/yes.gif" />,
+          <img src="images/parenthesis_left.gif" />,
+          actionee_role_node,
+          <img src="images/parenthesis_left.right.gif" />)
+      } else NodeSeq.Empty // ""
 
     result_augure
   }
 }
 
 object ItemWeatherRod extends ItemData(MTypeEnum.ITEM_WEATHER_ROD, "天候棒！", "item_weather_rod", false, 3) with ItemOption {
+  override def item_pic = Seq(<img src="icon/WR.gif" />)
   override def option_map = scala.collection.immutable.TreeMap[String,String](
      WeatherEnum.SUNNY.toString  -> "晴",
      WeatherEnum.CLOUDY.toString -> "陰",
@@ -143,6 +159,7 @@ object ItemWeatherRod extends ItemData(MTypeEnum.ITEM_WEATHER_ROD, "天候棒！
 }
 
 object ItemDeathNote extends ItemData(MTypeEnum.ITEM_DEATH_NOTE, "死亡筆記", "item_death_note", true, 2) {
+  override def item_pic = Seq(<img src="icon/DN.gif" />)
   override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
     val result = user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.id.is != user.id.is) && (x.live.is))
     if ((user.has_flag(UserEntryFlagEnum.RELIGION)) ||
@@ -154,31 +171,41 @@ object ItemDeathNote extends ItemData(MTypeEnum.ITEM_DEATH_NOTE, "死亡筆記",
 }
 
 object ItemPandoraBox extends ItemData(MTypeEnum.ITEM_PANDORA_BOX, "潘朵拉箱！", "item_pandora_box", false, 2) {
+  override def item_pic = Seq(<img src="icon/PB.gif" />)
+}
+
+object ItemCubicArrow extends ItemData(MTypeEnum.ITEM_CUBIC_ARROW, "邱比特之箭", "item_cubic_arrow", true, 2) {
+  override def item_pic = Seq(<img src="icon/DN.gif" />)
 }
 
 object ItemPopulationCensus extends ItemData(MTypeEnum.ITEM_POPULATION_CENSUS, "人口普查！", "item_population_census", false, 1) {
+  override def item_pic = Seq(<img src="icon/PC.gif" />)
   override def item_intro(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) = {
     val  system_message = SystemMessage.findAll(By(SystemMessage.roomday_id,  room_day.id.is),
                                                 By(SystemMessage.actioner_id, user.id.is),
                                                 By(SystemMessage.mtype,       MTypeEnum.ITEM_POPULATION_CENSUS.toString))
 
-    val result_census : String =
+    val result_census : NodeSeq =
       if (system_message.length != 0) {
         val live_users = user_entrys.filter(_.live.is)
         val role_list = RoleEnum.ROLE_MAP.keys.toList.filter(_ != RoleNone)
-        var role_text = new StringBuffer("")
+        //var role_text = new StringBuffer("")
+        var role_seq : NodeSeq = Seq()
         role_list.foreach { role =>
           var role_number = live_users.filter(_.current_role == role).length
 
           if (role_number > 0) {
-            role_text.append("　")
-            role_text.append(RoleEnum.get_role(role).role_name)
-            role_text.append(" ")
-            role_text.append(role_number.toString)
+            //role_text.append("　")
+            //role_text.append(RoleEnum.get_role(role).role_name)
+            role_seq ++= RoleEnum.get_role(role).role_pic
+            //role_text.append(" ")
+            //role_text.append(role_number.toString)
+            role_seq ++= <span>{role_number.toString}</span>
           }
         }
-        role_text.toString
-    } else ""
+        //role_text.toString
+        role_seq
+    } else NodeSeq.Empty // ""
 
     result_census
   }

@@ -15,6 +15,7 @@ object RoomFlagEnum extends Enumeration {
   val WEATHER       = Value("WE")
   val WEATHER1       = Value("WF")
   val ITEM_MODE      = Value("IT")
+  val ITEM_CUBIC     = Value("IC")
   val MOB_MODE      = Value("MM")
   val MOB_MODE1     = Value("MN")
   
@@ -35,6 +36,7 @@ object RoomFlagEnum extends Enumeration {
   val ROLE_GODFAT    = Value("RT")
   
   val ROLE_DEMON     = Value("RD")
+  val ROLE_FALLEN_ANGEL  = Value("Rf")
   val ROLE_PONTIFF   = Value("RJ")
   val ROLE_PENGUIN   = Value("RK")
 
@@ -106,11 +108,12 @@ object RoomFlagEnum extends Enumeration {
   val INHERITER_REVEAL = Value("I1")
   val INHERITER_NEUTRAL = Value("I2")
   val SHIFTER_REVEAL   = Value("S1")
-  val SHIFTER_LOVER    = Value("S2")
+  val SHIFTER_LINKS    = Value("S2")
   val CARDMASTER_OPTION1 = Value("Q1")
 
   val GM_PENGUIN1        = Value("(1")
   val GM_HERMIT1          = Value("(2")
+  val GM_PONTIFF1         = Value("(3")
   
   val FLAGNAME_MAP   = Map(
     TEST_MODE    -> "(測)",
@@ -124,6 +127,7 @@ object RoomFlagEnum extends Enumeration {
     WEATHER      -> "(天候)",
     WEATHER1     -> "(天候1)",
     ITEM_MODE    -> "(道具)",
+    ITEM_CUBIC   -> "(道邱)",
     MOB_MODE     -> "(暴)",
     MOB_MODE1    -> "(暴1)",
   
@@ -144,6 +148,7 @@ object RoomFlagEnum extends Enumeration {
     ROLE_GODFAT    -> "[哥]",
   
     ROLE_DEMON     -> "[惡]",
+    ROLE_FALLEN_ANGEL -> "[墮]",
     ROLE_PONTIFF   -> "[教]",
     ROLE_PENGUIN   -> "[企]",
 
@@ -214,13 +219,15 @@ object RoomFlagEnum extends Enumeration {
     INHERITER_REVEAL -> "<繼1>",
     INHERITER_NEUTRAL -> "<繼2>",
     SHIFTER_REVEAL   -> "<模1>",
-    SHIFTER_LOVER    -> "<模2>",
+    SHIFTER_LINKS    -> "<模2>",
 
     ARCHMAGE_OPTION1   -> "【GM:大】",
     CARDMASTER_OPTION1 -> "【GM:卡】",
 
+    
     GM_PENGUIN1        -> "【GM:企】",
-    GM_HERMIT1         -> "【GM:隱】"
+    GM_HERMIT1         -> "【GM:隱】",
+    GM_PONTIFF1        -> "【GM:教】"
   )
   
   def flag_name(flag : RoomFlagEnum.Value) = {

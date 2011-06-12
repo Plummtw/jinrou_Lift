@@ -36,7 +36,7 @@ object UserEntryFlagEnum extends Enumeration {
   val STUNNED_2          = Value("2")
   val STUNNED_3           = Value("3")
 
-  val LOVER               = Value("L")
+  val LINKS               = Value("L")
 
   val CARD_FOOL           = Value("a")
   val CARD_MAGICIAN       = Value("b")
@@ -67,6 +67,9 @@ object UserEntryFlagEnum extends Enumeration {
   val DEATH_2             = Value("8")
   val DEATH_1              = Value("9")
   val DEATH_0              = Value("0")
+
+  val FALLEN               = Value("*")
+  val LOVER                = Value("&")
 
   val DMESSAGE_SEALED     = Value("%")
 }

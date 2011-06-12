@@ -61,7 +61,8 @@ object MTypeEnum extends Enumeration {
   val DEATH_WOLFCUB_EATEN = Value("DXE")
   val DEATH_PENGUIN_ICE  = Value("DKI")
   val DEATH_SUBPONTIFF = Value("DSP")
-  val DEATH_LOVER        = Value("DL")
+  val DEATH_LINKS        = Value("DL")
+  val DEATH_LOVER        = Value("DLL")
   val DEATH_DEATH_NOTE  = Value("DDN")
 
   val ITEM_PREFIX          = "I"
@@ -77,6 +78,7 @@ object MTypeEnum extends Enumeration {
   val ITEM_WEATHER_ROD = Value(ITEM_PREFIX + ItemEnum.WEATHER_ROD.toString)
   val ITEM_DEATH_NOTE = Value(ITEM_PREFIX + ItemEnum.DEATH_NOTE.toString)
   val ITEM_PANDORA_BOX = Value(ITEM_PREFIX + ItemEnum.PANDORA_BOX.toString)
+  val ITEM_CUBIC_ARROW = Value(ITEM_PREFIX + ItemEnum.CUBIC_ARROW.toString)
   val ITEM_POPULATION_CENSUS = Value(ITEM_PREFIX + ItemEnum.POPULATION_CENSUS.toString)
 
   val VOTE             = Value("V")  
@@ -155,6 +157,8 @@ object MTypeEnum extends Enumeration {
   val VOTE_DEMON_DOMINATE = Value("VDD")
   val VOTE_DEMON_VORTEX = Value("VDR")
 
+  val VOTE_FALLENANGEL_FALLEN = Value("VfF")
+
   val VOTE_PENGUIN_ICE = Value("VKI")
   val VOTE_PENGUIN_CHILL = Value("VKC")
 
@@ -198,8 +202,35 @@ object MTypeEnum extends Enumeration {
     DEATH_WOLFCUB_EATEN  -> "被幼狼襲擊",
     DEATH_PENGUIN_ICE -> "被企鵝冰凍",
     DEATH_SUBPONTIFF -> "跟隨教主死亡",
-    DEATH_LOVER    -> "跟隨生命連繫者死亡",
+    DEATH_LINKS    -> "跟隨生命連繫者死亡",
+    DEATH_LOVER    -> "跟隨戀人死亡",
     DEATH_DEATH_NOTE -> "被死亡筆記寫上",
+  )
+
+  def DEATH_MAP_GIF   = scala.collection.immutable.TreeMap(
+    DEATH          -> "death_unknown.gif",
+    DEATH_BETRAYER -> "death_betrayer.gif",
+    DEATH_CLERIC   -> "death_cleric.gif",
+    DEATH_FOX      -> "death_fox.gif",
+    DEATH_SORCEROR -> "death_sorceror.gif",
+    DEATH_HANGED   -> "death_hanged.gif",
+    DEATH_HUNTER   -> "death_hunter.gif",
+    DEATH_HUNTER_KILL  -> "death_hunter_kill.gif",
+    DEATH_MADMAN   -> "death_madman.gif",
+    DEATH_POISON_D -> "death_poison.gif",
+    DEATH_POISON_N -> "death_poison.gif",
+    DEATH_POISON_H -> "death_herbalist.gif",
+    DEATH_RUNNER   -> "death_runner.gif",
+    DEATH_SUDDEN   -> "death_sudden.gif",
+    DEATH_EATEN    -> "death_eaten.gif",
+    DEATH_GODFAT   -> "death_godfat.gif",
+    DEATH_WOLFCUB  -> "death_wolfcub.gif",
+    DEATH_WOLFCUB_EATEN  -> "death_wolfcub_eaten.gif",
+    DEATH_PENGUIN_ICE -> "death_penguin.gif",
+    DEATH_SUBPONTIFF -> "death_subpontiff.gif",
+    DEATH_LINKS    -> "death_links.gif",
+    DEATH_LOVER    -> "death_links.gif",
+    DEATH_DEATH_NOTE -> "death_death_note.gif",
   )
 
   def get_death_text(death : MTypeEnum.Value) : String = {
@@ -211,5 +242,16 @@ object MTypeEnum extends Enumeration {
 
   def get_death_text(mtype_string : String) : String = {
     return get_death_text(valueOf(mtype_string).getOrElse(DEATH))
+  }
+
+  def get_death_gif(death : MTypeEnum.Value) : String = {
+    val result = DEATH_MAP_GIF.get(death)
+    //if (result.isEmpty)
+    //  println(role.toString + "is null")
+    return result.getOrElse("death_unknown.gif")
+  }
+
+  def get_death_gif(mtype_string : String) : String = {
+    return get_death_gif(valueOf(mtype_string).getOrElse(DEATH))
   }
 }

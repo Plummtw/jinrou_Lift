@@ -1,7 +1,43 @@
 
 <lift:surround with="default" at="content">
+    <link rel="stylesheet" href="css/index.css"/>
+	<link rel="stylesheet" href="css/base.css"/>
+	<div id="header">
+<h1>
+<img src="images/top_title4.png" /><br/>
+<span class="comment">鸚鵡實驗站（猫又代管）</span>
+</h1>
+</div>
+  <div id="menu">
+<h2>選單</h2>
+<ul class="menu">
+<!--
+    <li><a href="test.html">測試須知</a></li>
+    <li><a href="create_test1.html">25人測試用村</a></li>
+    <li><a href="create_test2.html">8人測試用村</a></li>
+	-->
+    <li><a href="http://catjinro.no-ip.org/">導覽頁</a></li>
+	<li><a href="main.html">首頁</a></li>
+    <li><a href="http://jigokutushin.net/jinro/list.php">聯合列表</a></li>
+    <li><a href="http://nedftp.com/wiki/index.php/">人狼Wiki</a></li>
+	<li><a href="script_info.html">系統特點</a></li>
+	<li><a href="rule.html">遊戲規則</a></li>
+	<li><a href="version.html">版本紀錄</a></li>
+	<li><a href="oldlog_list.html">紀錄閱覽</a></li>
+	<li><a href="user_icon.html">頭像一覽</a></li>
+	<li><a href="upload.html">頭像登錄</a></li>
+	<li><a href="faq.html">問答集</a></li>
+	<li><a href="main_olg.html">舊版首頁</a></li>
+</ul>
+</div>
+  <div id="main">
   <h3>版本紀錄</h3>
   <ul>
+    <li>0991207<br/>
+     <ul>
+     <li>新增哥德法咒術特化技能言咒</li>
+     </ul>
+    </li>
     <li>0991203<br/>
      <ul>
      <li>新增共有者遺產選項</li>
@@ -12,7 +48,7 @@
     <li>0991119<br/>
      <ul>
      <li>咒術哥德強化：第七日時若絕望視線已用過，將可再用一次</li>
-     <li>降低狂人擊昏效果</li>
+     <li>降低狂人擊昏效果（晚上即醒）</li>
      <li>實驗企鵝強化：冰凍當天的干擾不算</li>
      <li>實驗眩光修改：改為部份訊息隱藏、部份訊息名稱改變</li>
      <li>新增實驗性哥德法特化四</li>
@@ -41,17 +77,23 @@
      <li>修改金錢獲得公式</li>
      <li>祝福及黑羽改為可以重疊，詛咒仍然不可重疊</li>
      </ul>
-    </li>
+	</li>
     <li>0991108<br/>
      <ul>
      <li>新增隱士選項</li>
      <li>新增道具模式</li>
      </ul>
     </li>
+    <li>0991029<br/>
+     <ul>
+     <li>修正繼承企鵝BUG</li>
+     <li>移除惡魔死亡企鵝已冰凍人數歸零的設定</li>
+     </ul>
+    </li>
     <li>0991006<br/>
      <ul>
      <li>新增隱士</li>
-     <li>妖狐選項四之方陣弱化(第二條線起算，且不算投哥德法的人)</li>
+     <li>妖狐選項四之方陣弱化</li>
      </ul>
     </li>
     <li>0991003<br/>
@@ -413,5 +455,5 @@
    <li>0980508 可進入第一天晚上</li>
    <li>0980407 決定更換架構為 Lift</li>
   </ul>
-  
+  </div>
 </lift:surround>

@@ -437,6 +437,7 @@ object MessageHelper {
       case MTypeEnum.ITEM_SHAMAN_CROWN     => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用薩滿冕冠",heaven_mode,"#AAAA33","snow")
       case MTypeEnum.ITEM_WEATHER_ROD      => simple_message_tag(user_entry.handle_name.is + " 使用天候棒 (" + talk.message.is + ")" ,heaven_mode ,"#AAAA33","snow")
       case MTypeEnum.ITEM_DEATH_NOTE       => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用死亡筆記",heaven_mode,"#AAAA33","snow")
+      case MTypeEnum.ITEM_CUBIC_ARROW      => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用邱比特之箭",heaven_mode,"#AAAA33","snow")
       case MTypeEnum.ITEM_POPULATION_CENSUS => simple_message_tag(user_entry.handle_name.is + " 使用人口普查",heaven_mode,"#AAAA33","snow")
 
       case MTypeEnum.VOTE_VILLAGER         => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 進行推理",heaven_mode,"#AAAA33","black")
@@ -501,6 +502,7 @@ object MessageHelper {
       case MTypeEnum.VOTE_DEMON_CURSE      => simple_message_tag(user_entry.handle_name.is + " 使用詛咒術",heaven_mode,"#666666","#FF0000")
       case MTypeEnum.VOTE_DEMON_CURSE2     => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is +" 使用詛咒術",heaven_mode,"#666666","#FF0000")
       case MTypeEnum.VOTE_DEMON_VORTEX     => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is +" 使用斗轉星移",heaven_mode,"#666666","#FF0000")
+      case MTypeEnum.VOTE_FALLENANGEL_FALLEN => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is +" 使用墮落",heaven_mode,"#666666","#FF0000")
 
       case MTypeEnum.VOTE_PENGUIN_ICE     => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is +" 冰凍",heaven_mode,"#CCFFFF","#0000FF")
       case MTypeEnum.VOTE_PENGUIN_CHILL   => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is +" 冰凍且圍繞著寒冰",heaven_mode,"#CCFFFF","#0000FF")

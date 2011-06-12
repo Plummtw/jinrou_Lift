@@ -242,6 +242,12 @@ object VoteHelper {
         vote_actionee.vote_number(vote_actionee.vote_number.is + 2)
         vote.vote_flags(vote.vote_flags.is + VoteFlagEnum.SHOUTED.toString)
       }
+      
+      // 墮落
+      if (actioner != null) {
+        val fallen_count = actioner.user_flags.is.filter(_ == UserEntryFlagEnum.FALLEN.toString()(0)).length
+        vote.vote_number(vote.vote_number.is + fallen_count * 2)
+      }
     }
 
     // 道具黑羽

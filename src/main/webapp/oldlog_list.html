@@ -1,9 +1,40 @@
 <lift:surround with="default" at="content">
+    <link rel="stylesheet" href="css/index.css"/>
+	<link rel="stylesheet" href="css/base.css"/>
+	<div id="header">
+<h1>
+<img src="images/old_log_title.jpg" /><br/>
+<span class="comment">鸚鵡實驗站（猫又代管）</span>
+</h1>
+</div>
+  <div id="menu">
+<h2>選單</h2>
+<ul class="menu">
+<!--
+    <li><a href="test.html">測試須知</a></li>
+    <li><a href="create_test1.html">25人測試用村</a></li>
+    <li><a href="create_test2.html">8人測試用村</a></li>
+	-->
+    <li><a href="http://catjinro.no-ip.org/">導覽頁</a></li>
+	<li><a href="main.html">首頁</a></li>
+    <li><a href="http://jigokutushin.net/jinro/list.php">聯合列表</a></li>
+    <li><a href="http://nedftp.com/wiki/index.php/">人狼Wiki</a></li>
+	<li><a href="script_info.html">系統特點</a></li>
+	<li><a href="rule.html">遊戲規則</a></li>
+	<li><a href="version.html">版本紀錄</a></li>
+	<li><a href="oldlog_list.html">紀錄閱覽</a></li>
+	<li><a href="user_icon.html">頭像一覽</a></li>
+	<li><a href="upload.html">頭像登錄</a></li>
+	<li><a href="faq.html">問答集</a></li>
+	<li><a href="main_olg.html">舊版首頁</a></li>
+</ul>
+</div>
+  <div id="main">
   <lift:OldlogController.list>
   <a href="main.html">←返回</a> <entry:last_page/> <entry:next_page/><br/> 
-  <img src="images/old_log_title.jpg" /><br/> 
   <div align="center">
     <entry:room_table/>
   </div>
   </lift:OldlogController.list>
+  </div>
 </lift:surround> 

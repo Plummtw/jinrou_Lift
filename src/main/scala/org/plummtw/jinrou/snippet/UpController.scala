@@ -88,7 +88,10 @@ class UpController {
       
     if (say_data.length > 550)
       say_data = S.param("say").getOrElse("").trim().substring(0, 550)
-    say_data = JinrouUtil.encodeHtml(say_data)
+    say_data = 
+      //if ((new Random()).nextInt(100) < 15) JinrouUtil.encodeHtml_ap(say_data)
+      //else
+      JinrouUtil.encodeHtml(say_data)
 
     if (say_data.length > 600)   // 太多控制碼了，程式不比對了，直接空白
       say_data = ""

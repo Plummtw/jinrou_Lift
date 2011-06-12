@@ -44,6 +44,21 @@ object JinrouUtil {
     '\n' -> "<br/>"
   )
 
+  val april_fool_hash = Map[Any, Any] (
+    '真' -> '偽', '偽' -> '真',
+	'人' -> '狼', '狼' -> '人',
+	'白' -> '黑', '黑' -> '白',
+	'○' -> '●', '●' -> '○',
+	'吊' -> '咬', '咬' -> '吊',
+	'男' -> '女', '女' -> '男',
+  )
+  val april_fool_hash2 = Map (
+    "村人" -> "人狼", "人狼" -> "村人",
+    "CO" -> "隱", "co" -> "隱", "ＣＯ" -> "隱", "ｃｏ" -> "隱",
+    "救村" -> "滅村", "滅村" -> "救村"
+  )
+
+
   def  hasHtmlCode(string: String) : Boolean = {
     val count          = string.length - 1
 
@@ -75,6 +90,43 @@ object JinrouUtil {
       } else {
         string_builder.append(h)
         is_escape_r = ( c == '\r')
+      }
+    }
+    return string_builder.toString
+  }
+
+  def encodeHtml_ap(string: String) : String = {
+    // .replaceAll("\'","&apos;")
+
+    /*
+    string.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+          .replaceAll("\"","&quot;").
+           replaceAll("\r\n","\n").replaceAll("\r","\n").replaceAll("\n","<br/>")
+    */
+    val string_builder = new StringBuilder
+    val count          = string.length - 1
+    var is_skip        = false
+
+    var is_escape_r    = false
+    for (i <- 0 to count) {
+      if (is_skip)
+        is_skip = false
+      else {
+        val c = string.charAt(i)
+        val h = html_encode_hash.get(c).getOrElse(c)
+        val ap1 = april_fool_hash.get(h).getOrElse(h)
+
+        val ap2 = april_fool_hash2.get(string.substring(i, Math.min(count+1, i+2)))
+
+        ap2 match {
+          case Some(x) => string_builder.append(x); is_skip = true
+          case _       => if (is_escape_r && (c == '\n')) {
+                            is_escape_r = false
+                          } else {
+                            string_builder.append(ap1)
+                            is_escape_r = ( c == '\r')
+                          }
+        }
       }
     }
 

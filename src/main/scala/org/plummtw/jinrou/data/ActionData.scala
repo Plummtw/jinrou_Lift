@@ -612,6 +612,9 @@ object ActionDemonVortex extends ActionData(MTypeEnum.VOTE_DEMON_VORTEX, "斗轉
   }
 }
 
+object ActionFallenAngelFallen extends ActionData(MTypeEnum.VOTE_FALLENANGEL_FALLEN, "墮落", "fallenangel_fallen", true) {
+}
+
 object ActionPenguinIce extends ActionData(MTypeEnum.VOTE_PENGUIN_ICE, "冰凍", "penguin_ice", true) {
 }
 
