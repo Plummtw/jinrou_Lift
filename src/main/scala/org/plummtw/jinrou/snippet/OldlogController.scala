@@ -55,6 +55,10 @@ class OldlogController {
                     else <a href={"oldlog_list.html?page_no=" + (page_no-1).toString}>上一頁</a>
     val next_page = if (room_list.length != 20) <span></span>
                     else <a href={"oldlog_list.html?page_no=" + (page_no+1).toString}>下一頁</a>
+	val last_page_olg = if (page_no == 0) <span></span>
+                    else <a href={"oldlog_list_olg.html?page_no=" + (page_no-1).toString}>上一頁</a>
+    val next_page_olg = if (room_list.length != 20) <span></span>
+                    else <a href={"oldlog_list_olg.html?page_no=" + (page_no+1).toString}>下一頁</a>
 
     val room_table = <table border="0" cellpadding="0" cellspacing="0">
       <tr>
@@ -81,6 +85,8 @@ class OldlogController {
     bind("entry", xhtml,
       "last_page"  ->  last_page,
       "next_page"  ->  next_page,
+	  "last_page_olg"  ->  last_page_olg,
+      "next_page_olg"  ->  next_page_olg,
       "room_table" ->  room_table
     )
   }
