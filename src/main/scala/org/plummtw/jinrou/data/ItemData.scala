@@ -175,7 +175,7 @@ object ItemPandoraBox extends ItemData(MTypeEnum.ITEM_PANDORA_BOX, "潘朵拉箱
 }
 
 object ItemCubicArrow extends ItemData(MTypeEnum.ITEM_CUBIC_ARROW, "邱比特之箭", "item_cubic_arrow", true, 2) {
-  override def item_pic = Seq(<img src="icon/DN.gif" />)
+  override def item_pic = Seq(<img src="icon/CA.gif" />)
 }
 
 object ItemPopulationCensus extends ItemData(MTypeEnum.ITEM_POPULATION_CENSUS, "人口普查！", "item_population_census", false, 1) {

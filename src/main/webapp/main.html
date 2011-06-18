@@ -16,23 +16,13 @@
     </script>
     <script type="text/javascript"> 
 // <![CDATA[
- function BasicupdateElement()
+ function IllegalElement_a()
 {
-document.getElementById("Basicupdate").style.display="block";
-document.getElementById("Switchupdate").style.display="none";
-document.getElementById("Adjustmentupdate").style.display="none";
+document.getElementById("Illegal").style.display="block";
 }
- function SwitchupdateElement()
+ function IllegalElement_b()
 {
-document.getElementById("Basicupdate").style.display="none";
-document.getElementById("Switchupdate").style.display="block";
-document.getElementById("Adjustmentupdate").style.display="none";
-}
- function AdjustmentupdateElement()
-{
-document.getElementById("Basicupdate").style.display="none";
-document.getElementById("Switchupdate").style.display="none";
-document.getElementById("Adjustmentupdate").style.display="block";
+document.getElementById("Illegal").style.display="none";
 }
 // ]]>
     </script>
@@ -40,7 +30,7 @@ document.getElementById("Adjustmentupdate").style.display="block";
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <div id="header">
 <h1>
-<img src="images/top_title4.png"/><br/>
+<img src="images/top_title2.png"/><br/>
 <span class="comment">鸚鵡實驗站（猫又代管）</span>
 </h1>
    <noscript>
@@ -74,6 +64,7 @@ document.getElementById("Adjustmentupdate").style.display="block";
 	<li><a href="main.html">首頁</a></li>
     <li><a href="http://jigokutushin.net/jinro/list.php">聯合列表</a></li>
     <li><a href="http://nedftp.com/wiki/index.php/">人狼Wiki</a></li>
+	<li><a href="http://personwolf.mykomica.org/ddays/">K島人狼</a></li>
 	<li><a href="script_info.html">系統特點</a></li>
 	<li><a href="rule.html">遊戲規則</a></li>
 	<li><a href="version.html">版本紀錄</a></li>
@@ -82,6 +73,7 @@ document.getElementById("Adjustmentupdate").style.display="block";
 	<li><a href="upload.html">頭像登錄</a></li>
 	<li><a href="faq.html">問答集</a></li>
 	<li><a href="main_olg.html">舊版首頁</a></li>
+	<li><a href="http://parrot2.jigokutushin.net/">地獄鸚鵡</a></li>
 </ul>
 </div>
        </td>
@@ -91,25 +83,35 @@ document.getElementById("Adjustmentupdate").style.display="block";
         <fieldset>
          <legend><strong>伺服器公告</strong></legend>
          <div id="information">
-	 <h3>目前版本 Build0127</h3>
+	 <h3>目前版本 Build0414</h3>
 	 <p>
-     <strong class="notice">本伺服器由克洛洛提供主機得以運作的。
+     <b>本伺服器由克洛洛提供主機得以運作的。
 	 <br/>伺服器不穩定，若突然關閉請告知柴郡猫。
-	 <br/>新首頁建立村莊若排版錯誤請調整解析度。</strong>
+	 <br/>新首頁建立村莊若排版錯誤請調整解析度。</b>
+	 <br/><strong class="notice"><!-- 若發現伺服器突然無法連接請稍等幾分鐘，非常可能是突然更新。 -->下次大型更新尚未動工，若伺服器關閉必為異常請立即回報。</strong>
 	 <br/>
-	 <h1>遊戲圖片化已實裝。
-	 <br/>BUG：藥師的治療藥、毒藥仍為文字。</h1>
+	 <br/>若有BUG請至K島人狼BUG回報專用串回報，感謝配合。（左邊選單有連結）
+	 <br/>
+	 <br/><img src="images/rabbit.gif"/>
+	 <br/>
+	 <h4>最新更新</h4>
+	 <br/>0225 - 平手重新投票判定調降為 5 次。
+	 <br/>0414 - 村人推理修正、預言哥德法勝利要求降低為4人。
+	 <br/>0601 - 墮天使初版實裝（無任何主動/被動技能、無法入教、被拉即轉職）、狂人擊暈效果變更。
+	 <br/>0606 - 修正墮天使無法登場的問題，另外經過測試墮天使確實完全正常。
+	 <br/>0612 - 修正鸚鵡出包，開放墮天使選項、GM：教選項。
 	 </p>
+	 <h2>其他</h2>
 	 <p>
 	 <br/>有新頭像若需上傳請先上傳至猫又伺服器後再告知編號、名稱、邊框顏色、寬高（50*50內）。
 	 <br/>本程式使用 Lift 架構重寫。若有問題、不合理、建議，請通知鸚鵡或柴郡猫。
-         <br/>程式＆主機＆管理員：<a href="mailto:sailormoontw@hotmail.com"><font color="#FF7700">鸚鵡(parrot)</font></a> <font color="#BB0077">哥德法(godfat)</font>／<font color="#6699ff">克洛洛</font>／<font color="#9933cc">柴郡猫</font>
-         <br/>構想提供：PTT kerl、PTT lime2001／測試協力：落葉子一群
-         <br/>落葉子 M 群：group434262@msnzone.cn／鸚鵡 M 群：group576934@msnzone.cn<strong class="notice">（審核制）</strong>
+     <br/>程式＆主機＆管理員：<a href="mailto:sailormoontw@hotmail.com"><font color="#FF7700">鸚鵡(parrot)</font></a> <font color="#BB0077">哥德法(godfat)</font>／<font color="#6699ff">克洛洛</font>／依舊的<font color="#9933cc">柴郡猫</font>
+     <br/>構想提供：PTT kerl、PTT lime2001／測試協力：落葉子一群
+     <br/>落葉子 M 群：group434262@msnzone.cn／鸚鵡 M 群：group576934@msnzone.cn<strong class="notice">（審核制）</strong>
 	 </p>
          </div>
         </fieldset><br/>
-        
+		
         <fieldset>
          <legend><strong>遊戲列表</strong></legend><br/>
          <div style="line-height:135%;margin:20px 20px 30px;">
@@ -120,12 +122,7 @@ document.getElementById("Adjustmentupdate").style.display="block";
         <lift:RoomController.add form="POST">
          <fieldset>
          <legend><strong>建立村莊</strong></legend>
-	 　<input type="button" onclick="BasicupdateElement()" value="基本設定" />
-	 　<input type="button" onclick="SwitchupdateElement()" value="職業開關" />
-	 　<input type="button" onclick="AdjustmentupdateElement()" value="職業微調" />
-	 <strong class="notice">IE瀏覽器請勿使用按鈕，會出錯。</strong>
          <table>
-	 <dir id="Basicupdate">
           <tr>
            <td><label><strong>　村莊名稱：</strong></label></td>
            <td><entry:room_name /> 村<br/></td>
@@ -175,7 +172,7 @@ document.getElementById("Adjustmentupdate").style.display="block";
            <td><entry:dummy_last_words /></td>
           </tr>
 		  
-	  <tr>
+	      <tr>
            <td><label><strong>　無替身君模式：</strong></label></td>
            <td><entry:no_dummy />
             <small>(關閉替身君，惡魔渾沌更改為初日可施展)</small>
@@ -247,15 +244,13 @@ document.getElementById("Adjustmentupdate").style.display="block";
            </td>
           </tr>
 
-	  <tr>
+	      <tr>
            <td><label><strong>　道具模式：</strong></label></td>
            <td><entry:item_mode />
-	    <small>(每天晚上可以得知隔一天競標的道具，白天可競標道具)</small>
+	        <small>(每天晚上可以得知隔一天競標的道具，白天可競標道具)</small>
            </td>
           </tr>
-
-          </dir>
-	  <dir id="Switchupdate">
+		  
 	  <tr><td><strong><font color="blue">額外職業部份：</font></strong></td><td><font color="red">( 警告：別開太多職業以免遊戲太過混亂 )</font></td></tr>
 	  
           <tr>
@@ -327,20 +322,12 @@ document.getElementById("Adjustmentupdate").style.display="block";
            <td><entry:role_demon />
             <small>(２３人以上加入惡魔) (惡魔側)</small>
            </td>
-          </tr>
-
-          <tr>
-           <td><label><strong><font color="#666666">　墮天使</font>：</strong></label></td>
-           <td><entry:role_fallen_angel />
-            <small>(惡魔入教時轉為墮天使，目前無技能，無法入教，活著即勝利) (墮天使側)</small>
-           </td>
-          </tr>
-
+          </tr>          
           
           <tr>
            <td><label><strong><font color="#EEAA55">　教主</font>：</strong></label></td>
            <td><entry:role_pontiff />
-            <small>(２５人以上加入教主) (教側)</small>
+            <small>(２５人以上加入教主) (教主側)</small>
            </td>
           </tr>
           
@@ -390,6 +377,13 @@ document.getElementById("Adjustmentupdate").style.display="block";
            <td><label><strong>　<font color="#888888">隱士</font>：</strong></label></td>
            <td><entry:role_hermit />
             <small>(隱士無法直接被選取，但當繼承者繼承模仿或繼承時則變為隱士，人側)</small>
+           </td>
+          </tr>
+		  
+		  <tr>
+           <td><label><strong><font color="#666666">　墮天使</font>：</strong></label></td>
+           <td><entry:role_fallen_angel />
+            <small>(惡魔入教時轉為墮天使，能施展墮落，無法入教，活著即勝利) (墮天使側)</small>
            </td>
           </tr>
   
@@ -473,8 +467,6 @@ document.getElementById("Adjustmentupdate").style.display="block";
            </td>
           </tr>
           
-	  </dir>
-          <dir id="Adjustmentupdate">
 	  <tr><td><strong><font color="blue">職業微調部份：</font></strong></td><td><font color="#BB00AA">( 構想徵求中 )</font></td></tr>
 	  
           <tr>
@@ -646,7 +638,6 @@ document.getElementById("Adjustmentupdate").style.display="block";
            </td>
           </tr>
 
-
           <tr>
            <td><label><strong>　妖狐指定背德：</strong></label></td>
            <td><entry:fox_option1 />
@@ -723,6 +714,13 @@ document.getElementById("Adjustmentupdate").style.display="block";
             <small>(開啟哥德法特化選擇之預言特化，新增預言，除逆咒殺外無其他技能)</small>
            </td>
           </tr>
+		  
+		  <tr>
+           <td><label><strong>　哥德預言強化：</strong></label></td>
+           <td>未開放
+            <small>(預言哥德法於第五天後可得知可預言職業的生存狀況)</small>
+           </td>
+          </tr>
 
           <tr>
            <td><label><strong>　惡魔占卜為狼：</strong></label></td>
@@ -769,21 +767,21 @@ document.getElementById("Adjustmentupdate").style.display="block";
           <tr>
            <td><label><strong>　教友會：</strong></label></td>
            <td><entry:pontiff_option1 />
-            <small>(藉由教友會的交流，教徒們可以更加認識彼此，<br/>　第七日開始教徒可以得知所有教派人員的姓名)</small>
+            <small>(藉由教友會的交流，教徒們可以更加認識彼此，<br/>　第七日開始教徒可以得知所有教徒的姓名)</small>
            </td>
           </tr>
           
           <tr>
            <td><label><strong>　初期教徒配置：</strong></label></td>
            <td><entry:pontiff_option2 />
-            <small>(初期牧師設為教友，而學者設為教友免疫)</small>
+            <small>(初期牧師設為教徒，而學者設為教徒免疫)</small>
            </td>
           </tr>
           
           <tr>
            <td><label><strong>　教主光環內建：</strong></label></td>
            <td><entry:pontiff_option3 />
-            <small>(教主光環從第一天晚上開始則內建)</small>
+            <small>(教徒光環從第一天晚上開始則內建)</small>
            </td>
           </tr>
           
@@ -815,34 +813,39 @@ document.getElementById("Adjustmentupdate").style.display="block";
            </td>
           </tr>
 		  
-	  <tr>
+          <tr>
            <td><label><strong>　<font color="#FF7700">卡</font><font color="#EC9010">片</font><font color="#DAA520">師</font><font color="#CC66FF">初始化</font>：</strong></label></td>
            <td><entry:cardmaster_option1 />
             <small><font color="#FF0000">※請注意平衡※</font><br/>(模仿師登場的情況下，替換為卡片師，無卡片)</small>
            </td>
           </tr>
-<!--
-	  <tr>
+          <!--
+          <tr>
            <td><label><strong>　<font color="#7B68EE">大魔導</font><font color="#CC66FF">初始化</font>：</strong></label></td>
            <td><entry:archmage_option1 />
             <small><font color="#FF0000"><b>※會導致場上無村迫害非人側，請注意平衡※</b></font><br/>(村民登場時，抽取一名替換成大魔導，法力0、無水元素)</small>
            </td>
           </tr>
           
-	  <tr>
+          <tr>
            <td><label><strong>　<font color="#66FFFF">企鵝</font><font color="#CC66FF">初始化</font>：</strong></label></td>
            <td><entry:gm_penguin1 />
             <small><font color="#FF0000"><b>※較難※</b></font><br/>(惡魔登場且企鵝登場選項開啟時，替換成企鵝)</small>
            </td>
           </tr>
--->
-	  <tr>
+          -->
+          <tr>
            <td><label><strong>　<font color="#888888">隱士</font><font color="#CC66FF">初始化</font>：</strong></label></td>
            <td><entry:gm_hermit1 />
             <small><font color="#FF0000">※請注意平衡※</font><br/>(繼承者登場且隱士登場選項開啟時，替換成隱士)</small>
            </td>
           </tr>
-          </dir>
+		  <tr>
+           <td><label><strong>　<font color="#EEAA55">教主</font><font color="#CC66FF">替換</font>：</strong></label></td>
+           <td><entry:gm_pontiff1 />
+            <small><font color="#FF0000">※請注意平衡※</font><br/>(教主替換為企鵝，且相關副職關閉，模仿（繼承不算）成為企鵝時企鵝勝利要求提高為５人)</small>
+           </td>
+          </tr>
           <tr>
            <td></td>
            <td align="right">

@@ -157,7 +157,7 @@ object MTypeEnum extends Enumeration {
   val VOTE_DEMON_DOMINATE = Value("VDD")
   val VOTE_DEMON_VORTEX = Value("VDR")
 
-  val VOTE_FALLENANGEL_FALLEN = Value("VfF")
+  val VOTE_FALLENANGEL_FALLEN = Value("VFF")
 
   val VOTE_PENGUIN_ICE = Value("VKI")
   val VOTE_PENGUIN_CHILL = Value("VKC")

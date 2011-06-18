@@ -1,6 +1,7 @@
 package org.plummtw.jinrou.util
 
 import scala.xml._
+import scala.util.matching.Regex
 import net.liftweb._
 import net.liftweb.mapper._
 import http._
@@ -16,6 +17,7 @@ import org.plummtw.jinrou.enum._
 import org.plummtw.jinrou.data._
 
 object VoteHelper {
+  val FallenRegex = new Regex(".*" + VoteFlagEnum.FALLEN.toString + "(\\d+).*")
   /*
   public static getNotVoted(room) {
     def result = []
@@ -246,7 +248,10 @@ object VoteHelper {
       // 墮落
       if (actioner != null) {
         val fallen_count = actioner.user_flags.is.filter(_ == UserEntryFlagEnum.FALLEN.toString()(0)).length
-        vote.vote_number(vote.vote_number.is + fallen_count * 2)
+        if (fallen_count != 0) {
+          vote.vote_number(vote.vote_number.is + fallen_count * 2)
+          vote.vote_flags(vote.vote_flags.is + VoteFlagEnum.FALLEN.toString + fallen_count.toString)
+        }
       }
     }
 
@@ -473,11 +478,15 @@ object VoteHelper {
       val blessed_str = if (vote.vote_flags.is.indexOf(VoteFlagEnum.BLESSED.toString) != -1 ) "(祝福)" else ""
       val cursed_str  = if (vote.vote_flags.is.indexOf(VoteFlagEnum.CURSED.toString) != -1 )  "(詛咒)" else ""
       val bfeather_str = if (vote.vote_flags.is.indexOf(VoteFlagEnum.BFEATHERED.toString) != -1 )  "(黑羽)" else ""
+      val fallen_str = vote.vote_flags.is match {
+        case FallenRegex(x) => "(墮落" + x.toString + ")"
+        case _              => ""
+      }
       val shouted_str = if (vote.vote_flags.is.indexOf(VoteFlagEnum.SHOUTED.toString) != -1 ) "(鼓舞)" else ""
       val vortex_str = if (vote.vote_flags.is.indexOf(VoteFlagEnum.VORTEX.toString) != -1 ) "(斗轉)" else ""
       val colored_str = if (vote.vote_flags.is.indexOf(VoteFlagEnum.COLORSPRAY.toString) != -1 ) "(七彩)" else ""
     
-      return auto_str + blessed_str + cursed_str + bfeather_str + shouted_str + vortex_str + colored_str
+      return auto_str + blessed_str + cursed_str + bfeather_str + fallen_str + shouted_str + vortex_str + colored_str
     }
     def vote_no(room_day:RoomDay, user:UserEntry, vote_reveal:Boolean, vote_flags:String): String =
       if (!vote_reveal) ""

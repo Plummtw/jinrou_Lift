@@ -847,7 +847,7 @@ object GameProcesser {
 
     // 計算天氣變化
     var new_weather = room_day.weather.is
-    if (((room.has_flag(RoomFlagEnum.WEATHER1)) && (new Random().nextInt(2) == 0)) ||
+    if (((room.has_flag(RoomFlagEnum.WEATHER)) && (new Random().nextInt(2) == 0)) ||
         (new_weather == WeatherEnum.TYPHOON.toString)) {
       val weather_int = new Random().nextInt(5)
       new_weather = weather_int match

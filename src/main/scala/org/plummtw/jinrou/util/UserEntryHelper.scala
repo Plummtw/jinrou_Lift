@@ -70,6 +70,7 @@ object UserEntryHelper {
           {id_icon}({ if (user_entry.live.is) "生存中" else "死亡" })
           { if (reveal) {if (user_entry.has_flag(UserEntryFlagEnum.RELIGION) ) Seq(<font color="#EEAA55">教</font>) else NodeSeq.Empty} else NodeSeq.Empty }
           { if (reveal) {if (user_entry.has_flag(UserEntryFlagEnum.BECAME_MOB) ) Seq(<font color="#AAAAAA">暴</font>) else NodeSeq.Empty} else NodeSeq.Empty }
+          { if (reveal) {if (user_entry.has_flag(UserEntryFlagEnum.LOVER) ) Seq(<font color="#FF69B4">戀</font>) else NodeSeq.Empty} else NodeSeq.Empty }
          </td>
          
     return result  

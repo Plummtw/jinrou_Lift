@@ -40,6 +40,7 @@ class OldlogController {
       case RoomVictoryEnum.PONTIFF_WIN  => "教"
       case RoomVictoryEnum.MOB_WIN      => "暴"
       case RoomVictoryEnum.MOB_WIN2     => "暴"
+      case RoomVictoryEnum.LOVER_WIN    => "戀"
       case RoomVictoryEnum.ABANDONED    => "棄"
       case RoomVictoryEnum.DRAW         => "和"
       case xs                           => "？"
@@ -154,7 +155,7 @@ class OldlogController {
             case RoomVictoryEnum.MOB_WIN      => <td valign="middle" align="center" width="100%" style="background-color:#AAAAAA;color:snow;font-weight:bold;"><img src="icon/spy.gif"/> [暴民勝利] 獨一無二的暴君誕生了</td>
             case RoomVictoryEnum.MOB_WIN2     => <td valign="middle" align="center" width="100%" style="background-color:#AAAAAA;color:snow;font-weight:bold;"><img src="icon/spy.gif"/> [暴民勝利] 村莊陷入混亂狀態</td>
             case RoomVictoryEnum.LOVER_WIN    => <td valign="middle" align="center" width="100%" style="background-color:#FF69B4;color:snow;font-weight:bold;"><img src="icon/fre.gif"/> [戀人勝利] 等這村莊結束之後，我們就要回老家結婚了</td>            case RoomVictoryEnum.ABANDONED    => <td valign="middle" align="center" width="100%" style="background-color:snow;color:black;font-weight:bold;">這個村莊已經廢棄</td>
-            case RoomVictoryEnum.DRAW         => <td valign="middle" align="center" width="100%" style="background-color:snow;color:black;font-weight:bold;">投票十次相同平手</td>
+            case RoomVictoryEnum.DRAW         => <td valign="middle" align="center" width="100%" style="background-color:snow;color:black;font-weight:bold;">投票五次相同平手</td>
             case xs                           => <td valign="middle" align="center" width="100%" style="background-color:snow;color:black;font-weight:bold;">遊戲狀況不明</td>
           }
         }

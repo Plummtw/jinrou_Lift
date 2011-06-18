@@ -388,6 +388,7 @@ class UpController {
 
                 // 投票重新開始
                 Vote.bulkDelete_!!(By(Vote.roomday_id, room_day.id.is))
+                ItemVote.bulkDelete_!!(By(ItemVote.roomday_id, room_day.id.is))
 
                 // Update 使用者狀態
                 DB.use(DefaultConnectionIdentifier) { conn =>

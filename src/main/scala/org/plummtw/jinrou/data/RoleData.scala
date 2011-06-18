@@ -964,8 +964,9 @@ object RoleBetrayer    extends RoleData(RoleEnum.BETRAYER,    "背德",   "#DD00
   override def role_pic   = <img src="images/rolepic_cult.gif" />
   
   override def role_ability(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) = {
-    val fox = UserEntry.findAll(By(UserEntry.room_id, room.id.is),
-                                Like(UserEntry.role, RoleEnum.FOX.toString+"%"))
+    //val fox = UserEntry.findAll(By(UserEntry.room_id, room.id.is),
+    //                            Like(UserEntry.role, RoleEnum.FOX.toString+"%"))
+    val fox = user_entrys.filter(_.current_role == RoleEnum.FOX)
                                    
     val fox_str = if (user.subrole.is == SubroleEnum.WOLFBELIEVER.toString)
         <img src="images/role_cult_wold.gif" /> //"背德狼信者不會顯示妖狐是誰"
