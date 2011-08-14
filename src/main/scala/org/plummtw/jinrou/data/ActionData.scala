@@ -39,11 +39,22 @@ object ActionVote extends ActionData(MTypeEnum.VOTE_HANG, "投票", "vote", true
   override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
     val result = user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.id.is != user.id.is) && (x.live.is) &&
                                        (x.hasnt_flag(UserEntryFlagEnum.HIDED)))
-    if ((user.has_flag(UserEntryFlagEnum.RELIGION)) ||
-        (user.subrole.is == SubroleEnum.SUBPONTIFF.toString))
-      result.filter(x=>x.hasnt_flag(UserEntryFlagEnum.PONTIFF_AURA))
+    val result2 = if ((user.has_flag(UserEntryFlagEnum.RELIGION)) ||
+          (user.subrole.is == SubroleEnum.SUBPONTIFF.toString))
+        result.filter(x=>x.hasnt_flag(UserEntryFlagEnum.PONTIFF_AURA))
+      else
+        result
+    if (user.current_role == RoleEnum.MADMAN) {
+      val duel_messages = SystemMessage.findAll(By(SystemMessage.roomday_id, room_day.id.is),
+                                               By(SystemMessage.actioner_id, user.id.is),
+                                               By(SystemMessage.mtype, MTypeEnum.VOTE_MADMAN_DUEL.toString))
+      if (duel_messages.length != 0) {
+        result2.filter(x=>(x.id != duel_messages(0).actionee_id.is))
+      } else
+        result2
+    }
     else
-      result
+      result2
   }
 }
 
@@ -53,7 +64,11 @@ object ActionBecomeMob extends ActionData(MTypeEnum.VOTE_BECOMEMOB, "暴民模�
   }
 }
 
-object ActionHide extends ActionData(MTypeEnum.VOTE_HIDE, "神隱！", "hide", false) 
+object ActionHide extends ActionData(MTypeEnum.VOTE_HIDE, "神隱！", "hide", false) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
+    return (room_day.day_no.is != 1)
+  }
+}
 
 object ActionReverseVote extends ActionData(MTypeEnum.VOTE_REVERSEVOTE, "逆轉投票！", "reversemob", false)  {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {
@@ -143,11 +158,52 @@ object ActionHerbalistMix extends ActionData(MTypeEnum.VOTE_HERBALIST_MIX, "調�
   }
 }
 
+object ActionHerbalistDrop extends ActionData(MTypeEnum.VOTE_HERBALIST_DROP, "放棄藥品！",   "herbalist_drop", false) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
+    return (((user.hasnt_flag(UserEntryFlagEnum.ELIXIR_USED)) ||
+             (user.hasnt_flag(UserEntryFlagEnum.POISON_USED))) &&
+            (room.has_flag(RoomFlagEnum.HERBALIST_DROP)))
+  }
+}
+
+object ActionAlchemistElixir extends ActionData(MTypeEnum.VOTE_ALCHEMIST_ELIXIR, "治療藥(水風)", "alchemist_elixir", true) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
+    return ((room_day.day_no.is != 1) && (user.has_flag(UserEntryFlagEnum.WATER)) &&
+                                         (user.has_flag(UserEntryFlagEnum.AIR)))
+  }
+}
+
+object ActionAlchemistPoison extends ActionData(MTypeEnum.VOTE_ALCHEMIST_POISON, "毒藥(地火)",   "alchemist_poison", true) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
+    return ((room_day.day_no.is != 1) && (user.has_flag(UserEntryFlagEnum.EARTH)) &&
+                                         (user.has_flag(UserEntryFlagEnum.FIRE)))
+  }
+
+  override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
+    val result = user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.id.is != user.id.is) && (x.live.is))
+    if ((user.has_flag(UserEntryFlagEnum.RELIGION)) ||
+        (user.subrole.is == SubroleEnum.SUBPONTIFF.toString))
+      result.filter(x=>x.hasnt_flag(UserEntryFlagEnum.PONTIFF_AURA))
+    else
+      result
+  }
+}
+
 object ActionScholarExamine extends ActionData(MTypeEnum.VOTE_SCHOLAR_EXAMINE, "個案調查",   "scholar_examine", true) {
   override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
       user_entrys.filter(x=> (x.id.is != user.id.is))
   }
+}
 
+object ActionScholarExamine2 extends ActionData(MTypeEnum.VOTE_SCHOLAR_EXAMINE2, "強力調查",   "scholar_examine2", true) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
+    return ((!user.has_flag(UserEntryFlagEnum.ALTERNATE)) &&
+            (room.has_flag(RoomFlagEnum.SCHOLAR_OPTION4)))
+  }
+
+  override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
+      user_entrys.filter(x=> (x.id.is != user.id.is))
+  }
 }
 
 object ActionScholarAnalyze extends ActionData(MTypeEnum.VOTE_SCHOLAR_ANALYZE, "事件分析！",   "scholar_analyze", false) {
@@ -270,6 +326,21 @@ object ActionMadmanSuicide extends ActionData(MTypeEnum.VOTE_MADMAN_SUICIDE, "�
   }
 }
 
+object ActionMadmanDuel extends ActionData(MTypeEnum.VOTE_MADMAN_DUEL, "單挑", "madman_duel", true) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
+    return ((room.has_flag(RoomFlagEnum.MADMAN_DUEL)) && (room_day.day_no.is % 4 == 3))
+  }
+
+  override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
+    val result = user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.id.is != user.id.is) && (x.live.is))
+    if ((user.has_flag(UserEntryFlagEnum.RELIGION)) ||
+        (user.subrole.is == SubroleEnum.SUBPONTIFF.toString))
+      result.filter(x=>x.hasnt_flag(UserEntryFlagEnum.PONTIFF_AURA))
+    else
+      result
+  }
+}
+
 
 object ActionSorcerorAugure extends ActionData(MTypeEnum.VOTE_SORCEROR_AUGURE, "占卜術",  "sorceror_augure", true) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
@@ -278,8 +349,8 @@ object ActionSorcerorAugure extends ActionData(MTypeEnum.VOTE_SORCEROR_AUGURE, "
 }
 object ActionSorcerorWhisper extends ActionData(MTypeEnum.VOTE_SORCEROR_WHISPER, "密言術！", "sorceror_whisper", false) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
-    return ((user.action_point.is >= 3) ||
-            (room.has_flag(RoomFlagEnum.SORCEROR_WHISPER1) && (user.action_point.is >= 2)))
+    return ((user.action_point.is >= 3)) // ||
+            // (room.has_flag(RoomFlagEnum.SORCEROR_WHISPER1) && (user.action_point.is >= 2)))
   }
 }
 
@@ -301,6 +372,27 @@ object ActionSorcerorBelieve extends ActionData(MTypeEnum.VOTE_SORCEROR_BELIEVE,
   }
 }
 
+object ActionSorcerorSear extends ActionData(MTypeEnum.VOTE_SORCEROR_SEAR, "灼熱",  "sorceror_sear", true) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
+    return ((room.has_flag(RoomFlagEnum.SORCEROR_SEAR)) && (user.action_point.is >= 3))
+  }
+
+  override def targetable_users(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : List[UserEntry] = {
+    val result = user_entrys.filter(x=>(x.uname.is != "dummy_boy") && (x.id.is != user.id.is) && (x.live.is) &&
+                                       (x.hasnt_flag(UserEntryFlagEnum.SEAR)))
+    if ((user.has_flag(UserEntryFlagEnum.RELIGION)) ||
+        (user.subrole.is == SubroleEnum.SUBPONTIFF.toString))
+      result.filter(x=>x.hasnt_flag(UserEntryFlagEnum.PONTIFF_AURA))
+    else
+      result
+  }
+}
+
+object ActionSorcerorSummon extends ActionData(MTypeEnum.VOTE_SORCEROR_SUMMON, "召喚狼元素！",  "sorceror_summon", false) {
+  override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean= {
+    return ((room.has_flag(RoomFlagEnum.SORCEROR_SUMMON)) && (user.action_point.is >= 5))
+  }
+}
 
 object ActionFox extends ActionData(MTypeEnum.VOTE_FOX, "指定背德", "fox_choose_betrayer", true) {
   override def enabled(room:Room, room_day:RoomDay, user:UserEntry, user_entrys:List[UserEntry]) : Boolean = {

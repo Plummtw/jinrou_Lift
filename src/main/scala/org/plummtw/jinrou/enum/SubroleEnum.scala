@@ -20,6 +20,7 @@ object SubroleEnum extends Enumeration {
   val WISEWOLF     = Value("Y")
   val SUBPONTIFF   = Value("P")
   val NORELIGION    = Value("N")
+  val HASHIHIME     = Value("H")
   
   def SUBROLE_MAP   =scala.collection.immutable.TreeMap(
      NONE        -> SubroleNone,
@@ -36,7 +37,8 @@ object SubroleEnum extends Enumeration {
      ALPHAWOLF   -> SubroleAlphaWolf,
      WISEWOLF    -> SubroleWiseWolf,
      SUBPONTIFF  -> SubroleSubpontiff,
-     NORELIGION  -> SubroleNoreligion
+     NORELIGION  -> SubroleNoreligion,
+     HASHIHIME   -> SubroleHashihime
   )
   
   def get_subrole(subrole : SubroleEnum.Value) : SubroleData= {

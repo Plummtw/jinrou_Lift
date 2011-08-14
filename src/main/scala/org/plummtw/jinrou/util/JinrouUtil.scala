@@ -35,7 +35,7 @@ object JinrouUtil {
           .replaceAll("\"","&quot;").
            replaceAll("\r\n","\n").replaceAll("\r","\n").replaceAll("\n","<br/>")
   } */
-  val html_encode_hash = Map (
+  val html_encode_hash = Map[Any, String] (
     '&' -> "&amp;",
     '<' -> "&lt;",
     '>' -> "&gt;",
@@ -44,15 +44,15 @@ object JinrouUtil {
     '\n' -> "<br/>"
   )
 
-  val april_fool_hash = Map[Any, Any] (
-    '真' -> '偽', '偽' -> '真',
-	'人' -> '狼', '狼' -> '人',
-	'白' -> '黑', '黑' -> '白',
-	'○' -> '●', '●' -> '○',
-	'吊' -> '咬', '咬' -> '吊',
-	'男' -> '女', '女' -> '男',
+  val april_fool_hash = Map[Any, String] (
+    '真' -> "偽", '偽' -> "真",
+	'人' -> "狼", '狼' -> "人",
+	'白' -> "黑", '黑' -> "白",
+	'○' -> "●", '●' -> "○",
+	'吊' -> "咬", '咬' -> "吊",
+	'男' -> "女", '女' -> "男",
   )
-  val april_fool_hash2 = Map (
+  val april_fool_hash2 = Map[Any, String] (
     "村人" -> "人狼", "人狼" -> "村人",
     "CO" -> "隱", "co" -> "隱", "ＣＯ" -> "隱", "ｃｏ" -> "隱",
     "救村" -> "滅村", "滅村" -> "救村"
@@ -70,7 +70,7 @@ object JinrouUtil {
     return false
   }
 
-  def encodeHtml(string: String) : String = {
+  def encodeHtml(string: String, limit: Int) : String = {
     // .replaceAll("\'","&apos;")
 
     /*
@@ -84,10 +84,12 @@ object JinrouUtil {
     var is_escape_r    = false
     for (i <- 0 to count) {
       val c = string.charAt(i)
-      val h = html_encode_hash.get(c).getOrElse(c)
+      val h : String = html_encode_hash.get(c).getOrElse(c.toString)
       if (is_escape_r && (c == '\n')) {
         is_escape_r = false
       } else {
+        if (string_builder.length + h.length > limit)
+          return string_builder.toString
         string_builder.append(h)
         is_escape_r = ( c == '\r')
       }
@@ -95,7 +97,7 @@ object JinrouUtil {
     return string_builder.toString
   }
 
-  def encodeHtml_ap(string: String) : String = {
+  def encodeHtml_ap(string: String, limit: Int) : String = {
     // .replaceAll("\'","&apos;")
 
     /*
@@ -113,8 +115,8 @@ object JinrouUtil {
         is_skip = false
       else {
         val c = string.charAt(i)
-        val h = html_encode_hash.get(c).getOrElse(c)
-        val ap1 = april_fool_hash.get(h).getOrElse(h)
+        val h : String = html_encode_hash.get(c).getOrElse(c.toString)
+        val ap1 : String = april_fool_hash.get(h).getOrElse(h)
 
         val ap2 = april_fool_hash2.get(string.substring(i, Math.min(count+1, i+2)))
 
@@ -123,6 +125,8 @@ object JinrouUtil {
           case _       => if (is_escape_r && (c == '\n')) {
                             is_escape_r = false
                           } else {
+                            if (string_builder.length + ap1.length > limit)
+                              return string_builder.toString
                             string_builder.append(ap1)
                             is_escape_r = ( c == '\r')
                           }

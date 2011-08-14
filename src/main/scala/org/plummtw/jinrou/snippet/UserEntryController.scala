@@ -133,11 +133,12 @@ class UserEntryController {
 
       val trip_value =
         if (trip == "") "" else JinrouUtil.generateSHA1_php(trip.trim()).substring(1,9)
+      //println("role : " + S.param("role").getOrElse("0"))
       val user_entry = UserEntry.create.uname(uname.trim()).handle_name(handle_name.replace('　',' ').trim()).sex(sex)
                                 .trip(trip_value)
                                 .password(JinrouUtil.generateSHA1(password.trim()).substring(0,20))
                                 .room_id(room_id).user_icon_id(user_icon_id)
-                                .role(S.param("role").getOrElse("0")).subrole("").last_words("")
+                                .role(role).subrole("").last_words("")
                                 .ip_address(S.request.map{x=>JinrouUtil.getIpAddress(x)}.openOr(""))
                       
       
@@ -359,6 +360,8 @@ class UserEntryController {
       
       // 投票重新開始
       Vote.bulkDelete_!!(By(Vote.roomday_id, room_day.id.is))
+      //ItemVote.bulkDelete_!!(By(ItemVote.roomday_id, room_day.id.is))
+      SpecialVote.bulkDelete_!!(By(SpecialVote.roomday_id, room_day.id.is))
       
       // Update 使用者狀態
       //val user_entry_for_update = UserEntry.findAll(NotBy(UserEntry.handle_name, "dummy_boy"), By(UserEntry.room_id, room_id))

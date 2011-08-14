@@ -130,10 +130,22 @@ class GameEndController {
          </small>)
 
     val user_entrys = UserEntry.findAll(By(UserEntry.room_id, room_id))
-    val live_pontiff  = user_entrys.filter(x=>(x.current_role == RoleEnum.PONTIFF) && (x.live.is))
+    val live_pontiff        = user_entrys.filter(x=>(x.current_role == RoleEnum.PONTIFF) && (x.live.is))
+    val live_pontiff_lovers = live_pontiff.filter(x=>x.has_flag(UserEntryFlagEnum.LOVER))
+    val live_fox            = user_entrys.filter(x=>(x.current_role == RoleEnum.FOX) && (x.live.is))
+    val live_fox_lovers     = live_fox.filter(x=>x.has_flag(UserEntryFlagEnum.LOVER))
     val user_victory  = if (user_entry == null)
                           ""
                         else if (user_entry.has_flag(UserEntryFlagEnum.LOVER))
+                          RoomVictoryEnum.LOVER_WIN.toString
+                        else if ((live_pontiff.length == live_pontiff_lovers.length) &&
+                                 (live_pontiff.length > 0) &&
+                                 (user_entry.subrole.is == SubroleEnum.SUBPONTIFF.toString))
+                          RoomVictoryEnum.LOVER_WIN.toString
+                        else if ((live_fox.length == live_fox_lovers.length) &&
+                                 (live_fox.length > 0) &&
+                                 ((user_entry.current_role == RoleEnum.BETRAYER) ||
+                                  (user_entry.current_role == RoleEnum.GODFAT)))
                           RoomVictoryEnum.LOVER_WIN.toString
                         else if (((live_pontiff.length != 0) &&
                                  (user_entry.has_flag(UserEntryFlagEnum.RELIGION))) ||
@@ -154,6 +166,10 @@ class GameEndController {
                         else if (room.has_flag(RoomFlagEnum.INHERITER_NEUTRAL) &&
                                  (user_entry.current_role == RoleEnum.INHERITER))
                           RoomVictoryEnum.NONE.toString
+                        else if (room.has_flag(RoomFlagEnum.RUNNER_OPTION4) &&
+                                 (user_entry.current_role == RoleEnum.RUNNER) &&
+                                 (!user_entry.live.is))
+                          RoomVictoryEnum.NONE.toString
                         else
                           RoleEnum.get_role(user_entry.current_role).role_side.toString
 
@@ -166,7 +182,7 @@ class GameEndController {
             case RoomVictoryEnum.FOX_WIN      => <td valign="middle" align="center" width="100%" style="background-color:#CC0099;color:snow;font-weight:bold;"><img src="icon/fox.gif"/> [妖狐勝利] 人狼已經被殺光、已經沒有敵人了</td>
             case RoomVictoryEnum.FOX_WIN2     => <td valign="middle" align="center" width="100%" style="background-color:#CC0099;color:snow;font-weight:bold;"><img src="icon/fox.gif"/> [妖狐勝利] 人狼和村民都被騙了</td>
             case RoomVictoryEnum.DEMON_WIN    => <td valign="middle" align="center" width="100%" style="background-color:#666666;color:snow;font-weight:bold;"><img src="icon/mag.gif"/> [惡魔勝利] 儀式完成、村莊毀滅了</td>
-            case RoomVictoryEnum.PENGUIN_WIN  => <td valign="middle" align="center" width="100%" style="background-color:#CCFFFF;color:snow;font-weight:bold;"><img src="icon/nec.gif"/> [企鵝勝利] 村莊進入極地氣候</td>
+            case RoomVictoryEnum.PENGUIN_WIN  => <td valign="middle" align="center" width="100%" style="background-color:#CCFFFF;color:black;font-weight:bold;"><img src="icon/nec.gif"/> [企鵝勝利] 村莊進入極地氣候</td>
             case RoomVictoryEnum.PONTIFF_WIN  => <td valign="middle" align="center" width="100%" style="background-color:#EEAA55;color:snow;font-weight:bold;"><img src="icon/nob.gif"/> [教主勝利] 村莊納入教派管轄</td>
             case RoomVictoryEnum.MOB_WIN      => <td valign="middle" align="center" width="100%" style="background-color:#AAAAAA;color:snow;font-weight:bold;"><img src="icon/spy.gif"/> [暴民勝利] 獨一無二的暴君誕生了</td>
             case RoomVictoryEnum.MOB_WIN2     => <td valign="middle" align="center" width="100%" style="background-color:#AAAAAA;color:snow;font-weight:bold;"><img src="icon/spy.gif"/> [暴民勝利] 村莊陷入混亂狀態</td>

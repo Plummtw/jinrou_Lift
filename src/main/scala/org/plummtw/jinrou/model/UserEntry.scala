@@ -192,13 +192,37 @@ class UserEntry extends LongKeyedMapper[UserEntry] with IdPK {
 
     return user_icon
   }
+
+  def get_werewolf_special() : String = {
+    var result = ""
+    if ((current_role == RoleEnum.WEREWOLF) && (role.is.length > 1)) {
+      result = role.is.substring(1,2)
+    }
+    return result
+  }
   
   def get_role_field()  = {
     var result = Seq(RoleEnum.get_role(role.is.substring(0,1)).ctext)
-    if (role.is.length > 1)
-      result = result ++ Seq(RoleEnum.get_role(role.is.substring(1,2)).simple_ctext)
-    if (role.is.length > 2)
-      result = result ++ Seq(RoleEnum.get_role(role.is.substring(2,3)).simple_ctext)
+    if (role.is.length > 1) {
+      val role_enum = RoleEnum.get_role(role.is.substring(1,2))
+      if (role_enum != RoleNone)
+        result = result ++ Seq(RoleEnum.get_role(role.is.substring(1,2)).simple_ctext)
+      else {
+        val rolespecial_enum = RoleSpecialEnum.get_string(role.is.substring(1,2))
+        if (rolespecial_enum != RoleSpecialEnum.NONE.toString)     
+          result = result ++ Seq(<font color="#FF0000">[{rolespecial_enum}]</font>)
+      }
+    }
+    if (role.is.length > 2) {
+      val role_enum = RoleEnum.get_role(role.is.substring(2,3))
+      if (role_enum != RoleNone)
+        result = result ++ Seq(RoleEnum.get_role(role.is.substring(2,3)).simple_ctext)
+      else {
+        val rolespecial_enum = RoleSpecialEnum.get_string(role.is.substring(2,3))
+        if (rolespecial_enum != RoleSpecialEnum.NONE.toString)
+          result = result ++ Seq(<font color="#FF0000">[{rolespecial_enum}]</font>)
+      }
+    }
     result
   }
   

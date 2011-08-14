@@ -79,6 +79,7 @@ class UpController {
     // 是否發言
     var say_data   = S.param("say").getOrElse("").trim()
     val say_gemini = S.param("say_gemini").getOrElse("")
+    val say_lover  = S.param("say_lover").getOrElse("")
     val say_betrayer = S.param("say_betrayer").getOrElse("")
 
     val font_type  = S.param("font_type").getOrElse("")
@@ -86,15 +87,15 @@ class UpController {
       try { S.param("day_no").getOrElse("0").toLong }
       catch { case e: Exception => 0 } 
       
-    if (say_data.length > 550)
-      say_data = S.param("say").getOrElse("").trim().substring(0, 550)
+    //if (say_data.length > 550)
+    //  say_data = S.param("say").getOrElse("").trim().substring(0, 550)
     say_data = 
       //if ((new Random()).nextInt(100) < 15) JinrouUtil.encodeHtml_ap(say_data)
       //else
-      JinrouUtil.encodeHtml(say_data)
+      JinrouUtil.encodeHtml(say_data, Talk.message.maxLen)
 
-    if (say_data.length > 600)   // 太多控制碼了，程式不比對了，直接空白
-      say_data = ""
+    //if (say_data.length > 600)   // 太多控制碼了，程式不比對了，直接空白
+    //  say_data = ""
 
     //println("say_data : [" + say_data + "]")
     //println("say_font : [" + font_type + "]")
@@ -177,6 +178,10 @@ class UpController {
             else
               MTypeEnum.TALK_DAY.toString
           }
+          else if ((say_lover == "on") &&
+                   (user_entry.has_flag(UserEntryFlagEnum.LOVER)) &&
+                   (room.has_flag(RoomFlagEnum.CUBIC_CHANNEL)))
+              MTypeEnum.TALK_LOVER.toString
           else if ((user_entry.test_memoryloss(room, room_day, user_entrys)) ||
                    (user_entry.test_fake(room_day)))
             MTypeEnum.TALK_NIGHT.toString
@@ -388,7 +393,8 @@ class UpController {
 
                 // 投票重新開始
                 Vote.bulkDelete_!!(By(Vote.roomday_id, room_day.id.is))
-                ItemVote.bulkDelete_!!(By(ItemVote.roomday_id, room_day.id.is))
+                //ItemVote.bulkDelete_!!(By(ItemVote.roomday_id, room_day.id.is))
+                SpecialVote.bulkDelete_!!(By(SpecialVote.roomday_id, room_day.id.is))
 
                 // Update 使用者狀態
                 DB.use(DefaultConnectionIdentifier) { conn =>
@@ -519,7 +525,12 @@ class UpController {
                                   Seq(<input type="checkbox" id="say_betrayer" name="say_betrayer"/>, <span>偽裝頻道</span>, <br/>)
                                 else
                                   NodeSeq.Empty
-                              }
+                              } else if ((room.status.is != RoomStatusEnum.ENDED.toString) &&
+                                  (room_day.day_no.is %2 == 1) &&
+                                  (user_entry.has_flag(UserEntryFlagEnum.LOVER)) &&
+                                  (room.has_flag(RoomFlagEnum.CUBIC_CHANNEL)) &&
+                                  (user_entry.live.is))
+                                Seq(<input type="checkbox" id="say_lover" name="say_lover"/>, <span>戀人頻道</span>, <br/>)
                               else NodeSeq.Empty
     val item_option         = if ((room.status.is != RoomStatusEnum.ENDED.toString) &&
                                   (room_day.day_no.is %2 == 1) &&
@@ -621,7 +632,7 @@ class UpController {
     var tag_string       : String          = ""
     
     // 是否行動
-    val command_data       = JinrouUtil.encodeHtml(S.param("command").getOrElse("").trim())
+    val command_data       = JinrouUtil.encodeHtml(S.param("command").getOrElse("").trim(), 100)
 
     if (command_data.startsWith("item_")) {
       val user_item = ItemEnum.get_item(user_entry.item_flags.is)

@@ -17,6 +17,7 @@ object RoleEnum extends Enumeration {
   
   val CLERIC      = Value("C")
   val HERBALIST   = Value("L")
+  val ALCHEMIST   = Value("l")
   val POISONER    = Value("P")
   val RUNNER      = Value("R")
   
@@ -62,6 +63,7 @@ object RoleEnum extends Enumeration {
      
      CLERIC      -> RoleCleric,
      HERBALIST   -> RoleHerbalist,
+     ALCHEMIST   -> RoleAlchemist,
      POISONER    -> RolePoisoner,
      RUNNER      -> RoleRunner,
      
@@ -92,8 +94,8 @@ object RoleEnum extends Enumeration {
   )
 
   def HIDDEN_ROLE_LIST = List(
-      HERMIT, AUGHUNTER, ARCHMAGE,
-      PENGUIN, CARDMASTER
+      HERMIT, ALCHEMIST, AUGHUNTER, ARCHMAGE,
+      FALLEN_ANGEL, PENGUIN, CARDMASTER
   )
   
   def get_role(role : RoleEnum.Value) : RoleData = {
@@ -105,5 +107,34 @@ object RoleEnum extends Enumeration {
   
   def get_role(role_string : String) : RoleData = {
     return get_role(valueOf(role_string).getOrElse(NONE))
+  }
+}
+
+object RoleSpecialEnum extends Enumeration {
+  type RoleSpecialEnum = Value
+
+  val NONE        = Value("")
+
+  val POISON      = Value("p")
+  val RESIST      = Value("r")
+  val CONJURE     = Value("c")
+  val WHITE       = Value("w")
+  val TEN         = Value("t")
+
+  def ROLESPECIAL_MAP   = scala.collection.immutable.TreeMap(
+     NONE        -> "",
+
+     POISON      -> "毒",
+     RESIST      -> "抗",
+     CONJURE     -> "咒",
+     WHITE       -> "白",
+     TEN         -> "天"
+  )
+
+  def get_string(rolespecial_string : String) : String = {
+    val result = ROLESPECIAL_MAP.get(valueOf(rolespecial_string).getOrElse(NONE))
+    if (result.isEmpty)
+      println(rolespecial_string + "is null")
+    return result.getOrElse("")
   }
 }

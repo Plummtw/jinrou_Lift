@@ -288,13 +288,48 @@ class GameController {
       else
         <a href={link_page + "?room_no=" + room_no + "&list_down=on"}  target="_top">↓訊息</a>
 
+    // 更新 Cache 機制未完成
+    // (room_day.day_no.is == 0)
+    val user_entrys = UserEntry.findAll(By(UserEntry.room_id, room_id))
+
+    val abandon_option : NodeSeq =
+      if ((room_day.day_no.is > 9) || (user_entry == null) || (!user_entry.live.is))
+        Seq()
+      else {
+        val abandon_vote_param = S.param("abandon").getOrElse("0")
+
+        val abandon_votes = SpecialVote.findAll(By(SpecialVote.roomday_id, room_day.id.is), By(SpecialVote.mtype, MTypeEnum.SPECIAL_VOTE_ABANDON.toString))
+        val live_user_entrys = user_entrys.filter(_.live.is)
+        val abandon_counts   = Math.max((live_user_entrys.length + 1) / 2, 5)
+        val player_abandon_voted = abandon_votes.filter(x => x.actioner_id.is == user_entry.id.is)
+
+        if ((abandon_vote_param == "on") && (player_abandon_voted.length == 0)) {
+          SpecialVote.create.roomday_id(room_day.id.is).actioner_id(user_entry.id.is).mtype(MTypeEnum.SPECIAL_VOTE_ABANDON.toString).save
+          if (user_entry.sex.is.toString == "M")
+            Talk.create.roomday_id(room_day.id.is).actioner_id(user_entry.id.is).mtype(MTypeEnum.OBJECTION_MALE.toString).save
+          else
+            Talk.create.roomday_id(room_day.id.is).actioner_id(user_entry.id.is).mtype(MTypeEnum.OBJECTION_FEMALE.toString).save
+
+          if (abandon_votes.length +1 >= abandon_counts) {
+            room.status(RoomStatusEnum.ENDED.toString).victory(RoomVictoryEnum.ABANDONED.toString).save
+            RoomDay.create.room_id(room.id.is).day_no(room_day.day_no.is + 1).vote_time(1).save
+            S.redirectTo("game_end.html?room_no=" + room_no)
+          }
+          Seq(<span>廢村[{abandon_votes.length +1}/{abandon_counts}]</span>)
+        } else if (player_abandon_voted.length > 0) {
+          Seq(<span>廢村[{abandon_votes.length}/{abandon_counts}]</span>)
+        } else {
+          Seq(<a href={"game_view.html?room_no=" + room_no + "&abandon=on"}>廢村[{abandon_votes.length}/{abandon_counts}]</a>)
+        }
+      }
+
     val game_option : NodeSeq = Seq(<small>[自動更新](
          <a href={link_page + "?room_no=" + room_no + "&auto_reload="} target="_top">手動</a>
          <a href={link_page + "?room_no=" + room_no + "&auto_reload=15"} target="_top">15秒</a>
          <a href={link_page + "?room_no=" + room_no + "&auto_reload=20"} target="_top">20秒</a>
          <a href={link_page + "?room_no=" + room_no + "&auto_reload=30"} target="_top">30秒</a>)
          [音效通知]({ play_sound_option })
-         { list_down_option }
+         { list_down_option } {abandon_option}
          </small>)
 
     def sound_object(swf_filename: String) =
@@ -341,9 +376,6 @@ class GameController {
                       (room.has_flag(RoomFlagEnum.DEATH_LOOK)))
     //println("heaven_mode " + heaven_mode.toString)
 
-    // 更新 Cache 機制未完成
-    // (room_day.day_no.is == 0)
-    val user_entrys = UserEntry.findAll(By(UserEntry.room_id, room_id))
 
     if (GameProcesser.check_deadline(room, room_day, user_entrys)) {
       S.redirectTo("game_view.html?room_no=" + room_no)
@@ -458,7 +490,7 @@ class GameController {
           val lovers_str = users_lovers.map(_.handle_name.is).mkString("", "　","")
 
           result = result ++ Seq(<table cellSpacing="0" cellPadding="0" border="1"><tbody>
-            <tr><td>戀人一覽：</td><td>{lovers_str}</td></tr></tbody></table>)
+            <tr><td><img src="images/lovers_partner.gif"/></td><td>{lovers_str}</td></tr></tbody></table>)
         }
 
         result

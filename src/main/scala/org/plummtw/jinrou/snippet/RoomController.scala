@@ -14,10 +14,19 @@ import org.plummtw.jinrou.model._
 import org.plummtw.jinrou.enum._
 import org.plummtw.jinrou.util._
 
+//import org.bone.splurk._
+//import org.bone.splurk.constant._
+
+
+
 // 創新村莊的 Lock，以免村莊數超過村莊上限
 object RoomCreateLock {}
 
 class RoomController {
+  //val plurk_username = "YourUserName"
+  //val plurk_password = "YourPassword"
+  //val plurk_apiKey   = "YourAPIKey"
+
 
   def list_normal : NodeSeq = {
     var result : NodeSeq = Seq()
@@ -81,12 +90,12 @@ class RoomController {
                      .room_flags(room_flags).status(RoomStatusEnum.WAITING.toString).victory("")
 
       var last_words = dummy_last_words.trim()
-      if (last_words.length > 200)
-        last_words = dummy_last_words.trim().substring(0, 200)
-      last_words = JinrouUtil.encodeHtml(last_words)
+      //if (last_words.length > 200)
+      //  last_words = dummy_last_words.trim().substring(0, 200)
+      last_words = JinrouUtil.encodeHtml(last_words, UserEntry.last_words.maxLen)
 
-      if (last_words.length > 250)   // 太多控制碼了，程式不比對了，直接空白
-        last_words = ""
+      //if (last_words.length > 250)   // 太多控制碼了，程式不比對了，直接空白
+      //  last_words = ""
       
       room.validate match {
         case Nil => ;
@@ -145,6 +154,21 @@ class RoomController {
         game_hall.room_id(room.id.is)
         game_hall.save()
       }
+
+      /*
+      try {
+        val plurk_client = new PlurkClient(plurk_apiKey)     // 建立 SPlurk 物件
+        plurk_client.Users.login (plurk_username, plurk_password)  // 登入噗浪
+
+        // 發噗
+        plurk_client.Timeline.plurkAdd (
+          qualifier = Qualifier.Says,  // 設定噗文前的修飾詞（說、喜歡、正在……等）
+          content   = "第" + room.id.is.toString + "號村已建立",  // 噗文的內容
+          language  = Some(Language.tr_ch)  // 修飾詞的語言（tr_ch 為中文）
+        )
+      } catch { case e: Exception =>  S.notice("Plurk 發佈失敗") }
+      */
+
       
       S.notice(room.id.toString() + "號村已建立") 
     }
@@ -174,6 +198,9 @@ class RoomController {
       "weather1"          -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.WEATHER1),      "id"->"weather1"),
       "item_mode"         -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.ITEM_MODE),     "id"->"item_mode"),
       "item_cubic"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.ITEM_CUBIC),     "id"->"item_cubic"),
+      "cubic_channel"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.CUBIC_CHANNEL),  "id"->"cubic_channel"),
+      "cubic_init"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.CUBIC_INIT),     "id"->"cubic_init"),
+      "cubic_immediate"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.CUBIC_IMMEDIATE),"id"->"cubic_immediate"),
       "mob_mode"          -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MOB_MODE),      "id"->"mob_mode"),
       "mob_mode1"         -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MOB_MODE1),     "id"->"mob_mode1"),
       
@@ -212,6 +239,7 @@ class RoomController {
       "subrole_alphawolf"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SUBROLE_ALPHAWOLF),    "id"->"subrole_alphfwolf"),
       "subrole_wisewolf"     -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SUBROLE_WISEWOLF),     "id"->"subrole_wisewolf"),
       "subrole_subpontiff"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SUBROLE_SUBPONTIFF), "id"->"subrole_subpontiff"),
+      "subrole_hashihime"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SUBROLE_HASHIHIME),  "id"->"subrole_hashihime"),
       "subrole_plus"         -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SUBROLE_PLUS),         "id"->"subrole_plus"),
 
       // Role Adjustment
@@ -225,6 +253,7 @@ class RoomController {
       "cleric_option1"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.CLERIC_OPTION1), "id"->"cleric_option1"),
       "cleric_option2"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.CLERIC_OPTION2), "id"->"cleric_option2"),
       "herbalist_mix"     -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.HERBALIST_MIX), "id"->"herbalist_mix"),
+      "herbalist_drop"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.HERBALIST_DROP), "id"->"herbalist_drop"),
       "scholar_option1"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SCHOLAR_OPTION1), "id"->"scholar_option1"),
       "scholar_option2"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SCHOLAR_OPTION2), "id"->"scholar_option2"),
       "scholar_option3"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SCHOLAR_OPTION3), "id"->"scholar_option3"),
@@ -232,14 +261,19 @@ class RoomController {
       "runner_option1"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.RUNNER_OPTION1), "id"->"runner_option1"),
       "runner_option2"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.RUNNER_OPTION2), "id"->"runner_option2"),
       "runner_option3"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.RUNNER_OPTION3), "id"->"runner_option3"),
+      "runner_option4"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.RUNNER_OPTION4), "id"->"runner_option4"),
       "archmage_option1"  -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.ARCHMAGE_OPTION1), "id"->"archmage_option1"),
+      "werewolf_option1"  -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.WEREWOLF_OPTION1), "id"->"werewolf_option1"),
       "wolfcub_option1"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.WOLFCUB_OPTION1), "id"->"wolfcub_option1"),
       "madman_knowledge"  -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MADMAN_KNOWLEDGE), "id"->"madman_knowledge"),
       "madman_suicide"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MADMAN_SUICIDE),  "id"->"madman_suicide"),
       "madman_stun"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MADMAN_STUN),     "id"->"madman_stun"),
+      "madman_duel"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.MADMAN_DUEL),     "id"->"madman_duel"),
       "sorceror_believe"  -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SORCEROR_BELIEVE), "id"->"sorceror_believe"),
       "sorceror_whisper1" -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SORCEROR_WHISPER1), "id"->"sorceror_whisper1"),
       "sorceror_shout1"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SORCEROR_SHOUT1), "id"->"sorceror_shout1"),
+      "sorceror_sear"     -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SORCEROR_SEAR),   "id"->"sorceror_sear"),
+      "sorceror_summon"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SORCEROR_SUMMON), "id"->"sorceror_summon"),
       "fox_option1"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.FOX_OPTION1),      "id"->"fox_option1"),
       "fox_option2"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.FOX_OPTION2),      "id"->"fox_option2"),
       "fox_option3"       -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.FOX_OPTION3),      "id"->"fox_option3"),

@@ -140,7 +140,7 @@ object ItemShamanCrown extends ItemData(MTypeEnum.ITEM_SHAMAN_CROWN, "薩滿冕�
           <img src="images/yes.gif" />,
           <img src="images/parenthesis_left.gif" />,
           actionee_role_node,
-          <img src="images/parenthesis_left.right.gif" />)
+          <img src="images/parenthesis_right.gif" />)
       } else NodeSeq.Empty // ""
 
     result_augure

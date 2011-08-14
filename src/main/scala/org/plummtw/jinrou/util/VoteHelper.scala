@@ -18,6 +18,7 @@ import org.plummtw.jinrou.data._
 
 object VoteHelper {
   val FallenRegex = new Regex(".*" + VoteFlagEnum.FALLEN.toString + "(\\d+).*")
+  val SearRegex   = new Regex(".*" + VoteFlagEnum.SEAR.toString + "(\\d+).*")
   /*
   public static getNotVoted(room) {
     def result = []
@@ -245,12 +246,20 @@ object VoteHelper {
         vote.vote_flags(vote.vote_flags.is + VoteFlagEnum.SHOUTED.toString)
       }
       
-      // 墮落
-      if (actioner != null) {
+      
+      if ((room_day.weather.is != WeatherEnum.SNOWY.toString) && (actioner != null)) {
+        // 墮落
         val fallen_count = actioner.user_flags.is.filter(_ == UserEntryFlagEnum.FALLEN.toString()(0)).length
         if (fallen_count != 0) {
           vote.vote_number(vote.vote_number.is + fallen_count * 2)
           vote.vote_flags(vote.vote_flags.is + VoteFlagEnum.FALLEN.toString + fallen_count.toString)
+        }
+
+        // 灼熱
+        val sear_count = actioner.user_flags.is.filter(_ == UserEntryFlagEnum.SEAR.toString()(0)).length
+        if (sear_count != 0) {
+          vote.vote_number(vote.vote_number.is + sear_count * 2)
+          vote.vote_flags(vote.vote_flags.is + VoteFlagEnum.SEAR.toString + sear_count.toString)
         }
       }
     }
@@ -482,11 +491,15 @@ object VoteHelper {
         case FallenRegex(x) => "(墮落" + x.toString + ")"
         case _              => ""
       }
+      val sear_str = vote.vote_flags.is match {
+        case SearRegex(x) => "(灼熱" + x.toString + ")"
+        case _              => ""
+      }
       val shouted_str = if (vote.vote_flags.is.indexOf(VoteFlagEnum.SHOUTED.toString) != -1 ) "(鼓舞)" else ""
       val vortex_str = if (vote.vote_flags.is.indexOf(VoteFlagEnum.VORTEX.toString) != -1 ) "(斗轉)" else ""
       val colored_str = if (vote.vote_flags.is.indexOf(VoteFlagEnum.COLORSPRAY.toString) != -1 ) "(七彩)" else ""
-    
-      return auto_str + blessed_str + cursed_str + bfeather_str + fallen_str + shouted_str + vortex_str + colored_str
+
+      return auto_str + blessed_str + cursed_str + bfeather_str + fallen_str + shouted_str + sear_str + vortex_str + colored_str
     }
     def vote_no(room_day:RoomDay, user:UserEntry, vote_reveal:Boolean, vote_flags:String): String =
       if (!vote_reveal) ""

@@ -20,6 +20,7 @@ object VoteFlagEnum extends Enumeration {
   val COMMAND      = Value("J")
   val VORTEX        = Value("R")
 
+  val SEAR          = Value("Z")
   val FALLEN        = Value("X")
 
   val ITEM          = Value("I")

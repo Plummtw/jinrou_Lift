@@ -22,6 +22,11 @@ object UserEntryFlagEnum extends Enumeration {
   val ELIXIR_USED = Value("E")
   val POISON_USED = Value("P")
 
+  val EARTH         = Value("地")
+  val WATER         = Value("水")
+  val AIR           = Value("風")
+  val FIRE          = Value("火")
+
   val ANALYZED      = Value("Z")
   val REPORTED      = Value("O")
 
@@ -68,7 +73,13 @@ object UserEntryFlagEnum extends Enumeration {
   val DEATH_1              = Value("9")
   val DEATH_0              = Value("0")
 
+  val ALTERNATE            = Value("z")
+  val ALCHEMIST_ALTERNATE  = Value("y")
+
   val FALLEN               = Value("*")
+  val SUMMON               = Value("/")
+  val SEAR                 = Value("^")
+
   val LOVER                = Value("&")
 
   val DMESSAGE_SEALED     = Value("%")

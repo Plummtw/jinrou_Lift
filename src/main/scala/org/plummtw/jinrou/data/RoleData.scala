@@ -299,7 +299,7 @@ object RoleNecromancer extends RoleData(RoleEnum.NECROMANCER, "靈能者", "#009
       def  color_tag(handle_name : String, role_str : String)   =
         if (role_str == RoleEnum.WEREWOLF.toString)
           <font color="red">{handle_name}</font>
-        else if (role_str == RoleEnum.DEMON.toString) 
+        else if ((role_str == RoleEnum.DEMON.toString) || (role_str == RoleEnum.FALLEN_ANGEL.toString))
           <font color="#666666">{handle_name}</font>
         else if ((role_str == RoleEnum.FOX.toString) && (room.has_flag(RoomFlagEnum.NECROMANCER_OPTION1)))
           <font color="#CC0099">{handle_name}</font>
@@ -435,7 +435,7 @@ object RoleCleric      extends RoleData(RoleEnum.CLERIC,      "牧師",   "#CCDD
   }
 }
 
-object RoleHerbalist   extends RoleData(RoleEnum.HERBALIST,   "藥師",   "#8FCECE", RoomVictoryEnum.VILLAGER_WIN, List(ActionHerbalistElixir, ActionHerbalistPoison, ActionHerbalistMix, ActionBecomeMob, ActionNoAction)) {
+object RoleHerbalist   extends RoleData(RoleEnum.HERBALIST,   "藥師",   "#8FCECE", RoomVictoryEnum.VILLAGER_WIN, List(ActionHerbalistElixir, ActionHerbalistPoison, ActionHerbalistMix,ActionHerbalistDrop, ActionBecomeMob, ActionNoAction)) {
   //override def role_intro = <span>[角色]<br/>　　您所扮演的角色是藥師，您可以使用治療藥和毒藥來幫助村民。</span>
   override def role_intro = <img src="images/role_herbalist.gif"/>
   override def role_pic   = <img src="images/rolepic_herbalist.gif" />
@@ -450,6 +450,26 @@ object RoleHerbalist   extends RoleData(RoleEnum.HERBALIST,   "藥師",   "#8FCE
   
     <table cellSpacing="0" cellPadding="0" border="1"><tbody>
       <tr><td><img src="images/role_herbalist_drug.gif" /></td><td>{herbs}</td></tr></tbody></table>
+  }
+}
+
+object RoleAlchemist   extends RoleData(RoleEnum.ALCHEMIST,   "鍊金術士",   "#8FCECE", RoomVictoryEnum.VILLAGER_WIN, List(ActionAlchemistElixir, ActionAlchemistPoison, ActionBecomeMob, ActionNoAction)) {
+  //override def role_intro = <span>[角色]<br/>　　您所扮演的角色是藥師，您可以使用治療藥和毒藥來幫助村民。</span>
+  override def role_intro = <img src="images/role_alchemist.gif"/>
+  override def role_pic   = <img src="images/rolepic_alchemist.gif" />
+
+  override def role_ability(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) = {
+    var herbs : NodeSeq = Seq()
+    //val herbs_elixir = if (user.hasnt_flag(UserEntryFlagEnum.ELIXIR_USED)) List("治療藥") else List("")
+    //val herbs_poison = if (user.hasnt_flag(UserEntryFlagEnum.POISON_USED)) List("毒藥")   else List("")
+    //val herbs = herbs_elixir ::: herbs_poison
+    if (user.has_flag(UserEntryFlagEnum.EARTH)) {herbs ++= <span>地</span> }
+    if (user.has_flag(UserEntryFlagEnum.WATER)) {herbs ++= <span>水</span> }
+    if (user.has_flag(UserEntryFlagEnum.AIR))   {herbs ++= <span>風</span> }
+    if (user.has_flag(UserEntryFlagEnum.FIRE))  {herbs ++= <span>火</span> }
+
+    <table cellSpacing="0" cellPadding="0" border="1"><tbody>
+      <tr><td><img src="images/role_alchemist_drug.gif" /></td><td>{herbs}</td></tr></tbody></table>
   }
 }
 
@@ -508,7 +528,7 @@ object RoleAugHunter   extends RoleData(RoleEnum.AUGHUNTER,   "占卜獵人", "#
   }
 }
 
-object RoleScholar     extends RoleData(RoleEnum.SCHOLAR,     "學者",   "#3CB371", RoomVictoryEnum.VILLAGER_WIN, List(ActionScholarExamine,ActionScholarAnalyze,ActionScholarReport,ActionBecomeMob)) {
+object RoleScholar     extends RoleData(RoleEnum.SCHOLAR,     "學者",   "#3CB371", RoomVictoryEnum.VILLAGER_WIN, List(ActionScholarExamine,ActionScholarExamine2,ActionScholarAnalyze,ActionScholarReport,ActionBecomeMob)) {
   //override def role_intro = <span>[角色]<br/>　　您所扮演的角色是學者。你可以針對調查一個人的副職業及是否是教徒，以及分析事件一次及瞭解現況一次。</span>
   override def role_intro = <img src="images/role_scholar.gif"/>
   override def role_pic   = <img src="images/rolepic_scholar.gif" />
@@ -517,7 +537,28 @@ object RoleScholar     extends RoleData(RoleEnum.SCHOLAR,     "學者",   "#3CB3
     // 個案調查
     val actionee   = user_entrys.filter(_.id.is == system_message0.actionee_id.is)(0)
     val subrole_data =
-      if (room.has_flag(RoomFlagEnum.SCHOLAR_OPTION4))
+      //if (room.has_flag(RoomFlagEnum.SCHOLAR_OPTION4) && (actionee.sex.is == user.sex.is))
+      //  SubroleEnum.get_subrole(actionee.subrole.is).subrole_pic_true //subrole_name
+      //else
+        SubroleEnum.get_subrole(actionee.subrole.is).subrole_pic      //toString
+    val is_religion =
+     if (actionee.current_role == RoleEnum.PONTIFF) {
+       if (room.has_flag(RoomFlagEnum.SCHOLAR_OPTION1))
+         Seq(<img src="images/yes.gif"/>, <img src="images/rolepic_pontiff.gif"/>) //"是教主"
+       else
+         Seq(<img src="images/yes.gif"/>, <img src="images/religion.gif"/>) //"是教徒"
+     }
+     else Seq(if (actionee.has_flag(UserEntryFlagEnum.RELIGION)) <img src="images/yes.gif"/> else <img src="images/no.gif"/>, <img src="images/religion.gif"/>)
+
+    <table cellSpacing="0" cellPadding="0" border="1"><tbody>
+      <tr><td><img src="images/role_scholar_examine.gif" /></td><td>{actionee.handle_name.is}</td>
+      <td>{subrole_data}</td><td>{is_religion}</td></tr></tbody></table>
+  }
+
+  def scholar_examine2(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry], system_message0: SystemMessage) = {
+    // 個案調查
+    val actionee   = user_entrys.filter(_.id.is == system_message0.actionee_id.is)(0)
+    val subrole_data =  if (actionee.get_werewolf_special != RoleSpecialEnum.WHITE.toString)
         SubroleEnum.get_subrole(actionee.subrole.is).subrole_pic_true //subrole_name
       else
         SubroleEnum.get_subrole(actionee.subrole.is).subrole_pic      //toString
@@ -544,6 +585,8 @@ object RoleScholar     extends RoleData(RoleEnum.SCHOLAR,     "學者",   "#3CB3
         val system_message0 = system_message(0)
         if (system_message0.mtype.is == MTypeEnum.VOTE_SCHOLAR_EXAMINE.toString) {
           scholar_examine(room, room_day, user, user_entrys, system_message0)
+        } else if (system_message0.mtype.is == MTypeEnum.VOTE_SCHOLAR_EXAMINE2.toString) {
+          scholar_examine2(room, room_day, user, user_entrys, system_message0)
         } else if (system_message0.mtype.is == MTypeEnum.VOTE_SCHOLAR_ANALYZE.toString) {
           val last_day3         = RoomDay.findAll(By(RoomDay.room_id, room.id.is), By(RoomDay.day_no, room_day.day_no.is - 3))(0)
           val vote_last_day3    = Vote.findAll(By(Vote.roomday_id, last_day3.id.is))
@@ -553,6 +596,7 @@ object RoleScholar     extends RoleData(RoleEnum.SCHOLAR,     "學者",   "#3CB3
           val hunter_votes             = vote_last_day3.filter(_.mtype.is == MTypeEnum.VOTE_HUNTER.toString)
           val archmage_dispell_votes   = vote_last_day3.filter(_.mtype.is == MTypeEnum.VOTE_ARCHMAGE_DISPELL.toString)
           val herbalist_elixir_votes   = vote_last_day3.filter(_.mtype.is == MTypeEnum.VOTE_HERBALIST_ELIXIR.toString)
+          val alchemist_elixir_votes   = vote_last_day3.filter(_.mtype.is == MTypeEnum.VOTE_ALCHEMIST_ELIXIR.toString)
           val cleric_sancture_votes    = vote_last_day3.filter(_.mtype.is == MTypeEnum.VOTE_CLERIC_SANCTURE.toString)
           val runner_votes             = vote_last_day3.filter(_.mtype.is == MTypeEnum.VOTE_RUNNER.toString)
           val werewolf_biter           = user_entrys.filter(_.id.is == werewolf_votes(0).actioner_id.is)(0)
@@ -577,6 +621,8 @@ object RoleScholar     extends RoleData(RoleEnum.SCHOLAR,     "學者",   "#3CB3
             werewolf_result = "role_scholar_failure_wolfcub.gif" //"失敗(幼狼)"
           else if (herbalist_elixir_votes.filter(_.actionee_id.is == werewolf_target.id.is).length != 0)
             werewolf_result = "role_scholar_failure_herbalist.gif" //"失敗(藥師)"
+          else if (alchemist_elixir_votes.filter(_.actionee_id.is == werewolf_target.id.is).length != 0)
+            werewolf_result = "role_scholar_failure_alchemtst.gif" //"失敗(鍊金術士)"
           else if (cleric_sancture_votes.length != 0)
             werewolf_result = "role_scholar_failure_cleric.gif" //"失敗(牧師)"
 
@@ -633,7 +679,7 @@ object RoleScholar     extends RoleData(RoleEnum.SCHOLAR,     "學者",   "#3CB3
             }
 
           } else {
-            val role_list = RoleEnum.ROLE_MAP.keys.toList.filter(_ != RoleNone)
+            val role_list = RoleEnum.ROLE_MAP.keys.toList.filter(x => (x != RoleNone) && (RoleEnum.get_role(x).role_side != RoomVictoryEnum.VILLAGER_WIN))
             role_list.foreach{role =>
               var role_number = live_users.filter(_.current_role == role).length
 
@@ -701,7 +747,9 @@ object RoleWerewolf    extends RoleData(RoleEnum.WEREWOLF,    "人狼",   "#FF00
       val actionee   = user_entrys.filter(_.id.is == system_message(0).actionee_id.is)(0)
       val actionee_role = RoleEnum.get_role(actionee.role.is.substring(0,1))
       val actionee_role_str =
-        if ((actionee_role == RoleFox) || (actionee_role == RoleDemon) ||
+        if (room_day.day_no.is == 2)
+          actionee_role.role_pic
+        else if ((actionee_role == RoleFox) || (actionee_role == RoleDemon) ||
             (actionee.subrole.is == "") || (actionee.subrole.is == SubroleEnum.FAKEAUGURER.toString))
           <img src="images/side_unknown.gif"/> //？？
         else
@@ -746,7 +794,7 @@ object RoleWolfcub     extends RoleData(RoleEnum.WOLFCUB,     "幼狼",   "#EE00
   }
 }
 
-object RoleMadman      extends RoleData(RoleEnum.MADMAN,      "狂人",   "#DD0000", RoomVictoryEnum.WEREWOLF_WIN, List(ActionMadmanStun1, ActionMadmanStun3, ActionMadmanStun, ActionMadmanSuicide, ActionNoAction)) {
+object RoleMadman      extends RoleData(RoleEnum.MADMAN,      "狂人",   "#DD0000", RoomVictoryEnum.WEREWOLF_WIN, List(ActionMadmanStun1, ActionMadmanStun3, ActionMadmanStun, ActionMadmanSuicide, ActionMadmanDuel, ActionNoAction)) {
   override def role_intro = <img src="images/role_mad.gif"/>
   override def role_pic   = <img src="images/rolepic_mad.gif" />
   
@@ -778,7 +826,7 @@ object RoleMadman      extends RoleData(RoleEnum.MADMAN,      "狂人",   "#DD00
   }
 }
 
-object RoleSorceror    extends RoleData(RoleEnum.SORCEROR,    "狂巫",   "#CC0000", RoomVictoryEnum.WEREWOLF_WIN, List(ActionSorcerorAugure, ActionSorcerorWhisper, ActionSorcerorConjure, ActionSorcerorShout, ActionSorcerorBelieve, ActionNoAction)) {
+object RoleSorceror    extends RoleData(RoleEnum.SORCEROR,    "狂巫",   "#CC0000", RoomVictoryEnum.WEREWOLF_WIN, List(ActionSorcerorAugure, ActionSorcerorWhisper, ActionSorcerorConjure, ActionSorcerorShout, ActionSorcerorBelieve, ActionSorcerorSear, ActionSorcerorSummon, ActionNoAction)) {
   //override def role_intro = <span>[角色]<br/>　　您所扮演的角色是狂巫。您雖為人但屬於狼側，您有多樣的法術可以施行。</span>
   override def role_intro = <img src="images/role_sorceror.gif"/>
   override def role_pic   = <img src="images/rolepic_sorceror.gif" />
@@ -1091,8 +1139,21 @@ object RoleGodfat      extends RoleData(RoleEnum.GODFAT,      "哥德法", "#BB0
            } </tr>
       }</tbody></table>
     } else if (user.has_flag(UserEntryFlagEnum.GODFAT_SPECIAL4)) {
+      val godfat_predicts = user_entrys.filter( x =>
+                             (x.current_role == RoleEnum.NECROMANCER) ||
+                             (x.current_role == RoleEnum.HUNTER) ||
+                             (x.current_role == RoleEnum.HERBALIST) ||
+                             (x.current_role == RoleEnum.ALCHEMIST) ||
+                             (x.current_role == RoleEnum.POISONER) ||
+                             (x.current_role == RoleEnum.SCHOLAR))
+                         
+      val godfat_predicts_tag : NodeSeq = if ((room_day.day_no.is >= 12) && (room_day.day_no.is % 2 == 0))
+                                            Seq(<tr><td>靈獵藥毒學人數(存活/總數)：</td><td>{godfat_predicts.filter(_.live.is).length.toString}/{godfat_predicts.length.toString}</td></tr>)
+                                          else
+                                            NodeSeq.Empty
+
       <table cellSpacing="0" cellPadding="0" border="1"><tbody>
-      <tr><td><img src="images/role_godfat_prophecy.gif" /></td><td>{ user.action_point.is.toString + "/4"}</td></tr></tbody></table>
+      <tr><td><img src="images/role_godfat_prophecy.gif" /></td><td>{ user.action_point.is.toString + "/4"}</td></tr>{godfat_predicts_tag}</tbody></table>
     } else
     <span></span>
   }
@@ -1140,6 +1201,17 @@ object RoleDemon       extends RoleData(RoleEnum.DEMON,       "惡魔",   "#6666
 object RoleFallenAngel  extends RoleData(RoleEnum.FALLEN_ANGEL,       "墮天使",   "#666666", RoomVictoryEnum.FALLENANGEL_WIN, List(ActionFallenAngelFallen, ActionNoAction)) {
   override def role_intro = <img src="images/role_fallenangel.gif"/>
   override def role_pic   = <img src="images/rolepic_fallenangel.gif" />
+
+  override def role_ability(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry]) = {
+    val bited_tag    : NodeSeq = if (user.has_flag(UserEntryFlagEnum.BITED))
+                                   Seq(<tr><td><img src="images/role_angel_rise.gif" /></td></tr>)
+                                 else
+                                   Seq(<tr><td><img src="images/role_demon_ceremony_no.gif" /></td></tr>)
+
+    <table cellSpacing="0" cellPadding="0" border="1"><tbody>
+      {bited_tag}
+    </tbody></table>
+  }
 }
 
 object RolePenguin  extends RoleData(RoleEnum.PENGUIN,     "企鵝",   "#AADDDD", RoomVictoryEnum.PENGUIN_WIN, List(ActionPenguinIce, ActionPenguinChill, ActionNoAction)) {

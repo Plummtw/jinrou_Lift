@@ -16,6 +16,9 @@ object RoomFlagEnum extends Enumeration {
   val WEATHER1       = Value("WF")
   val ITEM_MODE      = Value("IT")
   val ITEM_CUBIC     = Value("IC")
+  val CUBIC_CHANNEL  = Value("CC")
+  val CUBIC_INIT     = Value("CI")
+  val CUBIC_IMMEDIATE = Value("CM")
   val MOB_MODE      = Value("MM")
   val MOB_MODE1     = Value("MN")
   
@@ -57,6 +60,7 @@ object RoomFlagEnum extends Enumeration {
   val SUBROLE_ALPHAWOLF      = Value("SX")
   val SUBROLE_WISEWOLF         = Value("SY")
   val SUBROLE_SUBPONTIFF     = Value("SP")
+  val SUBROLE_HASHIHIME      = Value("SH")
   val SUBROLE_PLUS           = Value("S+")
   
   // Role Adjustment
@@ -69,22 +73,28 @@ object RoomFlagEnum extends Enumeration {
   val HUNTER_OPTION2     = Value("H2")
   val CLERIC_OPTION1    = Value("C1")
   val CLERIC_OPTION2    = Value("C2")
-  val HERBALIST_MIX        = Value("L1")
+  val HERBALIST_MIX      = Value("L1")
+  val HERBALIST_DROP     = Value("L2")
   val SCHOLAR_OPTION1    = Value("O1")
   val SCHOLAR_OPTION2    = Value("O2")
   val SCHOLAR_OPTION3    = Value("O3")
   val SCHOLAR_OPTION4    = Value("O4")
   val ARCHMAGE_OPTION1   = Value("Z1")
+  val WEREWOLF_OPTION1  = Value("W1")
   val WOLFCUB_OPTION1  = Value("X1")
   val MADMAN_KNOWLEDGE = Value("M1")
   val MADMAN_SUICIDE   = Value("M2")
   val MADMAN_STUN      = Value("M3")
+  val MADMAN_DUEL      = Value("M4")
   val SORCEROR_BELIEVE = Value("U1")
   val SORCEROR_WHISPER1 = Value("U2")
   val SORCEROR_SHOUT1    = Value("U3")
+  val SORCEROR_SEAR      = Value("U4")
+  val SORCEROR_SUMMON    = Value("U5")
   val RUNNER_OPTION1   = Value("R1")
   val RUNNER_OPTION2   = Value("R2")
   val RUNNER_OPTION3   = Value("R3")
+  val RUNNER_OPTION4   = Value("R4")
   val FOX_OPTION1       = Value("F1")
   val FOX_OPTION2       = Value("F2")
   val FOX_OPTION3       = Value("F3")
@@ -127,9 +137,12 @@ object RoomFlagEnum extends Enumeration {
     WEATHER      -> "(天候)",
     WEATHER1     -> "(天候1)",
     ITEM_MODE    -> "(道具)",
-    ITEM_CUBIC   -> "(道邱)",
     MOB_MODE     -> "(暴)",
     MOB_MODE1    -> "(暴1)",
+    ITEM_CUBIC   -> "(戀)",
+    CUBIC_CHANNEL-> "(戀1)",
+    CUBIC_INIT   -> "(戀2)",
+    CUBIC_IMMEDIATE -> "(戀3)",
   
     // Optional Role
 
@@ -168,6 +181,7 @@ object RoomFlagEnum extends Enumeration {
     SUBROLE_ALPHAWOLF     -> "[大狼]",
     SUBROLE_WISEWOLF      -> "[智狼]",
     SUBROLE_SUBPONTIFF    -> "[副&無]",
+    SUBROLE_HASHIHIME     -> "[橋]",
     SUBROLE_PLUS          -> "[副+]",
   
     // Role Adjustment
@@ -180,22 +194,28 @@ object RoomFlagEnum extends Enumeration {
     HUNTER_OPTION2   -> "<獵2>",
     CLERIC_OPTION1   -> "<牧1>",
     CLERIC_OPTION2   -> "<牧2>",
-    HERBALIST_MIX    -> "<藥>",
+    HERBALIST_MIX    -> "<藥1>",
+    HERBALIST_DROP   -> "<藥2>",
     SCHOLAR_OPTION1  -> "<學1>",
     SCHOLAR_OPTION2  -> "<學2>",
     SCHOLAR_OPTION3  -> "<學3>",
     SCHOLAR_OPTION4  -> "<學4>",
     ARCHMAGE_OPTION1 -> "【GM:大】",
+    WEREWOLF_OPTION1  -> "<狼>",
     WOLFCUB_OPTION1  -> "<幼>",
     MADMAN_KNOWLEDGE -> "<狂1>",
     MADMAN_SUICIDE   -> "<狂2>",
     MADMAN_STUN      -> "<狂3>",
+    MADMAN_DUEL      -> "<狂4>",
     SORCEROR_BELIEVE -> "<巫1>",
     SORCEROR_WHISPER1 -> "<巫2>",
     SORCEROR_SHOUT1   -> "<巫3>",
+    SORCEROR_SEAR     -> "<巫4>",
+    SORCEROR_SUMMON   -> "<巫5>",
     RUNNER_OPTION1   -> "<逃1>",
     RUNNER_OPTION2   -> "<逃2>",
     RUNNER_OPTION3   -> "<逃3>",
+    RUNNER_OPTION4   -> "<逃4>",
     FOX_OPTION1      -> "<狐1>",
     FOX_OPTION2      -> "<狐2>",
     FOX_OPTION3      -> "<狐3>",

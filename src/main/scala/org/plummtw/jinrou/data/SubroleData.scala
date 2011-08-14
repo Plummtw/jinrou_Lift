@@ -108,4 +108,7 @@ object SubroleNoreligion extends SubroleData(SubroleEnum.NORELIGION, "無神論�
   override def subrole_pic = <img src="images/subrolepic_noreligion.gif" />
 }
 
+object SubroleHashihime extends SubroleData(SubroleEnum.HASHIHIME, "橋姬", "#FF69B4") {
+  override def subrole_pic = <img src="images/subrolepic_no.gif" />
+}
 

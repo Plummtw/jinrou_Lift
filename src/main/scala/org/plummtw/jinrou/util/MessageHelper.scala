@@ -45,12 +45,18 @@ object MessageHelper {
            ((user.current_role == RoleEnum.WEREWOLF) || (user.current_role == RoleEnum.WOLFCUB) ||
             (user.current_role == RoleEnum.MADMAN) || (user.current_role == RoleEnum.SORCEROR)))
         || (heaven_mode)) {
-      if ((room.has_flag(RoomFlagEnum.SORCEROR_WHISPER1)) && (!heaven_mode))
-        Seq(<tr><td width="200" align="left" valign="middle" style="border-bottom: silver 1px dashed;"></td>
+      if ((room.has_flag(RoomFlagEnum.SORCEROR_WHISPER1)) && (!heaven_mode)) {
+        val user_index = user_entrys.indexOf(user_entry)
+        val hint =
+          if (room_day.day_no.is % 4 == 2)
+            "橫" + ((user_index/5)+1).toString
+          else
+            "直" + ((user_index%5)+1).toString
+        Seq(<tr><td width="200" align="left" valign="middle" style="border-bottom: silver 1px dashed;"><small>{hint}</small><small>的密言術</small></td>
             <td><span style="margin:1px;" align="left"></span></td>
             <td width="1000" valign="middle" style="border-bottom: silver 1px dashed;">
             <span style={style_str}> {Unparsed(talk.message.is)} </span></td></tr>)
-      else
+      } else
         Seq(<tr><td width="200" align="left" valign="middle" style="border-bottom: silver 1px dashed;"><font color={user_icon.color.is}>◆</font>{user_entry.handle_name.is}<small>的密言術</small></td>
             <td><span style="margin:1px;" align="left"></span></td>
             <td width="1000" valign="middle" style="border-bottom: silver 1px dashed;">
@@ -305,6 +311,16 @@ object MessageHelper {
         else
           NodeSeq.Empty
 
+      case MTypeEnum.TALK_LOVER      =>
+        if (((user != null) &&  (user.has_flag(UserEntryFlagEnum.LOVER))) || (heaven_mode))
+          Seq(<tr><td width="200" align="left" valign="middle" style="border-bottom: silver 1px dashed;color:#FF69B4;background-color:#000030">
+          <font color={user_icon.color.is}>◆</font>{user_entry.handle_name.is}<small>(戀人)</small></td>
+          <td><span style="margin:1px;" align="left"></span></td>
+          <td width="1000" valign="middle" style="border-bottom: silver 1px dashed;background-color:#000030">
+          <span style={style_str+"#FF69B4"}> {Unparsed(talk.message.is)} </span></td></tr>)
+        else
+          NodeSeq.Empty
+
       case xs                      => 
         NodeSeq.Empty    
     }  
@@ -402,6 +418,7 @@ object MessageHelper {
       case MTypeEnum.TALK_GEMINI     => simple_talk_tag(room, room_day, talk, user, heaven_mode, user_entrys)
       case MTypeEnum.TALK_FOX        => simple_talk_tag(room, room_day, talk, user, heaven_mode, user_entrys)
       case MTypeEnum.TALK_PONTIFF    => simple_talk_tag(room, room_day, talk, user, heaven_mode, user_entrys)
+      case MTypeEnum.TALK_LOVER      => simple_talk_tag(room, room_day, talk, user, heaven_mode, user_entrys)
       
       case MTypeEnum.MESSAGE_GENERAL   => simple_message_tag(talk.message.is)
       case MTypeEnum.MESSAGE_COME      => simple_message_tag(generated_message)
@@ -423,7 +440,16 @@ object MessageHelper {
             simple_message_tag(talk.message.is)
           else
             NodeSeq.Empty
-      
+      case MTypeEnum.MESSAGE_GENERAL_NORUNNER      =>
+          if (((user != null) && (user.current_role != RoleEnum.RUNNER))|| (heaven_mode))
+            simple_message_tag(talk.message.is)
+          else
+            NodeSeq.Empty
+      case MTypeEnum.OBJECTION_MALE                =>
+          Seq(<tr><td width="1000" colspan="3" align="left" style="background-color:#336699;color:white;font-weight:bold;border-top: silver 1px dashed;">　　　　　{user_entry.handle_name.is} 要求廢村</td></tr>)
+      case MTypeEnum.OBJECTION_FEMALE              =>
+          Seq(<tr><td width="1000" colspan="3" align="left" style="background-color:#FF0099;color:white;font-weight:bold;border-top: silver 1px dashed;">　　　　　{user_entry.handle_name.is} 要求廢村</td></tr>)
+
       case MTypeEnum.VOTE_KICK             => simple_message_tag(generated_message,true,"#AAAA33","snow")
       case MTypeEnum.VOTE_HANG             => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 投票處死",heaven_mode || ((user != null) && (!user.live.is)),"#AAAA33","snow")
 
@@ -454,9 +480,13 @@ object MessageHelper {
       case MTypeEnum.VOTE_HERBALIST_ELIXIR => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用治療藥",heaven_mode,"#8FCECE","snow")
       case MTypeEnum.VOTE_HERBALIST_POISON => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用毒藥",heaven_mode,"#8FCECE","snow")
       case MTypeEnum.VOTE_HERBALIST_MIX    => simple_message_tag(user_entry.handle_name.is + " 調製藥品",heaven_mode,"#8FCECE","snow")
+      case MTypeEnum.VOTE_HERBALIST_DROP   => simple_message_tag(user_entry.handle_name.is + " 丟棄藥品",heaven_mode,"#8FCECE","snow")
+      case MTypeEnum.VOTE_ALCHEMIST_ELIXIR => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用治療藥",heaven_mode,"#8FCECE","snow")
+      case MTypeEnum.VOTE_ALCHEMIST_POISON => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 使用毒藥",heaven_mode,"#8FCECE","snow")
 
       case MTypeEnum.VOTE_RUNNER           => simple_message_tag(user_entry.handle_name.is + " 逃亡至 " + user_target.handle_name.is + " 處",heaven_mode,"#009999","snow")
       case MTypeEnum.VOTE_SCHOLAR_EXAMINE  => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 展開調查",heaven_mode,"#3CB371","snow")
+      case MTypeEnum.VOTE_SCHOLAR_EXAMINE2 => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 展開強力調查",heaven_mode,"#3CB371","snow")
       case MTypeEnum.VOTE_SCHOLAR_ANALYZE  => simple_message_tag(user_entry.handle_name.is + " 對前一天晚上進行事件分析",heaven_mode,"#3CB371","snow")
       case MTypeEnum.VOTE_SCHOLAR_REPORT   => simple_message_tag(user_entry.handle_name.is + " 對現況進行瞭解",heaven_mode,"#3CB371","snow")
       case MTypeEnum.VOTE_ARCHMAGE_DISPELL => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 施行解除魔法",heaven_mode,"#7B68EE","snow")
@@ -468,11 +498,14 @@ object MessageHelper {
       case MTypeEnum.VOTE_MADMAN_STUN3     => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 擊昏３",heaven_mode,"#DD0000","snow")
       case MTypeEnum.VOTE_MADMAN_STUN      => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 擊忘",heaven_mode,"#DD0000","snow")
       case MTypeEnum.VOTE_MADMAN_SUICIDE   => simple_message_tag(user_entry.handle_name.is + " 進行自爆",heaven_mode,"#DD0000","snow")
+      case MTypeEnum.VOTE_MADMAN_DUEL      => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 單挑",heaven_mode,"#DD0000","snow")
       case MTypeEnum.VOTE_SORCEROR_AUGURE  => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 占卜",heaven_mode,"#CC0000","snow")
       case MTypeEnum.VOTE_SORCEROR_CONJURE => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 咒殺",heaven_mode,"#CC0000","snow")
-      case MTypeEnum.VOTE_SORCEROR_WHISPER => simple_message_tag(user_entry.handle_name.is + " 施行密語術",heaven_mode,"#CC0000","snow")
-      case MTypeEnum.VOTE_SORCEROR_SHOUT   => simple_message_tag(user_entry.handle_name.is + " 施行鼓舞術",heaven_mode,"#CC0000","snow")
+      case MTypeEnum.VOTE_SORCEROR_WHISPER => simple_message_tag(user_entry.handle_name.is + " 施放密語術",heaven_mode,"#CC0000","snow")
+      case MTypeEnum.VOTE_SORCEROR_SHOUT   => simple_message_tag(user_entry.handle_name.is + " 施放鼓舞術",heaven_mode,"#CC0000","snow")
       case MTypeEnum.VOTE_SORCEROR_BELIEVE => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 施放狼信化",heaven_mode,"#CC0000","snow")
+      case MTypeEnum.VOTE_SORCEROR_SEAR    => simple_message_tag(user_entry.handle_name.is + " 對 " + user_target.handle_name.is + " 施放灼熱",heaven_mode,"#CC0000","snow")
+      case MTypeEnum.VOTE_SORCEROR_SUMMON  => simple_message_tag(user_entry.handle_name.is + " 召喚狼元素",heaven_mode,"#CC0000","snow")
       
       case MTypeEnum.VOTE_FOX              => simple_message_tag(user_entry.handle_name.is + " 妖狐對 " + user_target.handle_name.is + " 為鎖定目標",heaven_mode,"#CC0099","snow")
       case MTypeEnum.VOTE_FOX1             => simple_message_tag(user_entry.handle_name.is + " 妖狐對 " + user_target.handle_name.is + " 為鎖定目標且施展結界",heaven_mode,"#CC0099","snow")

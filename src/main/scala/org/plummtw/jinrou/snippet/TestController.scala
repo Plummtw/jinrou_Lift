@@ -108,6 +108,7 @@ class TestController {
     game_hall.save()
     
     // 加入24人
+    val random = new Random()
     for (i <- 'a' to 'x') {
       val voted  = if (i=='a') "" else UserEntryFlagEnum.VOTED.toString
       val i_str  = i.toString
@@ -115,7 +116,7 @@ class TestController {
                     .room_id(room.id.is)
                     .uname(i_str).handle_name(i_str).sex("M").user_icon_id(2)
                     .password(JinrouUtil.generateSHA1("aaaaaa").substring(0,20))
-                    .last_words("").role(RoleEnum.NONE.toString)
+                    .last_words("").role((65 + random.nextInt(26)).toChar.toString)
                     .user_flags(voted).subrole("")
                     .ip_address(S.request.map{x=>JinrouUtil.getIpAddress(x)}.openOr(""))
                       
