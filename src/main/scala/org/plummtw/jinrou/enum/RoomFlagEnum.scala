@@ -59,6 +59,7 @@ object RoomFlagEnum extends Enumeration {
   val SUBROLE_WOLFBELIEVER = Value("SW")
   val SUBROLE_ALPHAWOLF      = Value("SX")
   val SUBROLE_WISEWOLF         = Value("SY")
+  val SUBROLE_WOLFSTAMP      = Value("SZ")
   val SUBROLE_SUBPONTIFF     = Value("SP")
   val SUBROLE_HASHIHIME      = Value("SH")
   val SUBROLE_PLUS           = Value("S+")
@@ -180,6 +181,7 @@ object RoomFlagEnum extends Enumeration {
     SUBROLE_WOLFBELIEVER  -> "[狼信]",
     SUBROLE_ALPHAWOLF     -> "[大狼]",
     SUBROLE_WISEWOLF      -> "[智狼]",
+    SUBROLE_WOLFSTAMP     -> "[狼印]",
     SUBROLE_SUBPONTIFF    -> "[副&無]",
     SUBROLE_HASHIHIME     -> "[橋]",
     SUBROLE_PLUS          -> "[副+]",

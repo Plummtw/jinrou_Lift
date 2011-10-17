@@ -282,6 +282,8 @@ class UserEntry extends LongKeyedMapper[UserEntry] with IdPK {
          (room_day.day_no.is <= 15)) ||
         ((this.subrole.is.indexOf(SubroleEnum.ALPHAWOLF.toString) != -1 ) &&
          (room_day.day_no.is <= 11)) ||
+        ((this.current_role == RoleEnum.HERMIT) && (room.has_flag(RoomFlagEnum.GM_HERMIT1)) &&
+         (room_day.day_no.is <= 11)) ||
         (this.has_flag(UserEntryFlagEnum.STUNNED_1) ) ||
         (this.has_flag(UserEntryFlagEnum.STUNNED_2) ) ||
         (this.has_flag(UserEntryFlagEnum.STUNNED_3) )) {

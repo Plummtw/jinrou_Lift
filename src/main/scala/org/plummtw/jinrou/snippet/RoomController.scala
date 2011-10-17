@@ -238,6 +238,7 @@ class RoomController {
       "subrole_wolfbeliever" -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SUBROLE_WOLFBELIEVER), "id"->"subrole_wolfbeliever"),
       "subrole_alphawolf"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SUBROLE_ALPHAWOLF),    "id"->"subrole_alphfwolf"),
       "subrole_wisewolf"     -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SUBROLE_WISEWOLF),     "id"->"subrole_wisewolf"),
+      "subrole_wolfstamp"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SUBROLE_WOLFSTAMP),    "id"->"subrole_wolfstamp"),
       "subrole_subpontiff"   -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SUBROLE_SUBPONTIFF), "id"->"subrole_subpontiff"),
       "subrole_hashihime"    -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SUBROLE_HASHIHIME),  "id"->"subrole_hashihime"),
       "subrole_plus"         -> SHtml.checkbox(false, if (_) option_list = option_list ::: List(RoomFlagEnum.SUBROLE_PLUS),         "id"->"subrole_plus"),

@@ -315,9 +315,27 @@ object GameProcesser {
         subrole_array_villager.add(i.user_no.is)
       }
       java.util.Collections.shuffle(subrole_array_villager)
+
       val sub_fakeaugurer = subrole_array_villager.removeFirst()
       user_entrys.filter(_.user_no.is == sub_fakeaugurer)(0).subrole(SubroleEnum.FAKEAUGURER.toString)
     }
+
+    if (room.has_flag(RoomFlagEnum.SUBROLE_WOLFSTAMP)) {
+      var subrole_array_villager : java.util.LinkedList[Int] = new java.util.LinkedList()
+      val user_villager_side = user_entrys.filter(x=>(RoleEnum.get_role(x.current_role).role_side != RoomVictoryEnum.WEREWOLF_WIN) &&
+                                                     (x.subrole.is == ""))
+      user_villager_side.foreach{i =>
+        subrole_array_villager.add(i.user_no.is)
+      }
+      java.util.Collections.shuffle(subrole_array_villager)
+
+      val wolfstamp = subrole_array_villager.removeFirst()
+      user_entrys.filter(_.user_no.is == wolfstamp)(0).subrole(SubroleEnum.WOLFSTAMP.toString)
+    }
+
+
+    //val sub_wolfstamp = subrole_array_villager.removeFirst()
+    //user_entrys.filter(_.user_no.is == sub_wolfstamp)(0).subrole(SubroleEnum.WOLFSTAMP.toString)
     
     // 設定副職業
     var subrole_array : java.util.LinkedList[Int] = new java.util.LinkedList()
@@ -724,7 +742,9 @@ object GameProcesser {
       
       val alchemists = user_entrys.filter(_.current_role == RoleEnum.ALCHEMIST)
       if (alchemists.length != 0) {
-        val voted_essence = RoleEnum.get_role(voted_player.current_role).role_side match {
+        val voted_essence = if (voted_player.subrole.is == SubroleEnum.WOLFSTAMP.toString)
+          UserEntryFlagEnum.FIRE
+        else RoleEnum.get_role(voted_player.current_role).role_side match {
           case RoomVictoryEnum.VILLAGER_WIN => UserEntryFlagEnum.WATER
           case RoomVictoryEnum.WEREWOLF_WIN => UserEntryFlagEnum.FIRE
           case RoomVictoryEnum.FOX_WIN => UserEntryFlagEnum.AIR
@@ -1558,6 +1578,8 @@ object GameProcesser {
         runner_death = true
       if (target.current_role == RoleEnum.WOLFCUB)
         runner_death = true
+      if (target.subrole.is == SubroleEnum.WOLFSTAMP.toString)
+        runner_death = true
       val fox_barriers = fox_barrier_votes.filter(_.actioner_id.is == target.id.is)
       if (fox_barriers.length != 0)
         runner_death = true
@@ -2377,20 +2399,22 @@ object GameProcesser {
         shifter.role(RoleEnum.CARDMASTER.toString)
       }
 
-      user_entrys.filter(x=>((x.current_role == RoleEnum.CARDMASTER) && (x.live.is))).foreach{cardmaster =>
-        var card_pool : java.util.LinkedList[String] = new java.util.LinkedList()
-        if (cardmaster.hasnt_flag(UserEntryFlagEnum.CARD_FOOL)) card_pool.add(UserEntryFlagEnum.CARD_FOOL.toString)
-        if (cardmaster.hasnt_flag(UserEntryFlagEnum.CARD_MAGICIAN)) card_pool.add(UserEntryFlagEnum.CARD_MAGICIAN.toString)
-        if (cardmaster.hasnt_flag(UserEntryFlagEnum.CARD_CHARIOT)) card_pool.add(UserEntryFlagEnum.CARD_CHARIOT.toString)
-        if (cardmaster.hasnt_flag(UserEntryFlagEnum.CARD_HERMIT)) card_pool.add(UserEntryFlagEnum.CARD_HERMIT.toString)
-        if (cardmaster.hasnt_flag(UserEntryFlagEnum.CARD_STRENGTH)) card_pool.add(UserEntryFlagEnum.CARD_STRENGTH.toString)
-        if (cardmaster.hasnt_flag(UserEntryFlagEnum.CARD_JUSTICE)) card_pool.add(UserEntryFlagEnum.CARD_JUSTICE.toString)
-        if (cardmaster.hasnt_flag(UserEntryFlagEnum.CARD_TOWER)) card_pool.add(UserEntryFlagEnum.CARD_TOWER.toString)
-        if (cardmaster.hasnt_flag(UserEntryFlagEnum.CARD_SUN)) card_pool.add(UserEntryFlagEnum.CARD_SUN.toString)
-        if (card_pool.size() != 0) {
-          java.util.Collections.shuffle(card_pool)
-          cardmaster.user_flags(cardmaster.user_flags.is + card_pool.removeFirst())
-          //x cardmaster.save
+      if (room_day.day_no.is >= 7) {
+        user_entrys.filter(x=>((x.current_role == RoleEnum.CARDMASTER) && (x.live.is))).foreach{cardmaster =>
+          var card_pool : java.util.LinkedList[String] = new java.util.LinkedList()
+          if (cardmaster.hasnt_flag(UserEntryFlagEnum.CARD_FOOL)) card_pool.add(UserEntryFlagEnum.CARD_FOOL.toString)
+          if (cardmaster.hasnt_flag(UserEntryFlagEnum.CARD_MAGICIAN)) card_pool.add(UserEntryFlagEnum.CARD_MAGICIAN.toString)
+          if (cardmaster.hasnt_flag(UserEntryFlagEnum.CARD_CHARIOT)) card_pool.add(UserEntryFlagEnum.CARD_CHARIOT.toString)
+          if (cardmaster.hasnt_flag(UserEntryFlagEnum.CARD_HERMIT)) card_pool.add(UserEntryFlagEnum.CARD_HERMIT.toString)
+          if (cardmaster.hasnt_flag(UserEntryFlagEnum.CARD_STRENGTH)) card_pool.add(UserEntryFlagEnum.CARD_STRENGTH.toString)
+          if (cardmaster.hasnt_flag(UserEntryFlagEnum.CARD_JUSTICE)) card_pool.add(UserEntryFlagEnum.CARD_JUSTICE.toString)
+          if (cardmaster.hasnt_flag(UserEntryFlagEnum.CARD_TOWER)) card_pool.add(UserEntryFlagEnum.CARD_TOWER.toString)
+          if (cardmaster.hasnt_flag(UserEntryFlagEnum.CARD_SUN)) card_pool.add(UserEntryFlagEnum.CARD_SUN.toString)
+          if (card_pool.size() != 0) {
+            java.util.Collections.shuffle(card_pool)
+            cardmaster.user_flags(cardmaster.user_flags.is + card_pool.removeFirst())
+            //x cardmaster.save
+          }
         }
       }
     }
@@ -2560,6 +2584,7 @@ object GameProcesser {
         (x.current_role != RoleEnum.DEMON) &&
         (x.current_role != RoleEnum.FALLEN_ANGEL) &&
         (x.current_role != RoleEnum.PENGUIN) &&
+        (x.subrole.is != SubroleEnum.WOLFSTAMP.toString) &&
         ((x.current_role != RoleEnum.INHERITER) || (!room.has_flag(RoomFlagEnum.INHERITER_NEUTRAL))))
     val live_wolf     = live_user_entrys.filter(x=>(x.current_role == RoleEnum.WEREWOLF) || (x.current_role == RoleEnum.WOLFCUB))
     val live_fox      = live_user_entrys.filter(_.current_role == RoleEnum.FOX)

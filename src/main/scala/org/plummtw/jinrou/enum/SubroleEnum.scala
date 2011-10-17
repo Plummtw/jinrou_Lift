@@ -18,6 +18,7 @@ object SubroleEnum extends Enumeration {
   val FOXBELIEVER  = Value("B")
   val ALPHAWOLF    = Value("X")
   val WISEWOLF     = Value("Y")
+  val WOLFSTAMP    = Value("Z")
   val SUBPONTIFF   = Value("P")
   val NORELIGION    = Value("N")
   val HASHIHIME     = Value("H")
@@ -36,6 +37,7 @@ object SubroleEnum extends Enumeration {
      FOXBELIEVER -> SubroleFoxBeliever,
      ALPHAWOLF   -> SubroleAlphaWolf,
      WISEWOLF    -> SubroleWiseWolf,
+     WOLFSTAMP   -> SubroleWolfStamp,
      SUBPONTIFF  -> SubroleSubpontiff,
      NORELIGION  -> SubroleNoreligion,
      HASHIHIME   -> SubroleHashihime

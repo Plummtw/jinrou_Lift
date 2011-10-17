@@ -121,7 +121,8 @@ class UpController {
 //*                                                      By(SystemMessage.mtype, MTypeEnum.VOTE_SORCEROR_WHISPER.toString))
 
 
-    if ((say_data != "") && List("20","16","12","8","S","L","V").contains(font_type)) {
+    if (((say_data != "") && List("20","16","12","8","S","V").contains(font_type)) ||
+        (font_type == "L")) {
       if (font_type == "L") {
         // 遺言
         if (user_entry.live.is) {

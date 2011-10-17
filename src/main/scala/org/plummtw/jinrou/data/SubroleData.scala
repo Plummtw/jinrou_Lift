@@ -96,6 +96,10 @@ object SubroleWiseWolf extends SubroleData(SubroleEnum.WISEWOLF, "智狼", "#FF0
   override def toString(): String = "無副職"
 }
 
+object SubroleWolfStamp extends SubroleData(SubroleEnum.WOLFSTAMP, "狼印者", "#FF0000") {
+  override def subrole_pic = <img src="images/subrolepic_no.gif" />
+}
+
 object SubroleSubpontiff extends SubroleData(SubroleEnum.SUBPONTIFF, "副教主", "#EEAA55") {
   //override def subrole_intro = <span>[副職]你是副教主，你知道教主同樣的資訊，但是教主死亡時會跟著離去，可以代替教主指揮。</span>
   override def subrole_intro = <img src="images/subrole_subpontiff.gif"/>

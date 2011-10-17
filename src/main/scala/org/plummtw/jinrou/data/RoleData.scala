@@ -239,6 +239,7 @@ object RoleAugurer     extends RoleData(RoleEnum.AUGURER,     "占卜師", "#993
     val actionee   = user_entrys.filter(_.id.is == system_message0.actionee_id.is)(0)
     if (((actionee.role.is.substring(0,1) == RoleEnum.WEREWOLF.toString) ||
          (actionee.role.is.substring(0,1) == RoleEnum.WOLFCUB.toString)  ||
+         (actionee.subrole.is == SubroleEnum.WOLFSTAMP.toString)  ||
          ((actionee.role.is.substring(0,1) == RoleEnum.DEMON.toString)  && (room.has_flag(RoomFlagEnum.DEMON_OPTION1)))) &&
          (system_message0.message.is.indexOf(VoteFlagEnum.FAKE.toString) == -1)) {
       color_tag  = <font color="red">{actionee.handle_name.is}</font>
@@ -322,6 +323,7 @@ object RoleNecromancer extends RoleData(RoleEnum.NECROMANCER, "靈能者", "#009
 
         val actioner = UserEntry.findAll(By(UserEntry.id, message.actioner_id.is))(0)
         val role_string = if (actioner.role.is.substring(0,1) == RoleEnum.WOLFCUB.toString) RoleEnum.WEREWOLF.toString
+                          else if (actioner.subrole.is == SubroleEnum.WOLFSTAMP.toString) RoleEnum.WEREWOLF.toString
                           else actioner.role.is.substring(0,1)
 
         Seq(<tr><td><img src="images/role_necromancer_result.gif"/></td>
@@ -558,7 +560,10 @@ object RoleScholar     extends RoleData(RoleEnum.SCHOLAR,     "學者",   "#3CB3
   def scholar_examine2(room:Room, room_day:RoomDay, user: UserEntry, user_entrys: List[UserEntry], system_message0: SystemMessage) = {
     // 個案調查
     val actionee   = user_entrys.filter(_.id.is == system_message0.actionee_id.is)(0)
-    val subrole_data =  if (actionee.get_werewolf_special != RoleSpecialEnum.WHITE.toString)
+    val subrole_data = if ((actionee.subrole.is == SubroleEnum.WOLFSTAMP.toString) &&
+                           (room.has_flag(RoomFlagEnum.SUBROLE_WISEWOLF)))
+        SubroleWiseWolf.subrole_pic
+      else if (actionee.get_werewolf_special != RoleSpecialEnum.WHITE.toString)
         SubroleEnum.get_subrole(actionee.subrole.is).subrole_pic_true //subrole_name
       else
         SubroleEnum.get_subrole(actionee.subrole.is).subrole_pic      //toString
